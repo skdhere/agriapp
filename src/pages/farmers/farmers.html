@@ -1,0 +1,53 @@
+<ion-header>
+  <ion-navbar color="app">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>Farmers</ion-title>
+  </ion-navbar>
+  <ion-toolbar color="app">
+    <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="list-avatar-page">
+  <ion-list *ngIf="!retryButton">
+    <ion-list-header>Your Farmers</ion-list-header>
+
+    <ion-item-sliding *ngFor="let farmer of items">
+      <ion-item (click)="itemTapped($event, farmer)">
+        <ion-avatar item-start>
+          <img src="assets/img/{{farmer.image}}" onerror="this.onerror=null; this.src='assets/images/user.png';">
+        </ion-avatar>
+        <h2 color="app">{{farmer.fm_name}}</h2>
+        <p>{{farmer.address}}</p>
+        <!-- <ion-note item-end>{{farmer.points}}</ion-note> -->
+      </ion-item>
+      <ion-item-options>
+        <button ion-button color="danger" icon-start>
+          <ion-icon name="trash"></ion-icon>
+          Delete
+        </button>
+      </ion-item-options>
+    </ion-item-sliding>
+
+  </ion-list>
+
+  <div class="list-retry" padding *ngIf="retryButton">
+    <h6>something went wrong!</h6>
+    <div><button ion-button round outline large color="light" (click)="onRetryClick()">Retry</button></div>
+  </div>
+
+  <ion-infinite-scroll threshold="1%" (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll-content
+      loadingSpinner="bubbles"
+      loadingText="Loading more Farmers...">
+    </ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+
+  <ion-fab right bottom>
+    <button ion-fab color="app" (click)="goto('AddFarmerPage')"><ion-icon name="add"></ion-icon></button>
+  </ion-fab>
+  
+
+</ion-content>

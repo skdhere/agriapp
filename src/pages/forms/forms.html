@@ -1,0 +1,23 @@
+<ion-content scroll="false">
+  <div class="splash-bg"></div>
+  <div class="splash-info">
+    <div class="splash-logo" style="background: url('../assets/img/images.jpg') repeat transparent;"></div>
+  </div>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col col-12 col-sm-12 col-md-6 col-lg-4 col-xl-4>
+        <div padding>
+            <ion-list>
+              <button ion-item *ngFor="let form of forms" (click)="onTap(form.pageName)">
+                <ion-icon name="{{form.icon}}" item-start></ion-icon>
+                {{form.title}}
+                <!-- <ion-badge item-end color="{{ form.point <= 10 ? 'danger' : (form.point >= 50 ? 'secondary' : 'primary') }}">{{form.point}}</ion-badge> -->
+              </button>
+            </ion-list>
+        </div>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+</ion-content>

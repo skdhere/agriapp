@@ -1,0 +1,17 @@
+<ion-header no-shadow no-border>
+  <ion-navbar color="app">
+    <button ion-button menuToggle>
+      <ion-icon name="menu"></ion-icon>
+    </button>
+    <ion-title>{{ pageTitle }}</ion-title>
+  </ion-navbar>
+</ion-header>
+<ion-content no-bounce>
+  <super-tabs id="mainTabs" [config]="{ sideMenu: 'left' }" scrollTabs toolbarColor="light" toolbarBackground="danger" indicatorColor="light" badgeColor="yellow" (tabSelect)="onTabSelect($event)">
+    <super-tab [rootParams]="parmsPage1" [swipeBackEnabled]="true" [root]="page1" [title]="showTitles? 'kyc' : ''" id="page1"></super-tab>
+    <super-tab [rootParams]="parmsPage2" [root]="page2" [title]="showTitles? 'land details' : ''" id="page2"></super-tab>
+    <super-tab [rootParams]="parmsPage3" [root]="page3" [title]="showTitles? 'crop details' : ''" id="page3"></super-tab>
+    <super-tab [rootParams]="parmsPage4" [root]="page4" [title]="showTitles? 'assets' : ''" id="page4"></super-tab>
+    <super-tab [rootParams]="parmsPage5" [root]="page5" [title]="showTitles? 'loan and liability' : ''" id="page5"></super-tab>
+  </super-tabs>
+</ion-content>
