@@ -18,10 +18,13 @@ export class Forms {
 	form_name: string;
 	points: point<string>;
 	forms:Array<any>;
+	rootNavCtrl: NavController;
 
 	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController){
 		this.current_farmer = navParams.get('farmer');
 		this.form_name = navParams.get('form_name');
+		this.rootNavCtrl = navParams.get('rootNavCtrl');
+		
 		this.getFarmerPoints(this.current_farmer.id);
 		// let loading = this.presentLoading('Please wait...');
 		// loading.present();
@@ -86,7 +89,7 @@ export class Forms {
 
 	onTap(page: string){
 		if (page) {
-			this.navCtrl.push(page, { farmer_id: this.current_farmer.id });
+			this.rootNavCtrl.push(page, { farmer_id: this.current_farmer.id });
 		}
 	}
 }
