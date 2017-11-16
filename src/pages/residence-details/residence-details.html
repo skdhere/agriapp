@@ -6,13 +6,200 @@
 -->
 <ion-header>
 
-  <ion-navbar>
-    <ion-title>residence-details</ion-title>
+  <ion-navbar color="app">
+    <ion-title>Residence Details</ion-title>
   </ion-navbar>
 
 </ion-header>
 
 
-<ion-content padding>
-
+<ion-content>
+	<form [formGroup]="personal">
+		<ion-list>
+			<div padding>
+				<ion-item>
+					<ion-label floating>Residence Status</ion-label>
+					<ion-select formControlName="f7_resistatus">
+						<ion-option value="Rented">Rented</ion-option>
+						<ion-option value="Owned">Owned</ion-option>
+						<ion-option value="Ancestral">Ancestral</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_resistatus.valid  && (personal.controls.f7_resistatus.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+			</div>
+			<ion-item-divider color="light">Address(permanent)</ion-item-divider>
+			<div padding>
+				<ion-item>
+					<ion-label floating>House no.</ion-label>
+					<ion-input formControlName="f7_phouse" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_phouse.valid  && (personal.controls.f7_phouse.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.f7_phouse.errors.required">Please enter a valid house no.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Street name.</ion-label>
+					<ion-input formControlName="f7_pstreet" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_pstreet.valid  && (personal.controls.f7_pstreet.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.f7_pstreet.errors.required">Please enter a valid house no.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Area name</ion-label>
+					<ion-input formControlName="f7_parea" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_parea.valid  && (personal.controls.f7_parea.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.f7_parea.errors.required">Please enter a valid house no.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>state</ion-label>
+					<ion-select formControlName="f7_pstate">
+						<ion-option value="state1">state1</ion-option>
+						<ion-option value="state2">state2</ion-option>
+						<ion-option value="state3">state3</ion-option>
+						<ion-option value="state4">state4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_pstate.valid  && (personal.controls.f7_pstate.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>District</ion-label>
+					<ion-select formControlName="f7_pdistrict">
+						<ion-option value="district1">district1</ion-option>
+						<ion-option value="district2">district2</ion-option>
+						<ion-option value="district3">district3</ion-option>
+						<ion-option value="district4">district4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_pdistrict.valid  && (personal.controls.f7_pdistrict.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Taluka</ion-label>
+					<ion-select formControlName="f7_ptaluka">
+						<ion-option value="taluka1">taluka1</ion-option>
+						<ion-option value="taluka2">taluka2</ion-option>
+						<ion-option value="taluka3">taluka3</ion-option>
+						<ion-option value="taluka4">taluka4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_ptaluka.valid  && (personal.controls.f7_ptaluka.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Village</ion-label>
+					<ion-select formControlName="f7_pvillage">
+						<ion-option value="village1">village1</ion-option>
+						<ion-option value="village2">village2</ion-option>
+						<ion-option value="village3">village3</ion-option>
+						<ion-option value="village4">village4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_pvillage.valid  && (personal.controls.f7_pvillage.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Pin code</ion-label>
+					<ion-input formControlName="f7_ppin" type="number"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_ppin.valid  && (personal.controls.f7_ppin.dirty || submitAttempt)">
+					<p>Please enter a valid 6 digit Pin no.</p>
+				</div>
+			</div>
+			<ion-item-divider color="light">Address(Current)</ion-item-divider>
+			<div padding>
+				<button ion-button color="light" (click)="copyAddress()">Same as Permanent</button>
+				<ion-item>
+					<ion-label floating>House no.</ion-label>
+					<ion-input formControlName="f7_chouse" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_chouse.valid  && (personal.controls.f7_chouse.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.f7_chouse.errors.required">Please enter a valid house no.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Street name.</ion-label>
+					<ion-input formControlName="f7_cstreet" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_cstreet.valid  && (personal.controls.f7_cstreet.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.f7_cstreet.errors.required">Please enter a valid house no.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Area name</ion-label>
+					<ion-input formControlName="f7_carea" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_carea.valid  && (personal.controls.f7_carea.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.f7_carea.errors.required">Please enter a valid house no.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>state</ion-label>
+					<ion-select formControlName="f7_cstate">
+						<ion-option value="state1">state1</ion-option>
+						<ion-option value="state2">state2</ion-option>
+						<ion-option value="state3">state3</ion-option>
+						<ion-option value="state4">state4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_cstate.valid  && (personal.controls.f7_cstate.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>District</ion-label>
+					<ion-select formControlName="f7_cdistrict">
+						<ion-option value="district1">district1</ion-option>
+						<ion-option value="district2">district2</ion-option>
+						<ion-option value="district3">district3</ion-option>
+						<ion-option value="district4">district4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_cdistrict.valid  && (personal.controls.f7_cdistrict.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Taluka</ion-label>
+					<ion-select formControlName="f7_ctaluka">
+						<ion-option value="taluka1">taluka1</ion-option>
+						<ion-option value="taluka2">taluka2</ion-option>
+						<ion-option value="taluka3">taluka3</ion-option>
+						<ion-option value="taluka4">taluka4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_ctaluka.valid  && (personal.controls.f7_ctaluka.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Village</ion-label>
+					<ion-select formControlName="f7_cvillage">
+						<ion-option value="village1">village1</ion-option>
+						<ion-option value="village2">village2</ion-option>
+						<ion-option value="village3">village3</ion-option>
+						<ion-option value="village4">village4</ion-option>
+					</ion-select>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_cvillage.valid  && (personal.controls.f7_cvillage.dirty || submitAttempt)">
+					<p>This field is required.</p>
+				</div>
+				<ion-item>
+					<ion-label floating>Pin code</ion-label>
+					<ion-input formControlName="f7_cpin" type="number"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.f7_cpin.valid  && (personal.controls.f7_cpin.dirty || submitAttempt)">
+					<p>Please enter a valid 6 digit Pin no.</p>
+				</div>
+			</div>
+		</ion-list>
+	</form>
+	<div class="list-retry" padding *ngIf="retryButton">
+		<div padding class="img-error"></div>
+		<h6>Oops! something went wrong.</h6>
+		<div>
+			<button ion-button color="light" (click)="ionViewDidLoad()">Retry</button>
+		</div>
+	</div>
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab>
+			<ion-icon name="checkmark"></ion-icon>
+		</button>
+	</ion-fab>
 </ion-content>
