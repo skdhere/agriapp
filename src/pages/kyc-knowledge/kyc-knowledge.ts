@@ -5,7 +5,7 @@ import { Api } from '../../providers/api/api';
 import 'rxjs/add/operator/map';
 
 /**
- * Generated class for the SpouseKnowledgePage page.
+ * Generated class for the KycKnowledgePage page.
  *
  * See https://ionicframework.com/docs/components/#navigation for more info on
  * Ionic pages and navigation.
@@ -13,11 +13,10 @@ import 'rxjs/add/operator/map';
 
 @IonicPage()
 @Component({
-  selector: 'page-spouse-knowledge',
-  templateUrl: 'spouse-knowledge.html',
+  selector: 'page-kyc-knowledge',
+  templateUrl: 'kyc-knowledge.html',
 })
-export class SpouseKnowledgePage {
-
+export class KycKnowledgePage {
 
 	knowledge: FormGroup;
 	farmer_id: string;
@@ -25,17 +24,16 @@ export class SpouseKnowledgePage {
 	retryButton: boolean = false;
 	addNew: boolean = true;
 
-  constructor(public navCtrl: NavController, 
+	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
 				public formBuilder: FormBuilder, 
 				private loadingCtrl: LoadingController, 
 				public toastCtrl: ToastController,
 				private api: Api) {
 
-
-		  	this.farmer_id = this.navParams.get('farmer_id') || 0;
-				//creating form via formbuilder 
-			this.knowledge = formBuilder.group({
+		this.farmer_id = this.navParams.get('farmer_id') || 0;
+		//creating form via formbuilder 
+		this.knowledge = formBuilder.group({
 			
 
 			'f2_edudetail' : ['', Validators.required], //drp
@@ -48,9 +46,9 @@ export class SpouseKnowledgePage {
 			'f2_cropprog' : ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(100)]) ],
 			'f2_pname' : ['', Validators.required], //drp
 		});
-  }
+	}
 
-  ionViewDidLoad() {
+	ionViewDidLoad() {
 		this.retryButton = false;
 		let loading = this.loadingCtrl.create({
 		    content: 'Loading data...'
@@ -193,5 +191,4 @@ export class SpouseKnowledgePage {
 			this.showMessage("Please fill valid data!", "danger", 100000);
 		}
 	}
-
 }

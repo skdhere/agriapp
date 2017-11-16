@@ -1,0 +1,156 @@
+<!--
+  Generated template for the CropCultivationAddPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  	<ion-navbar color="app">
+    	<ion-title>Add Crop Cultivation</ion-title>
+  	</ion-navbar>
+  <!--   <ion-toolbar color="app">
+		<ion-title>Total : {{cultivation.controls.f10_points.value}}</ion-title>
+  	</ion-toolbar>
+ -->
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="cultivation">
+		<ion-list>
+			<div>
+				<ion-item>
+				    <ion-label floating>Select Farm Land<span>*</span></ion-label>
+				    <ion-select formControlName="f10_land" interface="popover">
+						<ion-option value="139">139</ion-option> 
+						<ion-option value="138">138</ion-option> 
+						<ion-option value="132">132</ion-option> 
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_land.invalid  && (cultivation.controls.f10_land.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_land.errors.required">This field is required.</p>
+		        </div>
+
+
+		       
+
+				<ion-item>
+				    <ion-label floating>Type Of Crop Cultivating This Year <span>*</span></ion-label>
+				    <ion-select formControlName="f10_cultivating" interface="popover">
+				      <ion-option value="1">TOMATO</ion-option>
+				      <ion-option value="2">OKRA</ion-option>
+				      <ion-option value="3">FRENCH BEANS</ion-option>
+				      <ion-option value="4">CLUSTER BEANS (GUARGUM)</ion-option>
+				      <ion-option value="5">ONION</ion-option>
+				      <ion-option value="6">AMARANTHUS</ion-option>
+				      <ion-option value="7">SPINACH</ion-option>
+				      <ion-option value="8">FENUGREEK</ion-option>
+				      <ion-option value="9">CORIANDER</ion-option>
+				      <ion-option value="10">RIDGE GOURD</ion-option>
+				      <ion-option value="11">BOTTLE GOURD</ion-option>
+				      <ion-option value="12">BRINJAL</ion-option>
+				      <ion-option value="13">CARROT</ion-option>
+				      <ion-option value="14">FIELD BEANS</ion-option>
+				      <ion-option value="15">GROUNDNUT</ion-option>
+				      <ion-option value="16">BENGAL GRAM</ion-option>
+				      <ion-option value="17">CHILLIES</ion-option>
+				      <ion-option value="18">RICE</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_cultivating.invalid  && (cultivation.controls.f10_cultivating.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_cultivating.errors.required">This field is required.</p>
+		        </div>
+
+
+		         <ion-item>
+				    <ion-label floating>Select Crop Variety<span>*</span></ion-label>
+				    <ion-select formControlName="f10_crop_variety" interface="popover">
+						<ion-option value="Tomato">Tomato</ion-option> 
+						<ion-option value="Potato">Potato</ion-option> 
+						<ion-option value="Carrot">Carrot</ion-option> 
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_crop_variety.invalid  && (cultivation.controls.f10_crop_variety.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_crop_variety.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+				    <ion-label floating>Current Stage Of Crop <span>*</span></ion-label>
+				    <ion-select formControlName="f10_stage" interface="popover">
+				      <ion-option value="cultivation Tilling">cultivation Tilling</ion-option>
+				      <ion-option value="Sowing">Sowing</ion-option>
+				      <ion-option value="Manure Adding">Manure Adding / Fertilizer</ion-option>
+				      <ion-option value="Irrigation">Irrigation</ion-option>
+				      <ion-option value="Weeding">Weeding</ion-option>
+				      <ion-option value="Growing">Growing</ion-option>
+				      <ion-option value="Harvesting">Harvesting</ion-option>
+				      <ion-option value="Threshing">Threshing</ion-option>
+				      <ion-option value="Storing">Storing</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_stage.invalid  && (cultivation.controls.f10_stage.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_stage.errors.required">This field is required.</p>
+		        </div>
+
+
+				<ion-item>
+		            <ion-label floating>Total Yield Expected [Per Acre Per Crop] <span>*</span></ion-label>
+		            <ion-input formControlName="f10_expected" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="cultivation.controls.f10_expected.invalid  && (cultivation.controls.f10_expected.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_expected.errors.required">This field is required.</p>
+		            <p *ngIf="cultivation.controls.f10_expected.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
+		            <p *ngIf="cultivation.controls.f10_expected.errors.pattern">Please enter a valid number.</p>
+		        </div>
+				
+				<ion-item>
+		            <ion-label floating>Expected Price This Year [Per Quintal Per Acre] <span>*</span></ion-label>
+		            <ion-input formControlName="f10_expectedprice" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="cultivation.controls.f10_expectedprice.invalid  && (cultivation.controls.f10_expectedprice.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.required">This field is required.</p>
+		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
+		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+
+		       
+
+
+				<ion-item>
+				    <ion-label floating>Potential Crop Diseases <span>*</span></ion-label>
+				    <ion-select formControlName="f10_diseases" interface="popover" multiple="true">
+				      <ion-option value="Fungal">Fungal</ion-option>
+				      <ion-option value="Non-fungal">Non-fungal</ion-option>
+				      <ion-option value="Severe">Severe</ion-option>
+				      <ion-option value="Treatable">Treatable</ion-option>
+				      <ion-option value="No potential">No potential</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_diseases.invalid  && (cultivation.controls.f10_diseases.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_diseases.errors.required">This field is required.</p>
+		        </div>
+
+
+				<ion-item>
+				    <ion-label floating>Potential Pest Control Problems <span>*</span></ion-label>
+				    <ion-select formControlName="f10_pest" interface="popover">
+				      <ion-option value="yes">yes</ion-option>
+				      <ion-option value="no">no</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_pest.invalid  && (cultivation.controls.f10_pest.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_pest.errors.required">This field is required.</p>
+		        </div>
+
+
+
+			</div>
+		</ion-list>
+		
+	</form>
+		<ion-fab top right edge>
+		<button (click)="save()" ion-fab><ion-icon name="checkmark"></ion-icon></button>
+	</ion-fab>
+</ion-content>

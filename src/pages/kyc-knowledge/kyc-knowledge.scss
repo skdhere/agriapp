@@ -1,0 +1,19 @@
+page-kyc-knowledge {
+	ion-label{
+		overflow: auto;
+		text-overflow: unset;
+    	white-space: unset;
+		span{
+			color: red;
+		}
+	}
+
+	div	{
+		p {
+            font-size: 0.8em;
+		    color: #f76d6d;
+		    margin-top: 5px;
+		    margin-left: 16px;
+	    }
+	}
+}
