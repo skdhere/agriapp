@@ -34,187 +34,151 @@ export class KycSpousePage {
 		//creating form via formbuilder 
 		this.spouse = formBuilder.group({
 			'f3_points' : ['0'],
-
-			'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+            'f3_married_status' : ['',Validators.required],
+            'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_age' : ['', Validators.compose([Validators.required, Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_mobno' : ['', Validators.compose([Validators.required, Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_adhno' : ['', Validators.compose([Validators.required, Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')])],
+			'f3_loan_interest' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
+			'f3_loan_tenure' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
+			'f3_loan_emi' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_shg' : ['', Validators.required],
+			'f3_spouse_income' : ['',Validators.required],
 			'f3_spouse_shgname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_occp' : ['', Validators.required],
-			'f3_spouse_owned_prop' : ['', Validators.required],
-			'f3_spouse_prop_type' : ['', Validators.required],
-			'f3_property_details' : ['', Validators.compose([Validators.maxLength(100), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-			'f3_spouse_get_any_income' : ['', Validators.required],
-			'f3_spouse_yearly_income' : ['', Validators.compose([Validators.required, Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_mfi' : ['', Validators.required],
+			'f3_loan_purpose' : ['',Validators.required],
 			'f3_spouse_mfiname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_mfiamount' : ['', Validators.compose([Validators.required, Validators.maxLength(8), Validators.pattern('^[0-9]+$')])],
-			'f3_affliation_status' : ['', Validators.required],
-			'f3_fpo_name' : ['', Validators.compose([Validators.maxLength(100), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-			'f3_bank_name' : ['', Validators.compose([Validators.maxLength(100), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			
+			
 		});
 	}
 
 	ionViewDidLoad() {
-	// 	this.retryButton = false;
-	// 	let loading = this.loadingCtrl.create({
-	// 	    content: 'Loading data...'
-	// 	});
-	// 	loading.present();
-		
-	// 	this.api.get('kyc_spouse/'+ this.farmer_id)
-	// 	.map(res => res.json())
-	// 	.subscribe(
-	// 		data => {
-	// 			if(data.success){
-	// 				console.log(data.data);
-	// 				for (let key in data.data) {
-	// 					if(this.spouse.controls[key]){
-	// 						this.spouse.controls[key].setValue(data.data[key], { emitEvent : false });
-	// 					}
-	// 					this.addNew = false;
-	// 				}
-	// 			}
-	// 			else{
-	// 				this.retryButton = true;
-	// 			}
-	// 			loading.dismiss();
-	// 			this.showMessage("All * marked fields are mandatory!", "");
-	// 		}, 
-	// 		err => {
-	// 			console.log(err);
-	// 			setTimeout(() => {
-	// 			    loading.dismiss();
-	// 				this.retryButton = true;
-	// 				this.showMessage("Something went wrong, make sure that Internet connection is on!", "danger");
-	// 			}, 1000);
-	// 		}
-	// 	);
-
 		//update validation here
 		this.setValidation();
 
 		//Listen for form changes
+		
+		this.spouse.controls['f3_married_status'].valueChanges.subscribe(() => {this.setValidation();});
 		this.spouse.controls['f3_spouse_shg'].valueChanges.subscribe(() => {this.setValidation();});
-		this.spouse.controls['f3_spouse_owned_prop'].valueChanges.subscribe(() => {this.setValidation();});
+		this.spouse.controls['f3_spouse_occp'].valueChanges.subscribe(() => {this.setValidation();});
 		this.spouse.controls['f3_spouse_mfi'].valueChanges.subscribe(() => {this.setValidation();});
-		this.spouse.controls['f3_spouse_mfi'].valueChanges.subscribe(() => {this.setValidation();});
+
+		
+		
 	}
 
 	setValidation(){
 		let controls = this.spouse.controls;
-		if(controls['f3_spouse_shg'].value == 'yes'){
-			controls['f3_spouse_shgname'].enable();
+		if(controls['f3_married_status'].value == 'yes'){
+			
+			
+			controls['f3_spouse_fname'].enable({ emitEvent: false });
+			controls['f3_spouse_lname'].enable({ emitEvent: false });
+			controls['f3_spouse_mname'].enable({ emitEvent: false });
+			controls['f3_spouse_age'].enable({ emitEvent: false });
+			controls['f3_spouse_mobno'].enable({ emitEvent: false });
+			controls['f3_spouse_adhno'].enable({ emitEvent: false });
+			controls['f3_spouse_shg'].enable({ emitEvent: false });
+			controls['f3_spouse_occp'].enable({ emitEvent: false });
+			controls['f3_spouse_occp'].enable({ emitEvent: false });
+			controls['f3_spouse_mfi'].enable({ emitEvent: false });
+			controls['f3_spouse_shgname'].enable({ emitEvent: false });
+			
+			
 		}
-		else{
-			controls['f3_spouse_shgname'].disable();
-			controls['f3_spouse_shgname'].setValue('', { emitEvent : false });
+		else
+		{
+			console.log('cbsdjsdg');
+			controls['f3_spouse_fname'].setValue('', { emitEvent: false });
+			controls['f3_spouse_lname'].setValue('', { emitEvent: false });
+			controls['f3_spouse_mname'].setValue('', { emitEvent: false });
+			controls['f3_spouse_age'].setValue('', { emitEvent: false });
+			controls['f3_spouse_mobno'].setValue('', { emitEvent: false });
+			controls['f3_spouse_adhno'].setValue('', { emitEvent: false });
+			controls['f3_spouse_shg'].setValue('', { emitEvent: false });
+			controls['f3_spouse_shgname'].setValue({ emitEvent: false });
+			controls['f3_spouse_occp'].setValue('', { emitEvent: false });
+			
+			controls['f3_spouse_mfi'].setValue('', { emitEvent: false });
+
+			controls['f3_spouse_fname'].disable({ emitEvent: false });
+			controls['f3_spouse_lname'].disable({ emitEvent: false });
+			controls['f3_spouse_mname'].disable({ emitEvent: false });
+			controls['f3_spouse_age'].disable({ emitEvent: false });
+			controls['f3_spouse_mobno'].disable({ emitEvent: false });
+			controls['f3_spouse_adhno'].disable({ emitEvent: false });
+			controls['f3_spouse_shg'].disable({ emitEvent: false });
+			controls['f3_spouse_occp'].disable({ emitEvent: false });
+			
+			controls['f3_spouse_mfi'].disable({ emitEvent: false });
+			controls['f3_spouse_shgname'].disable({ emitEvent: false });
+
+			if(controls['f3_spouse_occp'].value =="farmer" && controls['f3_spouse_occp'].value =="other")
+			{
+
+				controls['f3_spouse_income'].enable({ emitEvent: false });
+			}
+			else
+			{
+				controls['f3_spouse_income'].setValue('', { emitEvent: false });
+				controls['f3_spouse_income'].disable({ emitEvent: false });
+			}
+			
 		}
 
-		if(controls['f3_spouse_owned_prop'].value == 'yes'){
-			controls['f3_spouse_prop_type'].enable();
-			controls['f3_property_details'].enable();
-			controls['f3_spouse_get_any_income'].enable();
-			controls['f3_spouse_yearly_income'].enable();
-		}
-		else{
-			controls['f3_spouse_prop_type'].disable();
-			controls['f3_property_details'].disable();
-			controls['f3_spouse_get_any_income'].disable();
-			controls['f3_spouse_yearly_income'].disable();
-
-			controls['f3_spouse_prop_type'].setValue('', { emitEvent : false });
-			controls['f3_property_details'].setValue('', { emitEvent : false });
-			controls['f3_spouse_get_any_income'].setValue('', { emitEvent : false });
-			controls['f3_spouse_yearly_income'].setValue('', { emitEvent : false });
-		}
 
 
-		if(controls['f3_spouse_mfi'].value == 'yes'){
-			controls['f3_spouse_mfiname'].enable();
-			controls['f3_spouse_mfiamount'].enable();
-		}
-		else{
-			controls['f3_spouse_mfiname'].disable();
-			controls['f3_spouse_mfiamount'].disable();
 
-			controls['f3_spouse_mfiname'].setValue('', { emitEvent : false });
-			controls['f3_spouse_mfiamount'].setValue('', { emitEvent : false });
+		if(controls['f3_spouse_shg'].value == 'yes')
+		{
+			controls['f3_spouse_shgname'].enable({ emitEvent: false });
+		}
+		else
+		{
+
+			controls['f3_spouse_shgname'].setValue('', { emitEvent: false });
+			controls['f3_spouse_shgname'].disable({ emitEvent: false });
 		}
 
+		
 
-		if(controls['f3_affliation_status'].value == 'yes'){
-			controls['f3_fpo_name'].enable();
+		if(controls['f3_spouse_mfi'].value =="yes")
+		{
+			 controls['f3_loan_purpose'].enable({ emitEvent: false });
+			 controls['f3_spouse_mfiname'].enable({ emitEvent: false });
+			 controls['f3_spouse_mfiamount'].enable({ emitEvent: false });
+			 controls['f3_loan_interest'].enable({ emitEvent: false });
+			 controls['f3_loan_tenure'].enable({ emitEvent: false });
+			 controls['f3_loan_emi'].enable({ emitEvent: false });
 		}
-		else{
-			controls['f3_fpo_name'].disable();
-			controls['f3_fpo_name'].setValue('', { emitEvent : false });
+		else
+		{
+			 controls['f3_loan_purpose'].setValue('', { emitEvent: false });
+			 controls['f3_spouse_mfiname'].setValue('', { emitEvent: false });
+			 controls['f3_spouse_mfiamount'].setValue('', { emitEvent: false });
+			 controls['f3_loan_interest'].setValue('', { emitEvent: false });
+			 controls['f3_loan_tenure'].setValue('', { emitEvent: false });
+			 controls['f3_loan_emi'].setValue('', { emitEvent: false });
+
+			 controls['f3_loan_purpose'].disable({ emitEvent: false });
+			 controls['f3_spouse_mfiname'].disable({ emitEvent: false });
+			 controls['f3_spouse_mfiamount'].disable({ emitEvent: false });
+			 controls['f3_loan_interest'].disable({ emitEvent: false });
+			 controls['f3_loan_tenure'].disable({ emitEvent: false });
+			 controls['f3_loan_emi'].disable({ emitEvent: false });
 		}
+
+		
+
+		
 	}
 
-	getTotal(){
-
-		let values = this.spouse.getRawValue();
-		let points = {};
-		let total:number = 0;
-		points['f2_edudetail']     = 0;
-		points['f2_proficiency']   = 0;
-		points['f2_participation'] = 0;
-
-		//setting points based on values
-		//f2_edudetail
-		switch (values['f2_edudetail']) {
-			case "illiterate":
-				points['f2_edudetail'] = 2;
-				break;
-			case "primary education":
-				points['f2_edudetail'] = 4;
-				break;
-			case "matriculate":
-				points['f2_edudetail'] = 6;
-				break;
-			case "graduate":
-				points['f2_edudetail'] = 8;
-				break;
-			case "post graduate":
-				points['f2_edudetail'] = 10;
-				break;
-		}
-
-		//f2_proficiency
-		switch (values['f2_proficiency']) {
-			case "read write":
-				points['f2_proficiency'] = 10;
-				break;
-			case "read only":
-				points['f2_proficiency'] = 5;
-				break;
-			case "understand only":
-				points['f2_proficiency'] = 0;
-				break;
-		}
-
-		//f2_participation
-		switch (values['f2_participation']) {
-			case "yes":
-				points['f2_participation'] = 10;
-				break;
-			case "no":
-				points['f2_participation'] = 0;
-				break;
-		}
-
-		//sum of calculated points
-		for(let point in points){
-			total += Number(points[point]);
-		}
-
-		console.log(total);
-		total = parseFloat((total/3).toFixed(2));
-		this.spouse.get('f2_points').setValue(total, { emitEvent: false });
-	}
-
+	
 	showMessage(message, style: string, dur?: number){
 		const toast = this.toastCtrl.create({
 	      message: message,
