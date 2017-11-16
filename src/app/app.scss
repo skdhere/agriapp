@@ -15,6 +15,11 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
+.list-md{
+	.item-input:last-child{
+		border-bottom: none;
+	}
+} 
 
 ion-toolbar.custom-subheader{
 	.toolbar-title{

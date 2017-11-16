@@ -45,11 +45,14 @@ export class Forms {
 
 		if(this.form_name == 'kyc'){
 			this.forms = [
-				{ title: 'Spouse Details',             pageName: 'KycSpousePage', point: '0', icon : 'woman'},
-				{ title: 'Applicant\'s Knowledge',     pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
-				{ title: 'Applicant\'s Phone Details', pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
-				{ title: 'Family Details',             pageName: 'KycFamilyPage', point: '0', icon : 'people'},
-				{ title: 'Appliances Motors',          pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
+				{ title: 'Applicant\'s Personal Details',   pageName: 'PersonalDetailsPage', point: '0', icon : 'person'},
+				{ title: 'Residence Status & Details',      pageName: 'ResidenceDetailsPage', point: '0', icon : 'locate'},
+				{ title: 'Applicant\'s Knowledge',     		pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
+				{ title: 'Applicant\'s Phone Details', 		pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
+				{ title: 'Spouse Details',             		pageName: 'KycSpousePage', point: '0', icon : 'woman'},
+				{ title: 'Spouse\'s Knowledge',             pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'},
+				{ title: 'Family Details',             		pageName: 'KycFamilyPage', point: '0', icon : 'people'},
+				{ title: 'Appliances Motors',          		pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
 			];
 		}
 		else if(this.form_name == 'land details'){
@@ -61,7 +64,6 @@ export class Forms {
 			this.forms = [
 				{ title: 'Crop And Cultivation Details',  pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
 				{ title: 'Previous Crop Cycle Details',   pageName: 'CropPreviousPage', point: '0', icon : 'leaf'},
-				{ title: 'Current Crop Cycle Details',    pageName: 'CropCurrentPage', point: '0', icon : 'leaf'},
 			];
 		}
 		else if(this.form_name == 'assets'){
@@ -72,9 +74,7 @@ export class Forms {
 		}
 		else if(this.form_name == 'loan and liability'){
 			this.forms = [
-				{ title: 'Home Loan Details',     pageName: '', point: '0', icon : 'logo-usd'},
 				{ title: 'Financial Details',     pageName: '', point: '0', icon : 'cash'},
-				{ title: 'Financial History',     pageName: '', point: '0', icon : 'arrow-round-forward'},
 			];
 		}
 	}
