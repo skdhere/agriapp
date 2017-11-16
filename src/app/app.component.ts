@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, LoadingController } from 'ionic-angular';
+import { Nav, Platform, LoadingController, MenuController, AlertController } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../providers/providers';
@@ -14,13 +14,15 @@ export class MyApp {
 
     rootPage: any = 'HomePage';
     // rootPage: any = 'LoginPage';
-
+    alert: any;
     pages: Array<{title: string, component: any, icon:string}>;
 
     constructor(private auth: AuthService,
                 platform: Platform, 
                 statusBar: StatusBar, 
                 splashScreen: SplashScreen, 
+                menu: MenuController,
+                public alertCtrl: AlertController,
                 public loadingCtrl: LoadingController,
                 public currentUser: UserProvider) {
 
@@ -41,6 +43,57 @@ export class MyApp {
                 else{
                     this.nav.setRoot('UserLogin');
                 }
+            });
+
+            platform.registerBackButtonAction(() => {
+
+                let currentView = this.nav.getActive();
+
+                if(menu.isOpen()){
+                    menu.close();
+                }
+                else{
+
+                    if(currentView.component.name == 'HomePage' || currentView.component.name == 'UserLogin' ){
+                        if(this.alert == null){
+                            this.alert = this.alertCtrl.create({
+                                title: 'Agribridge',
+                                message: 'Press Exit to exit.',
+                                buttons: [
+                                {
+                                    text: 'Cancel',
+                                    role: 'cancel',
+                                    handler: () => {
+                                        console.log('Cancel clicked');
+                                        this.alert = null;
+                                    }
+                                },
+                                {
+                                    text: 'Exit',
+                                    handler: () => {
+                                        platform.exitApp();
+                                    }
+                                }
+                                ]
+                            });
+
+                            this.alert.present();
+                            console.log(1212122);
+                        }
+                        else{
+                            this.alert.dismiss();
+                            this.alert = null;
+                        }
+
+                    }
+                    else if(currentView.component.name == 'FarmersPage'){
+                        this.nav.setRoot('HomePage');
+                    }
+                    else{
+                        this.nav.pop();
+                    }
+                }
+
             });
         });
 
