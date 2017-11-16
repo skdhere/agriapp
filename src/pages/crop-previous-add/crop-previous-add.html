@@ -1,0 +1,148 @@
+<!--
+  Generated template for the CropPreviousAddPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+	<ion-navbar color="app">
+		<ion-title>Add Crop Previous</ion-title>
+	</ion-navbar>
+  	<!-- <ion-toolbar color="app">
+		<ion-title>Total : {{previous.controls.f11_points.value}}</ion-title>
+  	</ion-toolbar> -->
+
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="previous">
+		<ion-list>
+			<div>
+				<!-- <ion-item>
+				    <ion-label floating>Type Of Crop Cultivating Previous Year  <span>*</span></ion-label>
+				    <ion-select formControlName="f11_cultivating" interface="popover">
+				      <ion-option value="1">TOMATO</ion-option>
+				      <ion-option value="2">OKRA</ion-option>
+				      <ion-option value="3">FRENCH BEANS</ion-option>
+				      <ion-option value="4">CLUSTER BEANS (GUARGUM)</ion-option>
+				      <ion-option value="5">ONION</ion-option>
+				      <ion-option value="6">AMARANTHUS</ion-option>
+				      <ion-option value="7">SPINACH</ion-option>
+				      <ion-option value="8">FENUGREEK</ion-option>
+				      <ion-option value="9">CORIANDER</ion-option>
+				      <ion-option value="10">RIDGE GOURD</ion-option>
+				      <ion-option value="11">BOTTLE GOURD</ion-option>
+				      <ion-option value="12">BRINJAL</ion-option>
+				      <ion-option value="13">CARROT</ion-option>
+				      <ion-option value="14">FIELD BEANS</ion-option>
+				      <ion-option value="15">GROUNDNUT</ion-option>
+				      <ion-option value="16">BENGAL GRAM</ion-option>
+				      <ion-option value="17">CHILLIES</ion-option>
+				      <ion-option value="18">RICE</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="previous.controls.f11_cultivating.invalid  && (previous.controls.f11_cultivating.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_cultivating.errors.required">This field is required.</p>
+		        </div> -->
+
+
+				<ion-item>
+		            <ion-label floating>Yield Achieved Last Year In Tonnes <span>*</span></ion-label>
+		            <ion-input formControlName="f11_achieved" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="previous.controls.f11_achieved.invalid  && (previous.controls.f11_achieved.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_achieved.errors.required">This field is required.</p>
+		            <p *ngIf="previous.controls.f11_achieved.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="previous.controls.f11_achieved.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+
+		        <ion-item>
+		            <ion-label floating>Income Achieved Last Year In Rs. <span>*</span></ion-label>
+		            <ion-input formControlName="f11_income" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="previous.controls.f11_income.invalid  && (previous.controls.f11_income.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_income.errors.required">This field is required.</p>
+		            <p *ngIf="previous.controls.f11_income.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="previous.controls.f11_income.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+
+				<ion-item>
+				    <ion-label floating>Any Pest Or Diseases That The Yield Was Prone To? <span>*</span></ion-label>
+				    <ion-select formControlName="f11_diseases" interface="popover">
+				      <ion-option value="yes">yes</ion-option>
+				      <ion-option value="no">no</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="previous.controls.f11_diseases.invalid  && (previous.controls.f11_diseases.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_diseases.errors.required">This field is required.</p>
+		        </div>
+
+
+				<ion-item>
+				    <ion-label floating>What Kind Of Fertilizers Did You Use  <span>*</span></ion-label>
+				    <ion-select formControlName="f11_fertilizers" interface="popover">
+				      <ion-option value="Organic Fertilizers">Organic Fertilizers</ion-option>
+				      <ion-option value="Inorganic Fertilizers">Inorganic Fertilizers</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="previous.controls.f11_fertilizers.invalid  && (previous.controls.f11_fertilizers.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_fertilizers.errors.required">This field is required.</p>
+		        </div>
+
+
+				<!-- <ion-item>
+		            <ion-label floating>How Much Was The Total Consumption Of Fertilizer In KGs <span>*</span></ion-label>
+		            <ion-input formControlName="f11_consumption_fertilizer" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="previous.controls.f11_consumption_fertilizer.invalid  && (previous.controls.f11_consumption_fertilizer.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_consumption_fertilizer.errors.required">This field is required.</p>
+		            <p *ngIf="previous.controls.f11_consumption_fertilizer.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="previous.controls.f11_consumption_fertilizer.errors.pattern">Please enter a valid number.</p>
+		        </div> -->
+
+
+		        <!-- <ion-item>
+				    <ion-label floating>Was Your Crop Damaged / Destroyed Last Year <span>*</span></ion-label>
+				    <ion-select formControlName="f11_damaged_prev_crop" interface="popover">
+				      <ion-option value="yes">yes</ion-option>
+				      <ion-option value="no">no</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="previous.controls.f11_damaged_prev_crop.invalid  && (previous.controls.f11_damaged_prev_crop.dirty || submitAttempt)">
+		            <p *ngIf="previous.controls.f11_damaged_prev_crop.errors.required">This field is required.</p>
+		        </div> -->
+
+				
+				<!-- <div *ngIf="previous.controls.f11_damaged_prev_crop.value == 'yes'">
+					<ion-item>
+			            <ion-label floating>What was the reason? <span>*</span></ion-label>
+					    <ion-select formControlName="f11_what_was_the_reason1" interface="popover">
+					      	<ion-option value="Flood">Flood</ion-option>
+					      	<ion-option value="Drought">Drought</ion-option>
+					      	<ion-option value="Fire">Fire</ion-option>
+					      	<ion-option value="Stolen">Stolen</ion-option>
+					      	<ion-option value="Irrigation Issues">Irrigation Issues</ion-option>
+					      	<ion-option value="Lack of Component">Lack of Component</ion-option>
+					      	<ion-option value="Others">Others</ion-option>
+					    </ion-select>
+			        </ion-item>
+			        <div *ngIf="previous.controls.f11_what_was_the_reason1.invalid  && (previous.controls.f11_what_was_the_reason1.dirty || submitAttempt)">
+			            <p *ngIf="previous.controls.f11_what_was_the_reason1.errors.required">This field is required.</p>
+			        </div>
+			    </div> -->
+
+			</div>
+		</ion-list>
+		<!-- <div padding>
+		    <button ion-button full color="app" (click)="save()">Save</button>
+	    </div> -->
+	</form>
+
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab><ion-icon name="checkmark"></ion-icon></button>
+	</ion-fab>
+</ion-content>
