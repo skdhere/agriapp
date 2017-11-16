@@ -1,0 +1,123 @@
+<!--
+  Generated template for the AssetsStockPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+	<ion-navbar color="app">
+		<ion-title>Assets- Live Stock</ion-title>
+	</ion-navbar>
+	<!-- <ion-toolbar color="app">
+		<ion-title>Total : {{assets.controls.f13_points.value}}</ion-title>
+  	</ion-toolbar> -->
+
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="assets">
+		<ion-list>
+			<div>
+			
+				<ion-item>
+		            <ion-label floating>Dairy Cattle <span>*</span></ion-label>
+		            <ion-input formControlName="f13_dairy_cattle" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_dairy_cattle.invalid  && (assets.controls.f13_dairy_cattle.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_dairy_cattle.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_dairy_cattle.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_dairy_cattle.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+				<ion-item>
+		            <ion-label floating>Draft Cattle <span>*</span></ion-label>
+		            <ion-input formControlName="f13_draft_cattle" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_draft_cattle.invalid  && (assets.controls.f13_draft_cattle.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_draft_cattle.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_draft_cattle.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_draft_cattle.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Buffalo <span>*</span></ion-label>
+		            <ion-input formControlName="f13_buffalo" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_draft_cattle.invalid  && (assets.controls.f13_draft_cattle.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_draft_cattle.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_draft_cattle.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_draft_cattle.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Ox  <span>*</span></ion-label>
+		            <ion-input formControlName="f13_ox" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_ox.invalid  && (assets.controls.f13_ox.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_ox.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_ox.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_ox.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Sheep <span>*</span></ion-label>
+		            <ion-input formControlName="f13_sheep" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_sheep.invalid  && (assets.controls.f13_sheep.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_sheep.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_sheep.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_sheep.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Goat  <span>*</span></ion-label>
+		            <ion-input formControlName="f13_goat" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_goat.invalid  && (assets.controls.f13_goat.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_goat.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_goat.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_goat.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Pig <span>*</span></ion-label>
+		            <ion-input formControlName="f13_pig" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_pig.invalid  && (assets.controls.f13_pig.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_pig.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_pig.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_pig.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Poultry [ Chicken, Geese, Turkey, Duck]<span>*</span></ion-label>
+		            <ion-input formControlName="f13_poultry" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_poultry.invalid  && (assets.controls.f13_poultry.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_poultry.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_poultry.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_poultry.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Donkeys <span>*</span></ion-label>
+		            <ion-input formControlName="f13_donkeys" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="assets.controls.f13_donkeys.invalid  && (assets.controls.f13_donkeys.dirty || submitAttempt)">
+		            <p *ngIf="assets.controls.f13_donkeys.errors.required">This field is required.</p>
+		            <p *ngIf="assets.controls.f13_donkeys.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="assets.controls.f13_donkeys.errors.pattern">Please enter a valid number.</p>
+		        </div>
+			</div>
+		</ion-list>
+		<!-- <div padding>
+		    <button ion-button full color="app" (click)="save()">Save</button>
+	    </div> -->
+	</form>
+
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab><ion-icon name="checkmark"></ion-icon></button>
+	</ion-fab>
+</ion-content>

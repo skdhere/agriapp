@@ -1,0 +1,125 @@
+<!--
+  Generated template for the KycPhonePage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  	<ion-navbar color="app">
+    	<ion-title>Applicant's Phone Details</ion-title>
+  	</ion-navbar>
+  	<!-- <ion-toolbar color="app">
+		<ion-title>Total : {{phone.controls.f5_points.value}}</ion-title>
+  	</ion-toolbar> -->
+  	
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="phone">
+		<ion-list>
+			<div>
+				<ion-item>
+				    <ion-label floating>Type Of Phone Ownership <span>*</span></ion-label>
+				    <ion-select formControlName="f5_phonetype" interface="popover">
+						<ion-option value="smartphone"> Smartphone </ion-option> 
+						<ion-option value="featurephone"> Featurephone </ion-option> 
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="phone.controls.f5_phonetype.invalid  && (phone.controls.f5_phonetype.dirty || submitAttempt)">
+		            <p *ngIf="phone.controls.f5_phonetype.errors.required">This field is required.</p>
+		        </div>
+
+
+				<!-- <ion-item>
+				    <ion-label floating>Does Any Of Your Family Member Own A Smart Phone? <span>*</span></ion-label>
+				    <ion-select formControlName="f5_any_one_have_smart_phone" interface="popover">
+				      <ion-option value="yes">yes</ion-option>
+				      <ion-option value="no">no</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="phone.controls.f5_any_one_have_smart_phone.invalid  && (phone.controls.f5_any_one_have_smart_phone.dirty || submitAttempt)">
+		            <p *ngIf="phone.controls.f5_any_one_have_smart_phone.errors.required">This field is required.</p>
+		        </div> -->
+
+				<ion-item>
+				    <ion-label floating>Who Is The Service Provider?</ion-label>
+				    <ion-select formControlName="f5_servpro" interface="popover">
+				      <ion-option value="aircel">Aircel</ion-option>
+				      <ion-option value="airtel">Airtel</ion-option>
+				      <ion-option value="jio">Jio</ion-option>
+				      <ion-option value="relience">Relience</ion-option>
+				      <ion-option value="tata docomo">Tata Docomo</ion-option>
+				      <ion-option value="tata">Tata</ion-option>
+				      <ion-option value="uninor">Uninor</ion-option>
+				      <ion-option value="vodafone">Vodafone</ion-option>
+				      <ion-option value="idea">Idea</ion-option>
+				    </ion-select>
+				</ion-item>
+
+				<ion-item>
+				    <ion-label floating>Do You Receive Sufficeint Network Coverage?</ion-label>
+				    <ion-select formControlName="f5_network" interface="popover">
+				      <ion-option value="yes">Yes</ion-option>
+				      <ion-option value="no">No</ion-option>
+				    </ion-select>
+				</ion-item>
+			</div>
+
+			<div *ngIf="phone.controls.f5_phonetype.value === 'smartphone'">
+				<ion-item>
+				    <ion-label floating>Do You Have Data Pack On Your Phone ? </ion-label>
+				    <ion-select formControlName="f5_datapack" interface="popover">
+				      <ion-option value="yes">Yes</ion-option>
+				      <ion-option value="no">No</ion-option>
+				    </ion-select>
+				</ion-item>
+
+				<div *ngIf="phone.controls.f5_datapack.value === 'yes'">
+					<ion-item>
+					    <ion-label floating>Specify Data Pack </ion-label>
+					    <ion-select formControlName="f5_datapackname" interface="popover">
+					      <ion-option value="2g">2G</ion-option>
+					      <ion-option value="3g">3G</ion-option>
+					      <ion-option value="4g">4G</ion-option>
+					    </ion-select>
+					</ion-item>
+
+					<ion-item>
+					    <ion-label floating>Do You Use Apps Regularly</ion-label>
+					    <ion-select formControlName="f5_appuse" interface="popover">
+					      <ion-option value="yes">Yes</ion-option>
+					      <ion-option value="no">No</ion-option>
+					    </ion-select>
+					</ion-item>
+				</div>
+
+				<!-- <ion-item *ngIf="phone.controls.f5_appuse.value === 'yes'">
+		            <ion-label floating>Specify Name Of The App <span>*</span></ion-label>
+		            <ion-input formControlName="f5_app_name" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="phone.controls.f5_app_name.invalid  && (phone.controls.f5_app_name.dirty || submitAttempt)">
+		            <p *ngIf="phone.controls.f5_app_name.errors.required">This field is required.</p>
+		            <p *ngIf="phone.controls.f5_app_name.errors.minlength">Please enter at least 3 characters.</p>
+		            <p *ngIf="phone.controls.f5_app_name.errors.maxlength">Length should be smaller than or equal to 100.</p>
+		        </div> -->
+
+				<ion-item>
+				    <ion-label floating>Subscriptions To Farming Advisory Apps?</ion-label>
+				    <ion-select formControlName="f5_farmapp" interface="popover">
+				      <ion-option value="yes">Yes</ion-option>
+				      <ion-option value="no">No</ion-option>
+				    </ion-select>
+				</ion-item>
+			</div>
+		</ion-list>
+		<!-- <div padding>
+		    <button ion-button full color="app" (click)="save()">Save</button>
+	    </div> -->
+	</form>
+
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab><ion-icon name="checkmark"></ion-icon></button>
+	</ion-fab>
+</ion-content>
