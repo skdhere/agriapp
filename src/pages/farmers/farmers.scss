@@ -5,4 +5,20 @@ farmers-page{
 			text-transform: capitalize;
 		}
 	}
+
+	.no-farmers{
+		text-align: center;
+		img{
+			width: 35%; 
+			opacity: 0.2;
+		}
+		h6{
+			color: #b7b7b7;
+		}
+	}
+
+	.no-more-item{
+		text-align: center;
+		opacity: 0.3;
+		margin-top: 50px;	}
 }

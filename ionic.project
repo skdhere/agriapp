@@ -1,0 +1,10 @@
+{
+  "name": "proxy-example",
+  "app_id": "",
+  "proxies": [
+    {
+      "path": "/sqyardpanel/rest/v1",
+      "proxyUrl": "http://sqoreyard.com/sqyardpanel/rest/v1"
+    }
+  ]
+}

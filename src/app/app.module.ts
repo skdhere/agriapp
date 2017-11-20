@@ -8,10 +8,13 @@ import { MyApp } from './app.component';
 
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { SQLite } from '@ionic-native/sqlite';
+import { SQLitePorter } from '@ionic-native/sqlite-porter';
 
 import { Api } from '../providers/providers';
 import { AuthService } from '../providers/providers';
 import { UserProvider } from '../providers/user/user';
+import { Sql } from '../providers/sql/sql';
 
 @NgModule({
     declarations: [
@@ -30,19 +33,25 @@ import { UserProvider } from '../providers/user/user';
             }
           }
         }),
-        IonicStorageModule.forRoot()
+        IonicStorageModule.forRoot({
+            name: '__agribridgeDb',
+            driverOrder: ['sqlite', 'indexeddb', 'websql']
+        })
     ],
     bootstrap: [IonicApp],
         entryComponents: [
         MyApp,
     ],
     providers: [
+        SQLite,
+        SQLitePorter,
         UserProvider,
         Api,
+        AuthService,
+        Sql,
         StatusBar,
         SplashScreen,
         {provide: ErrorHandler, useClass: IonicErrorHandler},
-        AuthService,
     ]
 })
 export class AppModule {}
