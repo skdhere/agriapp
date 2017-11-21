@@ -38,12 +38,38 @@ export class Sql {
             fm_createdby text,
             fm_modifieddt INTEGER,
             fm_modifiedby text,
+
             local_id INTEGER PRIMARY KEY,
             local_upload INTEGER DEFAULT 0
             )`).catch(err => {
                 console.error('Storage: Unable to create tbl_farmers tables', err.tx, err.err);
             });
-        }
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_personal_detail (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            f1_mfname text,
+            f1_mmname text,
+            f1_dob text,
+            f1_age INTEGER, 
+            f1_mobno text,
+            f1_altno text,
+            any_other_select text,
+            f1_ppno text, 
+            f1_pancard text, 
+            f1_vote text, 
+            f1_licno text, 
+            f1_otherno text, 
+            f1_expfarm INTEGER,
+            f1_status INTEGER,
+            f1_created_date text,
+            f1_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+            )`).catch(err => {
+                console.error('Storage: Unable to create tbl_farmers tables', err.tx, err.err);
+            });  
+    }
 
     /**
     * Perform an arbitrary SQL operation on the database. Use this method
