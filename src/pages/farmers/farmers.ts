@@ -48,8 +48,6 @@ export class FarmersPage {
 
 		doInfinite(infiniteScroll?) {
 
-			// this.query += this.offset + ',' + this.limit;
-
 			this.sql.query(this.query, [this.offset, this.limit]).then(data => {
 				console.log(data);
 	            if (data.res.rows.length > 0) {
@@ -157,9 +155,9 @@ export class FarmersPage {
 
 		itemTapped(event, farmer) {
 			console.log(farmer);
-				this.navCtrl.push('Farmerdetail', {
-						farmer: farmer
-				});
+			this.navCtrl.push('Farmerdetail', {
+					farmer: farmer
+			});
 		}
 
 

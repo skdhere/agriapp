@@ -71,6 +71,9 @@ export class AddFarmerPage {
                         this.navCtrl.pop();
                     });
                 }
+                else{
+                    this.navCtrl.setRoot('FarmersPage');
+                }
 
             }, (error) => {
                 console.log(error);

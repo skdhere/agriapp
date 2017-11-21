@@ -1,24 +1,38 @@
 <ion-header>
-
-  <ion-navbar color="app">
-  	<button ion-button menuToggle>
-      <ion-icon name="menu"></ion-icon>
-    </button>
-    <ion-title>Home</ion-title>
-  </ion-navbar>
-
+    <ion-navbar color="transparent">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>Home</ion-title>
+    </ion-navbar>
 </ion-header>
+<ion-content>
+    <div class="background-image"></div>
+    <!-- <div class="logo"></div> -->
+    <div class="logo-text">Agribridge</div>
+    <ion-grid>
+        <ion-row>
+            <ion-col ion-button color="secondary" (click)="goto('AddFarmerPage')">
+                <ion-icon name="add"></ion-icon>
+                <h6>ADD FARMER</h6>
+            </ion-col>
+            <ion-col ion-button color="app" (click)="goto('FarmersPage')">
+                <ion-icon name="list-box"></ion-icon>
+                <h6>LIST FARMERS</h6>
+            </ion-col>
+        </ion-row>
 
+        <ion-row>
+            
+            <ion-col ion-button color="dark" (click)="goto('FarmersPage')">
+                <ion-icon name="">{{totalFarmers || 0}}</ion-icon>
+                <h6>TOTAL FARMERS</h6>
+            </ion-col>
+            <ion-col ion-button color="dark" (click)="goto('FarmersPage')">
+                <ion-icon name="">{{totalUploaded || 0}}</ion-icon>
+                <h6>UPLOADED</h6>
+            </ion-col>
+        </ion-row>
 
-<ion-content padding>
-	<h2>Home Page</h2>
-	<p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-        </p>
-        <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-        </p>
-        <p>
-            Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
-        </p>
+    </ion-grid>
 </ion-content>

@@ -1,3 +1,76 @@
 page-home {
 
+	@keyframes animatedBackground {
+		from { background-position: 0 0; }
+		to { background-position: 100% 0; }
+	}
+
+	ion-content{
+		.scroll-content{
+			margin: 0px !important;
+		}
+
+		.background-image{
+			background: url('../assets/images/bg.png');
+			height: 350px;
+			width: 100%;
+			background-position: 0px 0px;
+			background-repeat: repeat;
+			background-size: 150px;
+			animation:animatedBackground 20s linear infinite;
+		}
+
+		.logo{
+			background-image: url('../assets/images/logo-placeholder.png');
+			background-position: center;
+			background-size: 148px;
+		    height: 140px;
+		    width: 140px;
+		    border: 3px solid;
+		    margin: auto;
+		    position: relative;
+		    top: -76px;
+		    border-radius: 50%;
+		    box-shadow: 0px 2px 7px rgba(0, 0, 0, 0.7), 3px 5px 15px rgba(0, 0, 0, 0.25);
+
+
+	        color: #fff;
+		    text-align: center;
+		    line-height: 7;
+		    font-size: 20px;
+		    font-family: cursive;
+		}
+
+		.col{
+			height: 150px;
+		    margin: 3px;
+	        text-align: center;
+		    color: #fff;
+		    padding: 36px 0px;
+		    border-radius: 12px;
+		    
+		    ion-icon{
+	    	    font-size: 50px;
+		    }
+		}
+
+		.logo-text{
+		    position: relative;
+		    color: #fff;
+		    top: -246px;
+		    margin: auto;
+		    text-align: center;
+		    font-size: 40px;
+		    font-family: cursive;
+		}
+		
+		.button-inner{
+		    display: block;
+		}
+		.grid{
+			position: relative;
+		    top: -128px;
+	        max-width: 350px;
+		}
+	}
 }
