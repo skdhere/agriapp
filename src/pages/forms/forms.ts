@@ -14,7 +14,7 @@ interface point<T> {
 
 export class Forms {
 
-	current_farmer: {id:string, image:string, fm_name: string, address: string, points: string};
+	current_farmer: any;
 	form_name: string;
 	points: point<string>;
 	forms:Array<any>;
@@ -89,7 +89,7 @@ export class Forms {
 
 	onTap(page: string){
 		if (page) {
-			this.rootNavCtrl.push(page, { farmer_id: this.current_farmer.id });
+			this.rootNavCtrl.push(page, { farmer_id: this.current_farmer.local_id });
 		}
 	}
 }
