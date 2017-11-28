@@ -12,8 +12,8 @@ import { UserProvider } from '../user/user';
  */
 @Injectable()
 export class Api {
-    // url: string = 'http://acrefin.com/agribridge/api/v1';
-    url: string = 'http://sqoreyard.com/sqyardpanel/rest/v1';
+    url: string = 'http://acrefin.com/agribridge/api/v1';
+    // url: string = 'http://sqoreyard.com/sqyardpanel/rest/v1';
     options: RequestOptions;
 
     constructor(public http: Http, private storage: Storage, public currentUser: UserProvider) {}

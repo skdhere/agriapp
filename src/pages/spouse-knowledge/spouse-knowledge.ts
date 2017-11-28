@@ -52,39 +52,6 @@ export class SpouseKnowledgePage {
 
   ionViewDidLoad() {
 		this.retryButton = false;
-		let loading = this.loadingCtrl.create({
-		    content: 'Loading data...'
-		});
-		loading.present();
-		
-		this.api.get('kyc_knowledge/'+ this.farmer_id)
-		.map(res => res.json())
-		.subscribe(
-			data => {
-				if(data.success){
-					console.log(data.data);
-					for (let key in data.data) {
-						if(this.knowledge.controls[key]){
-							this.knowledge.controls[key].setValue(data.data[key], { emitEvent : false });
-						}
-						this.addNew = false;
-					}
-				}
-				else{
-					this.retryButton = true;
-				}
-				loading.dismiss();
-				this.showMessage("All * marked fields are mandatory!", "");
-			}, 
-			err => {
-				console.log(err);
-				setTimeout(() => {
-				    loading.dismiss();
-					this.retryButton = true;
-					this.showMessage("Something went wrong, make sure that Internet connection is on!", "danger");
-				}, 1000);
-			}
-		);
 
 		//update validation here
 		this.setValidation();
@@ -105,8 +72,6 @@ export class SpouseKnowledgePage {
 			controls['f2_cropprog'].enable({ emitEvent: false });
 			controls['f2_pname'].enable({ emitEvent: false });
 			controls['f2_date'].enable({ emitEvent: false });
-
-
 			
 		}
 		else{

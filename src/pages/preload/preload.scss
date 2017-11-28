@@ -1,0 +1,20 @@
+page-preload {
+	ion-content{ 
+		background-color: color($colors,app) !important;
+		.logo-text{
+		    position: relative;
+		    color: #fff;
+		    top: 40%;
+		    margin: auto;
+		    text-align: center;
+		    font-size: 40px;
+		    font-family: cursive;
+
+		    .logo-sub-text{
+		    	font-family: sans-serif;
+			    font-size: 18px;
+			    padding: 28px;
+		    }
+		}
+	}
+}

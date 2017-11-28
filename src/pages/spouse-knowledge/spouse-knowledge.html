@@ -19,43 +19,51 @@
 	<form [formGroup]="knowledge" *ngIf="!retryButton">
 		<ion-list ion-grid>
 			<div ion-row>
-				<ion-item ion-col col-md-6 col-xs col-12>
-				    <ion-label floating>Spouse Educational Qualification Details <span>*</span></ion-label>
-				    <ion-select formControlName="f2_edudetail" interface="popover" (change)="getTotal()">
-						<ion-option value="illiterate"> Illiterate </ion-option> 
-						<ion-option value="primary education"> Education </ion-option> 
-						<ion-option value="matriculate"> Matriculate </ion-option> 
-						<ion-option value="graduate"> Graduate </ion-option> 
-						<ion-option value="post graduate"> Post Graduate </ion-option> 
-				    </ion-select>
-				</ion-item>
-				<div *ngIf="!knowledge.controls.f2_edudetail.valid  && (knowledge.controls.f2_edudetail.dirty || submitAttempt)">
-		            <p *ngIf="knowledge.controls.f2_edudetail.errors.required">This field is required.</p>
-		        </div>
 
-				<ion-item ion-col col-md-6 col-xs col-12>
-				    <ion-label floating>What Is Your Proficiency In English?<span>*</span></ion-label>
-				    <ion-select formControlName="f2_proficiency" interface="popover">
-				      <ion-option value="fluent">Fluent</ion-option>
-				      <ion-option value="read only">Read Only</ion-option>
-				      <ion-option value="write only">Write Only</ion-option>
-				      <ion-option value="speak only">Speak Only</ion-option>
-				      <ion-option value="understand only">Understand Only</ion-option>
-				      <ion-option value="Don't Know">Don't Know</ion-option>
-				    </ion-select>
-				</ion-item>
-				<div *ngIf="!knowledge.controls.f2_proficiency.valid  && (knowledge.controls.f2_proficiency.dirty || submitAttempt)">
-		            <p *ngIf="knowledge.controls.f2_proficiency.errors.required">This field is required.</p>
-		           
-		        </div>
+				<div  ion-col col-md-6 col-xs col-12>
+					<ion-item>
+					    <ion-label floating>Spouse Educational Qualification Details <span>*</span></ion-label>
+					    <ion-select formControlName="f2_edudetail" interface="popover" (change)="getTotal()">
+							<ion-option value="illiterate"> Illiterate </ion-option> 
+							<ion-option value="primary education"> Education </ion-option> 
+							<ion-option value="matriculate"> Matriculate </ion-option> 
+							<ion-option value="graduate"> Graduate </ion-option> 
+							<ion-option value="post graduate"> Post Graduate </ion-option> 
+					    </ion-select>
+					</ion-item>
+					<div *ngIf="!knowledge.controls.f2_edudetail.valid  && (knowledge.controls.f2_edudetail.dirty || submitAttempt)">
+			            <p *ngIf="knowledge.controls.f2_edudetail.errors.required">This field is required.</p>
+			        </div>
+			    </div>
 
-				<ion-item ion-col col-md-6 col-xs col-12>
-				    <ion-label floating>Participation In Farming Programs</ion-label>
-				    <ion-select formControlName="f2_participation" interface="popover" (ionChange)="setValidation()">
-				      <ion-option value="yes">Yes</ion-option>
-				      <ion-option value="no">No</ion-option>
-				    </ion-select>
-				</ion-item>
+
+				<div  ion-col col-md-6 col-xs col-12>
+					<ion-item>
+					    <ion-label floating>What Is Your Proficiency In English?<span>*</span></ion-label>
+					    <ion-select formControlName="f2_proficiency" interface="popover">
+					      <ion-option value="fluent">Fluent</ion-option>
+					      <ion-option value="read only">Read Only</ion-option>
+					      <ion-option value="write only">Write Only</ion-option>
+					      <ion-option value="speak only">Speak Only</ion-option>
+					      <ion-option value="understand only">Understand Only</ion-option>
+					      <ion-option value="Don't Know">Don't Know</ion-option>
+					    </ion-select>
+					</ion-item>
+					<div *ngIf="!knowledge.controls.f2_proficiency.valid  && (knowledge.controls.f2_proficiency.dirty || submitAttempt)">
+			            <p *ngIf="knowledge.controls.f2_proficiency.errors.required">This field is required.</p>
+			           
+			        </div>
+			    </div>
+
+				<div  ion-col col-md-6 col-xs col-12>
+					<ion-item>
+					    <ion-label floating>Participation In Farming Programs</ion-label>
+					    <ion-select formControlName="f2_participation" interface="popover" (ionChange)="setValidation()">
+					      <ion-option value="yes">Yes</ion-option>
+					      <ion-option value="no">No</ion-option>
+					    </ion-select>
+					</ion-item>
+				</div>
 			</div>
 
 			<div *ngIf="knowledge.controls.f2_participation.value === 'yes'">

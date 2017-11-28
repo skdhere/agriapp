@@ -31,7 +31,8 @@ import { Sql } from '../providers/sql/sql';
             android: {
               statusbarPadding: true
             }
-          }
+          },
+          // preloadModules: true
         }),
         IonicStorageModule.forRoot({
             name: '__agribridgeDb',

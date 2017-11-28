@@ -5,6 +5,8 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../providers/providers';
 import { UserProvider } from '../providers/user/user';
 
+import { HttpClientModule } from '@angular/common/http';
+
 
 @Component({
     templateUrl: 'app.html'
@@ -12,7 +14,7 @@ import { UserProvider } from '../providers/user/user';
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    rootPage: any = 'HomePage';
+    rootPage: any = 'PreloadPage';
     // rootPage: any = 'LoginPage';
     alert: any;
     pages: Array<{title: string, component: any, icon:string}>;
@@ -32,18 +34,21 @@ export class MyApp {
             statusBar.styleDefault();
             statusBar.overlaysWebView(true);
             statusBar.backgroundColorByHexString("#33000000");
-            statusBar.styleBlackOpaque();
+            // statusBar.styleBlackOpaque();
 
             splashScreen.hide();
             
-            this.auth.isAuthenticated().subscribe(success => {
-                if(success){
-                    this.nav.setRoot('HomePage');
-                }
-                else{
-                    this.nav.setRoot('UserLogin');
-                }
-            });
+            setTimeout(()=>{
+                this.auth.isAuthenticated().subscribe(success => {
+                    if(success){
+                        this.nav.setRoot('HomePage');
+                    }
+                    else{
+                        this.nav.setRoot('UserLogin');
+                    }
+                });
+            }, 500);
+            
 
             platform.registerBackButtonAction(() => {
 

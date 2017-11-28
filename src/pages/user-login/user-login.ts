@@ -40,6 +40,7 @@ export class UserLogin {
             } else {
                 this.showError("Access Denied");
             }
+            // this.loading.dismiss();
         },
         error => {
             this.showError(error);

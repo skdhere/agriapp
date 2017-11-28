@@ -44,7 +44,7 @@
 
 				<ion-item>
 					<ion-label floating>Mobile no.</ion-label>
-					<ion-input formControlName="fm_mobileno" type="number"></ion-input>
+					<ion-input formControlName="fm_mobileno" type="tel" mask='9999-999-999'></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.fm_mobileno.valid  && (personal.controls.fm_mobileno.dirty || submitAttempt)">
 					<p>Please enter a 10 digit valid mobile no.</p>

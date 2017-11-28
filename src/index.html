@@ -18,22 +18,28 @@
   <!-- cordova.js required for cordova apps -->
   <script src="cordova.js"></script>
 
-  <!-- un-comment this code to enable service worker
-  <script>
+  <!-- un-comment this code to enable service worker -->
+  <!-- <script>
     if ('serviceWorker' in navigator) {
       navigator.serviceWorker.register('service-worker.js')
         .then(() => console.log('service worker installed'))
         .catch(err => console.error('Error', err));
     }
-  </script>-->
+  </script> -->
 
   <link href="build/main.css" rel="stylesheet">
 
 </head>
 <body>
 
+  
+  
   <!-- Ionic's root component and where the app will load -->
-  <ion-app></ion-app>
+  <ion-app>
+    <div style="position: absolute; text-align: center; width: 100%; top: 0; bottom: 0; background: #005467; color: #fff; left: 0; display: table; vertical-align: middle; height: 100%; ">
+        <div style="display: table-cell; vertical-align: middle; font-size: 25px;">Loading...</div>
+    </div>
+  </ion-app>
 
   <!-- The polyfills js is generated during the build process -->
   <script src="build/polyfills.js"></script>
