@@ -28,7 +28,7 @@ export class Farmerdetail {
 	showIcons: boolean  = false;
 	showTitles: boolean = true;
 	pageTitle: string   = 'Farmer Name';
-
+	bgColor: any = 'app';
 	current_farmer: any;
 	parmsPage1: any;
 	parmsPage2: any;
@@ -56,7 +56,48 @@ export class Farmerdetail {
 		// }, 2000);
 	}
 
+	ionViewWillEnter(){
+
+		// this.superTabs._tabs[0].icon = 'radio-button-on';
+		// this.superTabs._tabs[1].icon = 'checkmark-circle';
+		// this.superTabs._tabs[2].icon = 'checkmark-circle';
+		// this.superTabs._tabs[3].icon = 'radio-button-off';
+		// this.superTabs._tabs[4].icon = 'radio-button-off';
+
+
+		// console.log('calllllllling');
+		// this.superTabs.paneChanged();//slideTo(this.current_slide_index, true);
+	}
+	
 	onTabSelect(tab: { index: number; id: string; }) {
+		// switch (tab.index) {
+		// 	case 0:
+		// 		this.superTabs.toolbarBackground = 'danger';
+		// 		this.bgColor = 'danger';
+		// 		break;
+		// 	case 1:
+		// 		this.superTabs.toolbarBackground = 'app';
+		// 		this.bgColor = 'app';
+		// 		break;
+		// 	case 2:
+		// 		this.superTabs.toolbarBackground = 'primary';
+		// 		this.bgColor = 'primary';
+		// 		break;
+		// 	case 3:
+		// 		this.superTabs.toolbarBackground = 'secondary';
+		// 		this.bgColor = 'secondary';
+		// 		break;
+		// 	case 4:
+		// 		this.superTabs.toolbarBackground = 'mdpink';
+		// 		this.bgColor = 'mdpink';
+		// 		break;
+		// 	default:
+		// 		this.superTabs.toolbarBackground = 'app';
+		// 		this.bgColor = 'app';
+		// 		break;
+		// }
+
+
 		console.log(`Selected tab: `, tab);
 	}
 }

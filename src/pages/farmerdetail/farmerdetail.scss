@@ -7,5 +7,15 @@ page-farmerdetail {
 				}
 			} 
 		} 
-	} 
+	}
+
+	super-tabs div.toolbar-background {
+		transition: background-color linear .2s;
+	}
+
+	ion-navbar {
+		.toolbar-background{
+			transition: background-color linear .2s;
+		}
+	}
 }

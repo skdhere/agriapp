@@ -41,9 +41,9 @@ export class Sql {
 
             local_id INTEGER PRIMARY KEY,
             local_upload INTEGER DEFAULT 0
-            )`).catch(err => {
-                console.error('Storage: Unable to create tbl_farmers tables', err.tx, err.err);
-            });
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_farmers tables', err.tx, err.err);
+        });
 
         this.query(`CREATE TABLE IF NOT EXISTS tbl_personal_detail (
             fm_caid INTEGER,
@@ -66,9 +66,135 @@ export class Sql {
             f1_modified_date text,
 
             local_upload INTEGER DEFAULT 0
-            )`).catch(err => {
-                console.error('Storage: Unable to create tbl_farmers tables', err.tx, err.err);
-            });  
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_personal_detail tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_residence_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f7_resistatus TEXT,
+            f7_phouse TEXT,
+            f7_pstreet TEXT,
+            f7_parea TEXT,
+            f7_pstate TEXT,
+            f7_pdistrict TEXT,
+            f7_ptaluka TEXT,
+            f7_pvillage TEXT,
+            f7_ppin TEXT,
+            f7_chouse TEXT,
+            f7_cstreet TEXT,
+            f7_carea TEXT,
+            f7_cstate TEXT,
+            f7_cdistrict TEXT,
+            f7_ctaluka TEXT,
+            f7_cvillage TEXT,
+            f7_cpin TEXT,
+
+            f7_status INTEGER,
+            f7_created_date text,
+            f7_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_residence_details tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_applicant_knowledge (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f2_edudetail TEXT,
+            f2_proficiency TEXT,
+            f2_participation TEXT,
+            f2_typeprog TEXT,
+            f2_date TEXT,
+            f2_durprog TEXT,
+            f2_condprog TEXT,
+            f2_cropprog TEXT,
+            f2_pname TEXT,
+
+            f2_status INTEGER,
+            f2_created_date text,
+            f2_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_applicant_knowledge tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_spouse_knowledge (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f4_edudetail TEXT,
+            f4_proficiency TEXT,
+            f4_participation TEXT,
+            f4_typeprog TEXT,
+            f4_date TEXT,
+            f4_durprog TEXT,
+            f4_condprog TEXT,
+            f4_cropprog TEXT,
+            f4_pname TEXT,
+
+            f4_status INTEGER,
+            f4_created_date text,
+            f4_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_spouse_knowledge tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_applicant_phone (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f5_phonetype TEXT,
+            f5_servpro TEXT,
+            f5_network TEXT,
+            f5_datapack TEXT,
+            f5_datapackname TEXT,
+            f5_appuse TEXT,
+            f5_farmapp TEXT,
+
+            f5_status INTEGER,
+            f5_created_date text,
+            f5_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_applicant_phone tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_land_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f9_land_size TEXT,
+            f9_owner TEXT,
+            f9_lease_year TEXT,
+            f9_amount_on_rent TEXT,
+            f9_contract_year TEXT,
+            f9_state TEXT,
+            f9_district TEXT,
+            f9_taluka TEXT,
+            f9_vilage TEXT,
+            f9_survey_number TEXT,
+            f9_pincode TEXT,
+            f9_soil_type TEXT,
+            f9_soil_tested TEXT,
+
+            f9_status INTEGER,
+            f9_created_date text,
+            f9_modified_date text,
+
+            local_land_id INTEGER PRIMARY KEY,
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_land_details tables', err.tx, err.err);
+        });
     }
 
     /**

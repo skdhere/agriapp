@@ -1,5 +1,5 @@
 <ion-header no-shadow no-border>
-  <ion-navbar color="app">
+  <ion-navbar color="{{bgColor}}">
     <button ion-button menuToggle>
       <ion-icon name="menu"></ion-icon>
     </button>
@@ -7,7 +7,7 @@
   </ion-navbar>
 </ion-header>
 <ion-content no-bounce>
-  <super-tabs id="mainTabs" [config]="{ sideMenu: 'left' }" scrollTabs toolbarColor="light" toolbarBackground="danger" indicatorColor="light" badgeColor="yellow" (tabSelect)="onTabSelect($event)">
+  <super-tabs id="mainTabs" [config]="{ sideMenu: 'left' }" scrollTabs toolbarColor="light" toolbarBackground="mdpink" indicatorColor="light" badgeColor="yellow" (tabSelect)="onTabSelect($event)">
     <super-tab [rootParams]="parmsPage1" [swipeBackEnabled]="true" [root]="page1" [title]="showTitles? 'kyc' : ''" id="page1"></super-tab>
     <super-tab [rootParams]="parmsPage2" [root]="page2" [title]="showTitles? 'land details' : ''" id="page2"></super-tab>
     <super-tab [rootParams]="parmsPage3" [root]="page3" [title]="showTitles? 'crop details' : ''" id="page3"></super-tab>

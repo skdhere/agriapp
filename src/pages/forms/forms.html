@@ -9,10 +9,13 @@
       <ion-col col-12>
         <div padding>
             <ion-list>
-              <button ion-item *ngFor="let form of forms" (click)="onTap(form.pageName)">
+              <button ion-item *ngFor="let form of forms" (click)="onTap(form.pageName)" no-lines>
                 <ion-icon name="{{form.icon}}" item-start></ion-icon>
                 {{form.title}}
                 <!-- <ion-badge item-end color="{{ form.point <= 10 ? 'danger' : (form.point >= 50 ? 'secondary' : 'primary') }}">{{form.point}}</ion-badge> -->
+
+                <ion-icon *ngIf="form.isUpdated" name="done-all" color="secondary" item-end></ion-icon>
+
               </button>
             </ion-list>
         </div>

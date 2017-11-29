@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Sql } from '../../providers/sql/sql';
 
 /**
  * Generated class for the LandFarmAddPage page.
@@ -18,13 +19,16 @@ export class LandFarmAddPage {
 
     land: FormGroup;
     submitAttempt: boolean = false;
+    fm_id: any;
+    local_land_id: any;
+    exist: boolean = false;
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams,
+                public sql: Sql,
 				public toastCtrl: ToastController,
 				public formBuilder: FormBuilder) {
 		this.land = formBuilder.group({
-			'f9_points' : ['0'],
 			'f9_land_size' : ['', Validators.compose([ Validators.required, Validators.maxLength(6), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
 			'f9_owner' : ['', Validators.required],
 			'f9_lease_year' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
@@ -74,181 +78,49 @@ export class LandFarmAddPage {
 	}
 
 
-	ionViewDidLoad() {
+	ionViewDidEnter() {
 		console.log('ionViewDidLoad LandFarmAddPage');
-
-		//Listen for form changes
-		// this.land.controls['f9_land_size'].valueChanges.subscribe(() => {
-		// 	this.getTotal()
-		// });
 
 		//Listen for form changes
 		this.land.controls['f9_owner'].valueChanges.subscribe(() => {
 			this.setValidation();
-			// this.getTotal()
 		});
 
-		//Listen for form changes
-		// this.land.controls['f9_soil_type'].valueChanges.subscribe(() => {
-		// 	this.getTotal()
-		// });
+		this.exist         = false;
+		this.fm_id         = this.navParams.get('farmer_id');
+		this.local_land_id = this.navParams.get('local_land_id') || false;
 
-		//Listen for form changes
-		// this.land.controls['f9_soil_tested'].valueChanges.subscribe(() => {
-		// 	this.getTotal()
-		// });
+		if(this.local_land_id !== false){
+	        this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ? and local_land_id = ? limit 1', [this.fm_id, this.local_land_id]).then( (data) => {
 
-		//Listen for form changes
-		// this.land.controls['f9_source_of_water'].valueChanges.subscribe(() => {
-		// 	this.getTotal()
-		// });
+	            if (data.res.rows.length > 0) {
+
+	                let sqlData = data.res.rows.item(0);
+	                let formData = [];
+
+					formData['f9_land_size']      = sqlData.f9_land_size;
+					formData['f9_owner']          = sqlData.f9_owner;
+					formData['f9_lease_year']     = sqlData.f9_lease_year;
+					formData['f9_amount_on_rent'] = sqlData.f9_amount_on_rent;
+					formData['f9_contract_year']  = sqlData.f9_contract_year;
+					formData['f9_state']          = sqlData.f9_state;
+					formData['f9_district']       = sqlData.f9_district;
+					formData['f9_taluka']         = sqlData.f9_taluka;
+					formData['f9_vilage']         = sqlData.f9_vilage;
+					formData['f9_survey_number']  = sqlData.f9_survey_number;
+					formData['f9_pincode']        = sqlData.f9_pincode;
+					formData['f9_soil_type']      = sqlData.f9_soil_type;
+					formData['f9_soil_tested']    = sqlData.f9_soil_tested;
+
+	                this.land.setValue(formData);
+	                this.exist = true;
+	            }
+
+	        }, err => {
+	            console.log(err);
+	        });
+		}
 	}
-
-
-	// getTotal(){
-	// 	let values = this.land.getRawValue();
-	// 	let points = {};
-	// 	let total:number = 0;
-	// 	points['f9_land_size']       = 0;
-	// 	points['f9_owner']           = 0;
-	// 	points['f9_soil_type']       = 0;
-	// 	points['f9_soil_tested']     = 0;
-	// 	points['f9_source_of_water'] = 0;
-
-	// 	//setting points based on values
-	// 	//f9_land_size
-	// 	switch (true) {
-	// 		case values['f9_land_size'] >= 0 && values['f9_land_size'] <= 3:
-	// 			points['f9_land_size'] = 5;
-	// 			break;
-	// 		case values['f9_land_size'] >= 4 && values['f9_land_size'] <= 6:
-	// 			points['f9_land_size'] = 7;
-	// 			break;
-	// 		case values['f9_land_size'] >= 7 && values['f9_land_size'] <= 10:
-	// 			points['f9_land_size'] = 8;
-	// 			break;
-	// 		case values['f9_land_size'] >= 11 && values['f9_land_size'] <= 15:
-	// 			points['f9_land_size'] = 9;
-	// 			break;
-	// 		case values['f9_land_size'] >= 16 && values['f9_land_size'] <= 20:
-	// 			points['f9_land_size'] = 10;
-	// 			break;
-	// 		case values['f9_land_size'] > 21:
-	// 			points['f9_land_size'] = 10;
-	// 			break;
-	// 	}
-	// 	console.log('Size', points['f9_land_size']);
-	// 	//f9_owner
-	// 	switch (values['f9_owner']) {
-	// 		case "Owned":
-	// 			points['f9_owner'] = 10;
-	// 			break;
-	// 		case "Ancestral":
-	// 			points['f9_owner'] = 5;
-	// 			break;
-	// 		case "Rented":
-	// 			points['f9_owner'] = 5;
-	// 			break;
-	// 		case "Contracted":
-	// 			points['f9_owner'] = 5;
-	// 			break;
-	// 		case "Leased":
-	// 			points['f9_owner'] = 3;
-	// 			break;
-	// 	}
-	// 	console.log('Owner', points['f9_owner']);
-
-	// 	//f9_soil_type
-	// 	switch (values['f9_soil_type']) {
-	// 		case "Alluvial Soil":
-	// 			points['f9_soil_type'] = 10;
-	// 			break;
-	// 		case "Black Soil":
-	// 			points['f9_soil_type'] = 9;
-	// 			break;
-	// 		case "Red Soil":
-	// 			points['f9_soil_type'] = 8;
-	// 			break;
-	// 		case "Mountain Soil":
-	// 			points['f9_soil_type'] = 6;
-	// 			break;
-	// 		case "Peat":
-	// 			points['f9_soil_type'] = 5;
-	// 			break;
-	// 		case "Laterite Soil":
-	// 			points['f9_soil_type'] = 5;
-	// 			break;
-	// 		case "Desert Soil":
-	// 			points['f9_soil_type'] = 2;
-	// 			break;
-	// 	}
-	// 	console.log('Soil Type', points['f9_soil_type']);
-
-	// 	//f9_soil_tested
-	// 	switch (values['f9_soil_tested']) {
-	// 		case "yes":
-	// 			points['f9_soil_tested'] = 10;
-	// 			break;
-	// 		case "no":
-	// 			points['f9_soil_tested'] = 0;
-	// 			break;
-	// 	}
-
-	// 	console.log('Soil tested', points['f9_soil_tested']);
-
-	// 	//f9_source_of_water
-	// 	switch (values['f9_source_of_water']) {
-	// 		case "Well Water":
-	// 			points['f9_source_of_water'] = 5;
-	// 			break;
-	// 		case "Tube Water":
-	// 			points['f9_source_of_water'] = 7;
-	// 			break;
-	// 		case "Tank Water":
-	// 			points['f9_source_of_water'] = 5;
-	// 			break;
-	// 		case "Canals":
-	// 			points['f9_source_of_water'] = 5;
-	// 			break;
-	// 		case "Perennial Water":
-	// 			points['f9_source_of_water'] = 5;
-	// 			break;
-	// 		case "Multipurpose River":
-	// 			points['f9_source_of_water'] = 5;
-	// 			break;
-	// 		case "Rain Fed":
-	// 			points['f9_source_of_water'] = 4;
-	// 			break;
-	// 		case "Drip Irrigation":
-	// 			points['f9_source_of_water'] = 8;
-	// 			break;
-	// 		case "Sprinkler":
-	// 			points['f9_source_of_water'] = 7;
-	// 			break;
-	// 		case "Furrow":
-	// 			points['f9_source_of_water'] = 3;
-	// 			break;
-	// 		case "Ditch":
-	// 			points['f9_source_of_water'] = 3;
-	// 			break;
-	// 		case "Surge":
-	// 			points['f9_source_of_water'] = 3;
-	// 			break;
-	// 		case "Seepage":
-	// 			points['f9_source_of_water'] = 3;
-	// 			break;
-	// 	}
-	// 	console.log('Water', points['f9_source_of_water']);
-		
-	// 	//sum of calculated points
-	// 	for(let point in points){
-	// 		total += Number(points[point]);
-	// 	}
-
-	// 	console.log(total);
-	// 	total = parseFloat((total/5).toFixed(2));
-	// 	this.land.get('f9_points').setValue(total, { emitEvent: false });
-	// }
 
 	showMessage(message, style: string, dur?: number){
 		const toast = this.toastCtrl.create({
@@ -266,7 +138,78 @@ export class LandFarmAddPage {
 	save(){
 		this.submitAttempt = true;
 		if (this.land.valid) {
-			console.log(this.land.value);
+			console.log('success', this.land.value);
+
+			let date = new Date();
+            let dateNow = date.getTime()/1000|0;
+
+            if (this.exist) {
+                this.sql.query('UPDATE tbl_land_details SET f9_land_size = ?, f9_owner = ?, f9_lease_year = ?, f9_amount_on_rent = ?, f9_contract_year = ?, f9_state = ?, f9_district = ?, f9_taluka = ?, f9_vilage = ?, f9_survey_number = ?, f9_pincode = ?, f9_soil_type = ?, f9_soil_tested = ?, f9_modified_date = ? WHERE fm_id = ? and local_land_id = ?', [
+
+                    this.land.value.f9_land_size,
+                    this.land.value.f9_owner,
+                    this.land.value.f9_lease_year,
+                    this.land.value.f9_amount_on_rent,
+                    this.land.value.f9_contract_year,
+                    this.land.value.f9_state,
+                    this.land.value.f9_district, 
+                    this.land.value.f9_taluka, 
+                    this.land.value.f9_vilage, 
+                    this.land.value.f9_survey_number, 
+                    this.land.value.f9_pincode, 
+                    this.land.value.f9_soil_type,
+                    this.land.value.f9_soil_tested,
+                    dateNow,
+                    this.fm_id,
+                    this.local_land_id
+                ]).then(data => {
+                    let callback = this.navParams.get("callback") || false;
+	                if(callback){
+	                    callback(true).then(()=>{
+	                        this.navCtrl.pop();
+	                    });
+	                }else{
+	                    this.navCtrl.pop();
+	                }
+                },
+                err => {
+                    console.log(err);
+                });               
+            }
+            else{
+                this.sql.query('INSERT INTO tbl_land_details(fm_id, f9_land_size, f9_owner, f9_lease_year, f9_amount_on_rent, f9_contract_year, f9_state, f9_district, f9_taluka, f9_vilage, f9_survey_number, f9_pincode, f9_soil_type, f9_soil_tested, f9_created_date, f9_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+
+                    this.fm_id,
+                    this.land.value.f9_land_size,
+                    this.land.value.f9_owner,
+                    this.land.value.f9_lease_year,
+                    this.land.value.f9_amount_on_rent,
+                    this.land.value.f9_contract_year,
+                    this.land.value.f9_state,
+                    this.land.value.f9_district, 
+                    this.land.value.f9_taluka, 
+                    this.land.value.f9_vilage, 
+                    this.land.value.f9_survey_number, 
+                    this.land.value.f9_pincode, 
+                    this.land.value.f9_soil_type,
+                    this.land.value.f9_soil_tested,
+                    dateNow,
+                    dateNow
+                ]).then(data => {
+                    let callback = this.navParams.get("callback") || false;
+	                if(callback){
+	                    callback(true).then(()=>{
+	                        this.navCtrl.pop();
+	                    });
+	                }else{
+	                    this.navCtrl.pop();
+	                }
+                },
+                err => {
+                    console.log(err);
+                });
+            }
+
 		}else{
 			console.log('Validation error');
 			this.showMessage("Please fill valid data!", "danger", 100000);

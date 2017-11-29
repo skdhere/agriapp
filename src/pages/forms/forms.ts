@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController} from 'ionic-angular';
+import { Sql } from '../../providers/sql/sql';
 
 interface point<T> {
     [K: string]: T;
@@ -20,7 +21,11 @@ export class Forms {
 	forms:Array<any>;
 	rootNavCtrl: NavController;
 
-	constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController){
+	constructor(public navCtrl: NavController, 
+				public navParams: NavParams, 
+				private sql: Sql,
+				public loadingCtrl: LoadingController){
+
 		this.current_farmer = navParams.get('farmer');
 		this.form_name = navParams.get('form_name');
 		this.rootNavCtrl = navParams.get('rootNavCtrl');
@@ -45,38 +50,62 @@ export class Forms {
 
 		if(this.form_name == 'kyc'){
 			this.forms = [
-				{ title: 'Applicant\'s Personal Details',   pageName: 'PersonalDetailsPage', point: '0', icon : 'person'},
-				{ title: 'Residence Status & Details',      pageName: 'ResidenceDetailsPage', point: '0', icon : 'locate'},
-				{ title: 'Applicant\'s Knowledge',     		pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
-				{ title: 'Applicant\'s Phone Details', 		pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
-				{ title: 'Spouse Details',             		pageName: 'KycSpousePage', point: '0', icon : 'woman'},
-				{ title: 'Spouse\'s Knowledge',             pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'},
-				{ title: 'Family Details',             		pageName: 'KycFamilyPage', point: '0', icon : 'people'},
-				{ title: 'Appliances Motors',          		pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
+				{ title: 'Applicant\'s Personal Details',   isUpdated:false, tableName: 'tbl_personal_detail', pageName: 'PersonalDetailsPage', point: '0', icon : 'person'},
+				{ title: 'Residence Status & Details',      isUpdated:false, tableName: 'tbl_residence_details', pageName: 'ResidenceDetailsPage', point: '0', icon : 'locate'},
+				{ title: 'Applicant\'s Knowledge',     		isUpdated:false, tableName: 'tbl_applicant_knowledge', pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
+				{ title: 'Applicant\'s Phone Details', 		isUpdated:false, tableName: 'tbl_applicant_phone', pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
+				{ title: 'Spouse Details',             		isUpdated:false, tableName: '', pageName: 'KycSpousePage', point: '0', icon : 'woman'},
+				{ title: 'Spouse\'s Knowledge',             isUpdated:false, tableName: 'tbl_spouse_knowledge', pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'},
+				{ title: 'Family Details',             		isUpdated:false, tableName: '', pageName: 'KycFamilyPage', point: '0', icon : 'people'},
+				{ title: 'Appliances Motors',          		isUpdated:false, tableName: '', pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
 			];
 		}
 		else if(this.form_name == 'land details'){
 			this.forms = [
-				{ title: 'Farm Land Details',  pageName: 'LandFarmPage', point: '0', icon : 'locate'},
+				{ title: 'Farm Land Details',  isUpdated:false, tableName: 'tbl_land_details', pageName: 'LandFarmPage', point: '0', icon : 'locate'},
 			];
 		}
 		else if(this.form_name == 'crop details'){
 			this.forms = [
-				{ title: 'Crop And Cultivation Details',  pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
-				{ title: 'Previous Crop Cycle Details',   pageName: 'CropPreviousPage', point: '0', icon : 'leaf'},
+				{ title: 'Crop And Cultivation Details',  isUpdated:false, tableName: '', pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
+				{ title: 'Previous Crop Cycle Details',   isUpdated:false, tableName: '', pageName: 'CropPreviousPage', point: '0', icon : 'leaf'},
 			];
 		}
 		else if(this.form_name == 'assets'){
 			this.forms = [
-				{ title: 'Assets Details',  pageName: 'AssetsDetailsPage', point: '0', icon : 'arrow-round-forward'},
-				{ title: 'Live Stock',      pageName: 'AssetsStockPage',   point: '0', icon : 'arrow-round-forward'},
+				{ title: 'Assets Details',  isUpdated:false, tableName: '', pageName: 'AssetsDetailsPage', point: '0', icon : 'arrow-round-forward'},
+				{ title: 'Live Stock',      isUpdated:false, tableName: '', pageName: 'AssetsStockPage',   point: '0', icon : 'arrow-round-forward'},
 			];
 		}
 		else if(this.form_name == 'loan and liability'){
 			this.forms = [
-				{ title: 'Financial Details',     pageName: '', point: '0', icon : 'cash'},
+				{ title: 'Financial Details',     isUpdated:false, tableName: '', pageName: '', point: '0', icon : 'cash'},
 			];
 		}
+	}
+
+	ionViewDidEnter(){
+		//check if its updated in local database
+		for (var i = 0; i < this.forms.length; i++) {
+			if(this.forms[i].tableName){
+				// console.log(this.forms[i].tableName);
+				this.updateStatus(i);
+			}
+		}
+	}
+
+	updateStatus(index){
+		this.sql.query('SELECT fm_id FROM ' + this.forms[index].tableName + ' WHERE fm_id = ? LIMIT 1', [this.current_farmer.local_id]).then(data => {
+			if (data.res.rows.length > 0) {
+				this.forms[index].isUpdated = true;
+			}
+			else{
+				this.forms[index].isUpdated = false;
+			}
+		},
+		err => {
+			console.log(err);
+		});
 	}
 
 	presentLoading(text: string) {
@@ -88,8 +117,18 @@ export class Forms {
 	}
 
 	onTap(page: string){
+		let that = this;
 		if (page) {
-			this.rootNavCtrl.push(page, { farmer_id: this.current_farmer.local_id });
+			let myCallback = function(param){
+				if(param){
+					that.ionViewDidEnter();
+				}
+			};
+
+			this.rootNavCtrl.push(page, { 
+				farmer_id: this.current_farmer.local_id,
+				callback: myCallback
+			});
 		}
 	}
 }

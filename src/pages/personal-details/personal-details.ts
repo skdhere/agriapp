@@ -160,4 +160,13 @@ import { Sql } from '../../providers/sql/sql';
         }
     }
 
+    //this function will call while leaving the page
+    //the function will then call the callback of previous page method
+    ionViewWillLeave(){
+        let callback = this.navParams.get('callback') || false;
+        if(callback){
+            callback(true);
+        }
+    }
+
  }
