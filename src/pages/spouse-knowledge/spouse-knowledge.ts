@@ -48,6 +48,11 @@ export class SpouseKnowledgePage {
 			'f4_cropprog' : ['', Validators.compose([Validators.required, Validators.maxLength(100)]) ],
 			'f4_pname' : ['', Validators.required], //drp
 		});
+			
+		//Listen for form changes
+		this.knowledge.controls['f4_edudetail'].valueChanges.subscribe(() => {this.setValidation();});
+		this.knowledge.controls['f4_proficiency'].valueChanges.subscribe(() => {this.setValidation();});
+		this.knowledge.controls['f4_participation'].valueChanges.subscribe(() => {this.setValidation();});
   }
 
     ionViewDidEnter() {
@@ -55,11 +60,6 @@ export class SpouseKnowledgePage {
 
 		//update validation here
 		this.setValidation();
-
-		//Listen for form changes
-		this.knowledge.controls['f4_edudetail'].valueChanges.subscribe(() => {this.setValidation();});
-		this.knowledge.controls['f4_proficiency'].valueChanges.subscribe(() => {this.setValidation();});
-		this.knowledge.controls['f4_participation'].valueChanges.subscribe(() => {this.setValidation();});
 
 		this.exist = false;
         this.fm_id = this.navParams.get('farmer_id');

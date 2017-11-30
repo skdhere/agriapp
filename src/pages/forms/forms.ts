@@ -56,7 +56,7 @@ export class Forms {
 				{ title: 'Applicant\'s Phone Details', 		isUpdated:false, tableName: 'tbl_applicant_phone', pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
 				{ title: 'Spouse Details',             		isUpdated:false, tableName: '', pageName: 'KycSpousePage', point: '0', icon : 'woman'},
 				{ title: 'Spouse\'s Knowledge',             isUpdated:false, tableName: 'tbl_spouse_knowledge', pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'},
-				{ title: 'Family Details',             		isUpdated:false, tableName: '', pageName: 'KycFamilyPage', point: '0', icon : 'people'},
+				{ title: 'Family Details',             		isUpdated:false, tableName: 'tbl_family_details', pageName: 'KycFamilyPage', point: '0', icon : 'people'},
 				{ title: 'Appliances Motors',          		isUpdated:false, tableName: '', pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
 			];
 		}

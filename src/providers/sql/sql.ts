@@ -168,6 +168,25 @@ export class Sql {
             console.error('Storage: Unable to create tbl_applicant_phone tables', err.tx, err.err);
         });
 
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_family_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f6_points TEXT,
+            f6_jointfamily TEXT,
+            f6_members TEXT,
+            f6_children TEXT,
+            f6_smartuse TEXT,
+
+            f6_status INTEGER,
+            f6_created_date text,
+            f6_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_family_details tables', err.tx, err.err);
+        });
+
         this.query(`CREATE TABLE IF NOT EXISTS tbl_land_details (
             fm_caid INTEGER,
             fm_id INTEGER,

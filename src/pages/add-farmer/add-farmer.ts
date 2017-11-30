@@ -25,11 +25,11 @@ export class AddFarmerPage {
 
     private storage: Storage;
 
-    constructor(private sql: Sql, 
-                public navCtrl: NavController, 
-                public navParams: NavParams,
-                public user: UserProvider,
-                public formBuilder: FormBuilder) {
+    constructor(private sql: Sql,
+        public navCtrl: NavController,
+        public navParams: NavParams,
+        public user: UserProvider,
+        public formBuilder: FormBuilder) {
 
         this.personal = formBuilder.group({
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
@@ -52,33 +52,33 @@ export class AddFarmerPage {
         } else {
 
             let date = new Date();
-            let dateNow = date.getTime()/1000|0;
+            let dateNow = date.getTime() / 1000 | 0;
 
-            this.sql.query("INSERT INTO tbl_farmers (fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?)", 
-                            [
-                                this.personal.value.fm_fname,
-                                this.personal.value.fm_mname,
-                                this.personal.value.fm_lname,
-                                this.personal.value.fm_mobileno,
-                                this.personal.value.fm_aadhar,
-                                dateNow,
-                                dateNow
-                            ])
-            .then((data) => {
-                console.log("success!");
-                let callback = this.navParams.get("callback") || false;
-                if(callback){
-                    callback(true).then(()=>{
-                        this.navCtrl.pop();
-                    });
-                }
-                else{
-                    this.navCtrl.setRoot('FarmersPage');
-                }
+            this.sql.query("INSERT INTO tbl_farmers (fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                [
+                    this.personal.value.fm_fname,
+                    this.personal.value.fm_mname,
+                    this.personal.value.fm_lname,
+                    this.personal.value.fm_mobileno,
+                    this.personal.value.fm_aadhar,
+                    dateNow,
+                    dateNow
+                ])
+                .then((data) => {
+                    console.log("success!");
+                    let callback = this.navParams.get("callback") || false;
+                    if (callback) {
+                        callback(true).then(() => {
+                            this.navCtrl.pop();
+                        });
+                    }
+                    else {
+                        this.navCtrl.setRoot('FarmersPage');
+                    }
 
-            }, (error) => {
-                console.log(error);
-            });
+                }, (error) => {
+                    console.log(error);
+                });
         }
     }
 
