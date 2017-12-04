@@ -32,7 +32,7 @@ import { Sql } from '../providers/sql/sql';
               statusbarPadding: true
             }
           },
-          // preloadModules: true
+          preloadModules: true
         }),
         IonicStorageModule.forRoot({
             name: '__agribridgeDb',

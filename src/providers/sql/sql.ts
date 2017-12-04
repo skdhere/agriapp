@@ -187,6 +187,30 @@ export class Sql {
             console.error('Storage: Unable to create tbl_family_details tables', err.tx, err.err);
         });
 
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_appliances_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f7_television,
+            f7_refrigerator,
+            f7_wmachine,
+            f7_mixer,
+            f7_stove,
+            f7_bicycle,
+            f7_ccylinder,
+            f7_fans,
+            f7_motorcycle,
+            f7_car,
+
+            f7_status INTEGER,
+            f7_created_date text,
+            f7_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_appliances_details tables', err.tx, err.err);
+        });
+
         this.query(`CREATE TABLE IF NOT EXISTS tbl_land_details (
             fm_caid INTEGER,
             fm_id INTEGER,

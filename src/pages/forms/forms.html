@@ -14,7 +14,7 @@
                 {{form.title}}
                 <!-- <ion-badge item-end color="{{ form.point <= 10 ? 'danger' : (form.point >= 50 ? 'secondary' : 'primary') }}">{{form.point}}</ion-badge> -->
 
-                <ion-icon *ngIf="form.isUpdated" name="done-all" color="secondary" item-end></ion-icon>
+                <ion-icon name="checkmark-circle" color="{{ form.isUpdated ? 'secondary' : 'light'}}" item-end></ion-icon>
 
               </button>
             </ion-list>
