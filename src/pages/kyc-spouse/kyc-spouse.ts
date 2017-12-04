@@ -17,7 +17,6 @@ import { Sql } from '../../providers/sql/sql';
 export class KycSpousePage {
 
 	spouse: FormGroup;
-	farmer_id: string;
 	submitAttempt: boolean = false;
 	retryButton: boolean = false;
 	addNew: boolean = true;
@@ -31,7 +30,6 @@ export class KycSpousePage {
 				private loadingCtrl: LoadingController, 
 				public toastCtrl: ToastController) {
 
-		this.farmer_id = this.navParams.get('farmer_id') || 0;
 		//creating form via formbuilder 
 		this.spouse = formBuilder.group({
             'f3_married_status' : ['',Validators.required],

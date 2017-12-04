@@ -270,6 +270,49 @@ export class Sql {
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_land_details tables', err.tx, err.err);
         });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_asset_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f12_vehicle TEXT,
+            f12_machinery TEXT,
+            f12_any_other_assets TEXT,
+            f12_name_of_other_assets TEXT,
+            
+            f12_status INTEGER,
+            f12_created_date text,
+            f12_modified_date text,
+
+            local_land_id INTEGER PRIMARY KEY,
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_asset_details tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_livestock_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f13_dairy_cattle  INTEGER,
+            f13_draft_cattle  INTEGER,
+            f13_buffalo INTEGER,
+            f13_ox INTEGER,
+            f13_sheep INTEGER,
+            f13_goat INTEGER,
+            f13_pig INTEGER,
+            f13_poultry INTEGER,
+            f13_donkeys INTEGER,
+            
+            f13_status INTEGER,
+            f13_created_date text,
+            f13_modified_date text,
+
+            local_land_id INTEGER PRIMARY KEY,
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_livestock_details tables', err.tx, err.err);
+        });
     }
 
     /**
