@@ -54,7 +54,7 @@ export class Forms {
 				{ title: 'Residence Status & Details',      isUpdated:false, tableName: 'tbl_residence_details', pageName: 'ResidenceDetailsPage', point: '0', icon : 'locate'},
 				{ title: 'Applicant\'s Knowledge',     		isUpdated:false, tableName: 'tbl_applicant_knowledge', pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
 				{ title: 'Applicant\'s Phone Details', 		isUpdated:false, tableName: 'tbl_applicant_phone', pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
-				{ title: 'Spouse Details',             		isUpdated:false, tableName: '', pageName: 'KycSpousePage', point: '0', icon : 'woman'},
+				{ title: 'Spouse Details',             		isUpdated:false, tableName: 'tbl_spouse_details', pageName: 'KycSpousePage', point: '0', icon : 'woman'},
 				{ title: 'Spouse\'s Knowledge',             isUpdated:false, tableName: 'tbl_spouse_knowledge', pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'},
 				{ title: 'Family Details',             		isUpdated:false, tableName: 'tbl_family_details', pageName: 'KycFamilyPage', point: '0', icon : 'people'},
 				{ title: 'Appliances Motors',          		isUpdated:false, tableName: 'tbl_appliances_details', pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
@@ -81,6 +81,9 @@ export class Forms {
 			this.forms = [
 				{ title: 'Financial Details',     isUpdated:false, tableName: '', pageName: '', point: '0', icon : 'cash'},
 			];
+		}
+		else if(this.form_name == 'Documents'){
+			this.forms = [];
 		}
 	}
 

@@ -1,8 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Api } from '../../providers/api/api';
-import 'rxjs/add/operator/map';
+import { Sql } from '../../providers/sql/sql';
 /**
  * Generated class for the KycSpousePage page.
  *
@@ -22,18 +21,19 @@ export class KycSpousePage {
 	submitAttempt: boolean = false;
 	retryButton: boolean = false;
 	addNew: boolean = true;
+	fm_id: any;
+    exist: boolean = false;
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
+                public sql: Sql,
 				public formBuilder: FormBuilder, 
 				private loadingCtrl: LoadingController, 
-				public toastCtrl: ToastController,
-				private api: Api) {
+				public toastCtrl: ToastController) {
 
 		this.farmer_id = this.navParams.get('farmer_id') || 0;
 		//creating form via formbuilder 
 		this.spouse = formBuilder.group({
-			'f3_points' : ['0'],
             'f3_married_status' : ['',Validators.required],
             'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
@@ -52,24 +52,56 @@ export class KycSpousePage {
 			'f3_loan_purpose' : ['',Validators.required],
 			'f3_spouse_mfiname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_mfiamount' : ['', Validators.compose([Validators.required, Validators.maxLength(8), Validators.pattern('^[0-9]+$')])],
-			
-			
 		});
-	}
-
-	ionViewDidLoad() {
-		//update validation here
-		this.setValidation();
 
 		//Listen for form changes
-		
 		this.spouse.controls['f3_married_status'].valueChanges.subscribe(() => {this.setValidation();});
 		this.spouse.controls['f3_spouse_shg'].valueChanges.subscribe(() => {this.setValidation();});
 		this.spouse.controls['f3_spouse_occp'].valueChanges.subscribe(() => {this.setValidation();});
 		this.spouse.controls['f3_spouse_mfi'].valueChanges.subscribe(() => {this.setValidation();});
+	}
 
+	ionViewDidEnter() {
+		//update validation here
+		this.setValidation();
+
+		//Fetch value from sqlite and update form data 
+		this.exist = false;
+        this.fm_id = this.navParams.get('farmer_id');
 		
-		
+		this.sql.query('SELECT * FROM tbl_spouse_details WHERE fm_id = ? limit 1', [this.fm_id]).then( (data) => {
+
+            if (data.res.rows.length > 0) {
+
+                let sqlData = data.res.rows.item(0);
+                let formData = [];
+
+				formData['f3_married_status']   = sqlData.f3_married_status;
+				formData['f3_spouse_fname']     = sqlData.f3_spouse_fname;
+				formData['f3_spouse_mname']     = sqlData.f3_spouse_mname;
+				formData['f3_spouse_lname']     = sqlData.f3_spouse_lname;
+				formData['f3_spouse_age']       = sqlData.f3_spouse_age;
+				formData['f3_spouse_mobno']     = sqlData.f3_spouse_mobno;
+				formData['f3_spouse_adhno']     = sqlData.f3_spouse_adhno;
+				formData['f3_loan_interest']    = sqlData.f3_loan_interest;
+				formData['f3_loan_tenure']      = sqlData.f3_loan_tenure;
+				formData['f3_loan_emi']         = sqlData.f3_loan_emi;
+				formData['f3_spouse_shg']       = sqlData.f3_spouse_shg;
+				formData['f3_spouse_income']    = sqlData.f3_spouse_income;
+				formData['f3_spouse_shgname']   = sqlData.f3_spouse_shgname;
+				formData['f3_spouse_occp']      = sqlData.f3_spouse_occp;
+				formData['f3_spouse_mfi']       = sqlData.f3_spouse_mfi;
+				formData['f3_loan_purpose']     = sqlData.f3_loan_purpose;
+				formData['f3_spouse_mfiname']   = sqlData.f3_spouse_mfiname;
+				formData['f3_spouse_mfiamount'] = sqlData.f3_spouse_mfiamount;
+
+                this.spouse.setValue(formData);
+                this.exist = true;
+            }
+
+        }, err => {
+            console.log(err);
+        });
 	}
 
 	setValidation(){
@@ -172,10 +204,6 @@ export class KycSpousePage {
 			 controls['f3_loan_tenure'].disable({ emitEvent: false });
 			 controls['f3_loan_emi'].disable({ emitEvent: false });
 		}
-
-		
-
-		
 	}
 
 	
@@ -196,49 +224,89 @@ export class KycSpousePage {
 
 		this.submitAttempt = true;
 		if (this.spouse.valid) {
-
-			let loading = this.loadingCtrl.create({
-			    content: 'Loading data...'
-			});
-			loading.present();
-
 			console.log('is POST ', this.addNew);
-			if(this.addNew){
-				//do post request
-				this.api.post('kyc_spouse', this.spouse.value)
-				.map(res => res.json())
-				.subscribe(data => {
-					
-					if(data.success){		
-						this.showMessage("Saved successfully!", "success");
-					}
-				    loading.dismiss();
+			
+			//Check if data already exists
+			//accordingly update or inster data
+			let date = new Date();
+            let dateNow = date.getTime()/1000|0;
 
-				}, err => {
-					console.log(err);
-					this.showMessage("Data not updated, please try again!", "danger");
-				    loading.dismiss();
-				});
-			}
-			else{
-				//do put request
-				this.api.put('kyc_spouse', this.spouse.value)
-				.map(res => res.json())
-				.subscribe(data => {
-				    this.showMessage("Saved successfully!", "success");
-				    loading.dismiss();
-				}, err => {
-					console.log(err);
-					this.showMessage("Data not updated, please try again!", "danger");
-				    loading.dismiss();
-				});
-			}
+			if (this.exist) {
+                this.sql.query('UPDATE tbl_spouse_details SET f3_married_status = ?, f3_spouse_fname = ?, f3_spouse_mname = ?, f3_spouse_lname = ?, f3_spouse_age = ?, f3_spouse_mobno = ?, f3_spouse_adhno = ?, f3_loan_interest = ?, f3_loan_tenure = ?, f3_loan_emi = ?, f3_spouse_shg = ?, f3_spouse_income = ?, f3_spouse_shgname = ?, f3_spouse_occp = ?, f3_spouse_mfi = ?, f3_loan_purpose = ?, f3_spouse_mfiname = ?, f3_spouse_mfiamount = ?,  f3_modified_date = ? WHERE fm_id = ?', [
 
-			console.log(this.spouse.value);
+                    this.spouse.value.f3_married_status || '',
+                    this.spouse.value.f3_spouse_fname || '',
+                    this.spouse.value.f3_spouse_mname || '',
+                    this.spouse.value.f3_spouse_lname || '',
+                    this.spouse.value.f3_spouse_age || '',
+                    this.spouse.value.f3_spouse_mobno || '',
+                    this.spouse.value.f3_spouse_adhno || '', 
+                    this.spouse.value.f3_loan_interest || '', 
+                    this.spouse.value.f3_loan_tenure || '',
+                    this.spouse.value.f3_loan_emi || '',
+                    this.spouse.value.f3_spouse_shg || '',
+                    this.spouse.value.f3_spouse_income || '',
+                    this.spouse.value.f3_spouse_shgname || '',
+                    this.spouse.value.f3_spouse_occp || '',
+                    this.spouse.value.f3_spouse_mfi || '',
+                    this.spouse.value.f3_loan_purpose || '', 
+                    this.spouse.value.f3_spouse_mfiname || '', 
+                    this.spouse.value.f3_spouse_mfiamount || '',
+
+                    dateNow,
+                    this.fm_id
+                ]).then(data => {
+                    this.navCtrl.pop();
+                },
+                err => {
+                    console.log(err);
+                });               
+            }
+            else{
+                this.sql.query('INSERT INTO tbl_spouse_details(fm_id, f3_married_status, f3_spouse_fname, f3_spouse_mname, f3_spouse_lname, f3_spouse_age, f3_spouse_mobno, f3_spouse_adhno, f3_loan_interest, f3_loan_tenure, f3_loan_emi, f3_spouse_shg, f3_spouse_income, f3_spouse_shgname, f3_spouse_occp, f3_spouse_mfi, f3_loan_purpose, f3_spouse_mfiname, f3_spouse_mfiamount, f3_created_date, f3_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+
+                    this.fm_id,
+                    this.spouse.value.f3_married_status || '',
+                    this.spouse.value.f3_spouse_fname || '',
+                    this.spouse.value.f3_spouse_mname || '',
+                    this.spouse.value.f3_spouse_lname || '',
+                    this.spouse.value.f3_spouse_age || '',
+                    this.spouse.value.f3_spouse_mobno || '',
+                    this.spouse.value.f3_spouse_adhno || '', 
+                    this.spouse.value.f3_loan_interest || '', 
+                    this.spouse.value.f3_loan_tenure || '',
+                    this.spouse.value.f3_loan_emi || '',
+                    this.spouse.value.f3_spouse_shg || '',
+                    this.spouse.value.f3_spouse_income || '',
+                    this.spouse.value.f3_spouse_shgname || '',
+                    this.spouse.value.f3_spouse_occp || '',
+                    this.spouse.value.f3_spouse_mfi || '',
+                    this.spouse.value.f3_loan_purpose || '', 
+                    this.spouse.value.f3_spouse_mfiname || '', 
+                    this.spouse.value.f3_spouse_mfiamount || '',
+                    dateNow,
+                    dateNow
+                ]).then(data => {
+                    this.navCtrl.pop();
+                },
+                err => {
+                    console.log(err);
+                });
+            }
+
 		}else{
 			console.log('Validation error', this.spouse.controls);
 			this.showMessage("Please fill valid data!", "danger", 100000);
 		}
 	}
+
+	//this function will call while leaving the page
+    //the function will then call the callback of previous page method
+    ionViewWillLeave(){
+        let callback = this.navParams.get('callback') || false;
+        if(callback){
+            callback(true);
+        }
+    }
 
 }

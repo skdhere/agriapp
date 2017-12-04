@@ -24,6 +24,7 @@ export class Farmerdetail {
 	page3: any = 'Forms';
 	page4: any = 'Forms';
 	page5: any = 'Forms';
+	page6: any = 'Forms';
 
 	showIcons: boolean  = false;
 	showTitles: boolean = true;
@@ -35,6 +36,7 @@ export class Farmerdetail {
 	parmsPage3: any;
 	parmsPage4: any;
 	parmsPage5: any;
+	parmsPage6: any;
 
 	constructor(public navCtrl: NavController, private navParams: NavParams, private superTabsCtrl: SuperTabsController) {
 		this.current_farmer = navParams.get('farmer');
@@ -44,6 +46,7 @@ export class Farmerdetail {
 		this.parmsPage3     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'crop details' };
 		this.parmsPage4     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'assets' };
 		this.parmsPage5     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'loan and liability' };
+		this.parmsPage6     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'Documents' };
 	}
 
 	ngAfterViewInit() {
