@@ -114,7 +114,6 @@ export class AssetsStockPage {
                     this.assets.value.f13_poultry || '', 
                     this.assets.value.f13_donkeys || '',
                     
-
                     dateNow,
                     this.fm_id
                 ]).then(data => {
@@ -147,7 +146,9 @@ export class AssetsStockPage {
                 });
             }
 
-		}else{
+		}
+		else
+		{
 			console.log('Validation error', this.assets.controls);
 			this.showMessage("Please fill valid data!", "danger", 100000);
 		}

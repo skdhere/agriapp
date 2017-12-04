@@ -67,7 +67,7 @@ export class Forms {
 		}
 		else if(this.form_name == 'crop details'){
 			this.forms = [
-				{ title: 'Crop And Cultivation Details',  isUpdated:false, tableName: '', pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
+				{ title: 'Crop And Cultivation Details',  isUpdated:false, tableName: 'tbl_cultivation_data', pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
 				{ title: 'Previous Crop Cycle Details',   isUpdated:false, tableName: '', pageName: 'CropPreviousPage', point: '0', icon : 'leaf'},
 			];
 		}

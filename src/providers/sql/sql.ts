@@ -313,6 +313,31 @@ export class Sql {
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_livestock_details tables', err.tx, err.err);
         });
+
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_cultivation_data (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f10_land TEXT,
+            f10_cultivating TEXT,
+            f10_crop_variety TEXT,
+            f10_stage TEXT,
+            f10_expected INTEGER,
+            f10_expectedprice TEXT,
+            f10_expectedincome TEXT,
+            f10_diseases TEXT,
+            f10_pest TEXT,
+            
+            f10_status INTEGER,
+            f10_created_date TEXT,
+            f10_modified_date TEXT,
+
+            local_land_id INTEGER PRIMARY KEY,
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_cultivation_data tables', err.tx, err.err);
+        });
     }
 
     /**
