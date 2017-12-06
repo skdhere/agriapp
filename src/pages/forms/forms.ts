@@ -68,14 +68,14 @@ export class Forms {
 		}
 		else if(this.form_name == 'crop details'){
 			this.forms = [
-				{ title: 'Crop And Cultivation Details',  isUpdated:false, tableName: '', pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
+				{ title: 'Crop And Cultivation Details',  isUpdated:false, tableName: 'tbl_cultivation_data', pageName: 'CropCultivationPage', point: '0', icon : 'leaf'},
 				{ title: 'Previous Crop Cycle Details',   isUpdated:false, tableName: '', pageName: 'CropPreviousPage', point: '0', icon : 'leaf'},
 			];
 		}
 		else if(this.form_name == 'assets'){
 			this.forms = [
-				{ title: 'Assets Details',  isUpdated:false, tableName: '', pageName: 'AssetsDetailsPage', point: '0', icon : 'arrow-round-forward'},
-				{ title: 'Live Stock',      isUpdated:false, tableName: '', pageName: 'AssetsStockPage',   point: '0', icon : 'arrow-round-forward'},
+				{ title: 'Assets Details',  isUpdated:false, tableName: 'tbl_asset_details', pageName: 'AssetsDetailsPage', point: '0', icon : 'arrow-round-forward'},
+				{ title: 'Live Stock',      isUpdated:false, tableName: 'tbl_livestock_details', pageName: 'AssetsStockPage',   point: '0', icon : 'arrow-round-forward'},
 			];
 		}
 		else if(this.form_name == 'loan and liability'){
