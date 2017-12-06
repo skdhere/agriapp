@@ -16,14 +16,20 @@
                 <ion-icon name="checkmark-circle" color="{{ form.isUpdated ? 'secondary' : 'light'}}" item-end></ion-icon>
               </button>
             </ion-list>
-<!-- 
+
             <ion-grid *ngIf="form_name=='Documents'">
-              <ion-row *ngFor="let image of images">
-                <ion-col width-50 *ngFor="let uri of row">
-                  <img [src]="file_uri">
+              <ion-row>
+                <ion-col *ngFor="let image of images" col-6>
+
+                  <div class="image-wrapper">
+                    <img ion-button [src]="image.uri">
+                    <div class="image-title">title</div>
+                  </div>
+
                 </ion-col>
               </ion-row>
-            </ion-grid> -->
+            </ion-grid>
+
         </div>
       </ion-col>
     </ion-row>

@@ -20,6 +20,7 @@ export class Forms {
 	points: point<string>;
 	forms:Array<any>;
 	rootNavCtrl: NavController;
+	images: any = [];
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
@@ -84,6 +85,15 @@ export class Forms {
 		}
 		else if(this.form_name == 'Documents'){
 			this.forms = [];
+
+			this.images = [
+				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+			];
 		}
 	}
 
