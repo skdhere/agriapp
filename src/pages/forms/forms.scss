@@ -24,11 +24,27 @@ page-forms{
 	    width: 100%;
 	    text-align: center;
 	    background-color: rgba(0,0,0, 0.6);
-	    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0));
+	    background: linear-gradient(to bottom, rgba(0, 0, 0, 0.62), rgba(0, 0, 0, 0.28), rgba(0, 0, 0, 0.15), rgba(0, 0, 0, 0.08), transparent);
+	    height: 100%;
 	    color: #fff;
-	    font-size: 16px;
+	    font-size: 13px;
 	    text-transform: uppercase;
 	    padding: 7px 0px;
+	    pointer-events: none;
+	    max-height: 135px;
+	    min-height: 135px;
 	}
+
+	ion-slide.swiper-slide {
+        left: 25%;
+    }
+    
+    .slide-zoom {
+        background: #e6e6e6;
+    }
+ 
+    .thumb-img {
+        padding: 10px;
+    }
 }
 

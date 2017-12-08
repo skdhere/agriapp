@@ -1,6 +1,12 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController} from 'ionic-angular';
+import { Camera, CameraOptions } from '@ionic-native/camera';
+import { File } from '@ionic-native/file';
+import { FilePath } from '@ionic-native/file-path';
+
 import { Sql } from '../../providers/sql/sql';
+
+declare var cordova: any;
 
 interface point<T> {
     [K: string]: T;
@@ -21,10 +27,14 @@ export class Forms {
 	forms:Array<any>;
 	rootNavCtrl: NavController;
 	images: any = [];
+	// lastImage: string = null;
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
 				private sql: Sql,
+				private camera: Camera,
+				private file: File,
+				private filePath: FilePath,
 				public loadingCtrl: LoadingController){
 
 		this.current_farmer = navParams.get('farmer');
@@ -38,6 +48,15 @@ export class Forms {
 		//     loading.dismiss();
 		// }, 1000);
 	}
+
+	readFile(e, img){
+			console.log(e);
+			console.log(e.target.files[0].webkitRelativePath);
+		let index = this.images.indexOf(img);
+		if(index !== -1){
+			this.images[index].uri = e.target.value;
+		}
+	};
 
 	getFarmerPoints(id: string){
 		//some http work here
@@ -87,12 +106,12 @@ export class Forms {
 			this.forms = [];
 
 			this.images = [
-				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
-				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
-				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
-				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
-				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
-				{ title : 'Adhaar Card', uri : '/assets/images/no-image.png'},
+				{ title: 'Adhaar Card', uri: 'assets/images/no-image.png'},
+				{ title: 'Adhaar Card', uri: 'assets/images/no-image.png'},
+				{ title: 'Adhaar Card', uri: 'assets/images/no-image.png'},
+				{ title: 'Adhaar Card', uri: 'assets/images/no-image.png'},
+				{ title: 'Adhaar Card', uri: 'assets/images/no-image.png'},
+				{ title: 'Adhaar Card', uri: 'assets/images/no-image.png'}
 			];
 		}
 	}
@@ -119,6 +138,57 @@ export class Forms {
 		err => {
 			console.log(err);
 		});
+	}
+
+	capture(img){
+		let index = this.images.indexOf(img);
+		if(index !== -1){
+
+			let options: CameraOptions = {
+				quality: 20,
+				sourceType: this.camera.PictureSourceType.CAMERA,
+    			saveToPhotoAlbum: false,
+			}
+
+			this.camera.getPicture(options).then((imagePath) => {
+
+				let currentName = imagePath.substr(imagePath.lastIndexOf('/') + 1);
+				let correctPath = imagePath.substr(0, imagePath.lastIndexOf('/') + 1);
+				this.copyFileToLocalDir(correctPath, currentName, this.createFileName(), index);
+
+			}, (err) => {
+				// Handle error
+				console.log(err);
+			});
+
+		}
+	}
+
+	// Create a new name for the image
+	private createFileName() {
+		let d = new Date(),
+		n = d.getTime(),
+		newFileName =  n + ".jpg";
+		return newFileName;
+	}
+
+	// Copy the image to a local folder
+	private copyFileToLocalDir(namePath, currentName, newFileName, index) {
+		this.file.copyFile(namePath, currentName, cordova.file.dataDirectory, newFileName).then(success => {
+			// this.lastImage = newFileName;
+			this.images[index].uri = this.pathForImage(newFileName);
+		}, error => {
+			console.log('Error while storing file.');
+		});
+	}
+
+	// Always get the accurate path to your apps folder
+	public pathForImage(img) {
+		if (img === null) {
+			return '';
+		} else {
+			return cordova.file.dataDirectory + img;
+		}
 	}
 
 	presentLoading(text: string) {

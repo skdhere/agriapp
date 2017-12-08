@@ -19,7 +19,7 @@ export class AuthService {
             return Observable.throw("Please insert credentials");
         } else {
             return Observable.create(observer => {
-                let access = false;
+                let access = 'fail';
                 // At this point make a request to your backend to make a real check!
                 this.api.post('login', credentials)
                 .map(res => res.json())
@@ -35,14 +35,16 @@ export class AuthService {
                                 data.data.contactno,
                                 data.data.token_expiry
                         );
-                        access = true;
+                        access = 'success';
                     }
                     else{
-                        access = false;
+                        access = 'fail';
                     }
                     observer.next(access);
                     observer.complete();
                     console.log(data);
+                }, error => {
+                    observer.next('error');
                 });
 
             });

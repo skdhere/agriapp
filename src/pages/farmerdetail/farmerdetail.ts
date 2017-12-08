@@ -101,6 +101,6 @@ export class Farmerdetail {
 		// }
 
 
-		console.log(`Selected tab: `, tab);
+		// console.log(`Selected tab: `, tab);
 	}
 }

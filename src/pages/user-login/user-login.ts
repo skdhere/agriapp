@@ -35,15 +35,16 @@ export class UserLogin {
     public login() {
         this.showLoading();
         this.auth.login(this.registerCredentials).subscribe(allowed => {
-            if (allowed) {        
+            if (allowed == 'success') {        
                 this.nav.setRoot('HomePage');
-            } else {
+            } else if(allowed == 'fail'){
                 this.showError("Access Denied");
+            } else{
+                this.showError('Something went wrong, please try again!');
             }
-            // this.loading.dismiss();
         },
         error => {
-            this.showError(error);
+            this.showError('Something went wrong, please try again!');
         });
     }
 
