@@ -5,24 +5,57 @@
   Ionic pages and navigation.
 -->
 <ion-header>
-
-  <ion-navbar color="app">
-    <ion-title>Previous Crop Cycle Details</ion-title>
-  </ion-navbar>
-
+    <ion-navbar color="app">
+        <ion-title>Previous Crop Cycle Details</ion-title>
+    </ion-navbar>
 </ion-header>
-
-
 <ion-content padding>
-  <div padding class="tooltip-icon">
-    <div padding><ion-icon name="leaf"></ion-icon></div>
-    <small>No Previous Crop details added!<br>Click add new land to add</small>
-  </div>
-  <div padding>
-    <button ion-button full color="app" (click)="addnew()">Add new Land</button>
-  </div>
+    
+    <div *ngIf="crops.length > 0">
+        <ion-list>
+            <ion-list-header>Previous Crops</ion-list-header>
+            <ion-item-sliding *ngFor="let crop of crops">
+                <ion-item (click)="itemTapped($event, crop)">
+                    <ion-avatar item-start>
+                        <ion-icon name="leaf"></ion-icon>
+                    </ion-avatar>
+                    <h2 color="app">{{crop.f11_cultivating}}</h2>
+                    <p>Achieved({{crop.f11_achieved}})</p>
 
-  <ion-fab top right edge>
-    <button (click)="addnew()" ion-fab><ion-icon name="add"></ion-icon></button>
-  </ion-fab>
+                    <!-- <ion-icon *ngIf="!local_upload" name="time" color="danger" item-end></ion-icon> -->
+                    <!-- <ion-icon *ngIf="!local_upload" color="secondary" name="cloud-done" item-end></ion-icon> -->
+                </ion-item>
+                <ion-item-options>
+                    <button ion-button color="danger" icon-start (click)="deleteItem(crop)">
+                        <ion-icon name="trash"></ion-icon>
+                        Delete
+                    </button>
+                </ion-item-options>
+            </ion-item-sliding>
+            <ion-list-header>
+                <ul>
+                    <li> You have added {{crops.length}} Crops,</li> 
+                    <li> To add more Crops click plus(<ion-icon name="add"></ion-icon>) button presented at the upper right of the screen.</li>
+                </ul>
+            </ion-list-header>
+        </ion-list>
+    </div>
+
+    <div *ngIf="crops.length < 1">
+        <div padding class="tooltip-icon">
+            <div padding>
+                <ion-icon name="leaf"></ion-icon>
+            </div>
+            <small>No Previous Crop details added!<br>Click add new crop to add</small>
+        </div>
+        <div padding>
+            <button ion-button full color="app" (click)="addnew()">Add new Crop</button>
+        </div>
+    </div>
+
+    <ion-fab top right edge>
+        <button (click)="addnew()" ion-fab>
+            <ion-icon name="add"></ion-icon>
+        </button>
+    </ion-fab>
 </ion-content>

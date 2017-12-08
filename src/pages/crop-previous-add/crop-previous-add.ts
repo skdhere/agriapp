@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Sql } from '../../providers/sql/sql';
 
 /**
  * Generated class for the CropPreviousAddPage page.
@@ -18,14 +19,18 @@ export class CropPreviousAddPage {
 
   	previous: FormGroup;
   	submitAttempt: boolean = false;
+  	fm_id: any;
+    local_crop_id: any;
+    exist: boolean = false;
 
 	constructor(public navCtrl: NavController, 
-				public navParams: NavParams, 
+				public navParams: NavParams,
+                public sql: Sql,
 				public toastCtrl: ToastController,
 				public formBuilder: FormBuilder) {
 		this.previous = formBuilder.group({
-			'f11_points' : ['0'],
-			// 'f11_cultivating' : ['', Validators.required],
+			// 'f11_points' : ['0'],
+			'f11_cultivating' : ['', Validators.required],
 			'f11_achieved' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
 			'f11_income' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
 			'f11_diseases' : ['', Validators.required],
@@ -36,116 +41,36 @@ export class CropPreviousAddPage {
 		});
 	}
 
-	ionViewDidLoad() {
+	ionViewDidEnter() {
 		console.log('ionViewDidLoad LandFarmAddPage');
 
-		this.setValidation();
+		this.exist         = false;
+		this.fm_id         = this.navParams.get('farmer_id');
+		this.local_crop_id = this.navParams.get('local_crop_id') || false;
 
-		//Listen for form changes
-		// this.previous.controls['f11_income'].valueChanges.subscribe(() => {
-		// 	this.getTotal();
-		// });
+		if(this.local_crop_id !== false){
+	        this.sql.query('SELECT * FROM tbl_yield_details WHERE fm_id = ? and local_crop_id = ? limit 1', [this.fm_id, this.local_crop_id]).then( (data) => {
 
-		//Listen for form changes
-		// this.previous.controls['f11_diseases'].valueChanges.subscribe(() => {
-		// 	this.getTotal();
-		// });
+	            if (data.res.rows.length > 0) {
 
-		//Listen for form changes
-		// this.previous.controls['f11_fertilizers'].valueChanges.subscribe(() => {
-		// 	this.getTotal();
-		// });
+	                let sqlData = data.res.rows.item(0);
+	                let formData = [];
 
-		//Listen for form changes
-		// this.previous.controls['f11_damaged_prev_crop'].valueChanges.subscribe(() => {
-		// 	this.setValidation();
-		// 	// this.getTotal();
-		// });
+					formData['f11_cultivating'] = sqlData.f11_cultivating;
+					formData['f11_achieved']    = sqlData.f11_achieved;
+					formData['f11_income']      = sqlData.f11_income;
+					formData['f11_diseases']    = sqlData.f11_diseases;
+					formData['f11_fertilizers'] = sqlData.f11_fertilizers;
+
+	                this.previous.setValue(formData);
+	                this.exist = true;
+	            }
+
+	        }, err => {
+	            console.log(err);
+	        });
+		}
 	}
-
-	setValidation(){
-		let controls = this.previous.controls;
-		// if(controls['f11_damaged_prev_crop'].value == 'yes')
-		// {
-		// 	controls['f11_what_was_the_reason1'].enable();
-		// }
-		// else{
-		// 	controls['f11_what_was_the_reason1'].disable();
-		// }
-	}
-
-	// getTotal(){
-	// 	let values = this.previous.getRawValue();
-	// 	let points = {};
-	// 	let total:number = 0;
-	// 	points['f11_income']            = 0;
-	// 	points['f11_diseases']          = 0;
-	// 	points['f11_fertilizers']       = 0;
-	// 	points['f11_damaged_prev_crop'] = 0;
-
-
-	// 	//setting points based on values
-	// 	//f11_income
-	// 	switch (true) {
-	// 		case values['f11_income'] >= 1 && values['f11_income'] <= 2500:
-	// 			points['f11_income'] = 4;
-	// 			break;
-	// 		case values['f11_income'] >= 2501 && values['f11_income'] <= 5000:
-	// 			points['f11_income'] = 6;
-	// 			break;
-	// 		case values['f11_income'] >= 5001 && values['f11_income'] <= 10000:
-	// 			points['f11_income'] = 7;
-	// 			break;
-	// 		case values['f11_income'] >= 10001 && values['f11_income'] <= 25000:
-	// 			points['f11_income'] = 8;
-	// 			break;
-	// 		case values['f11_income'] >= 25001 && values['f11_income'] <= 50000:
-	// 			points['f11_income'] = 9;
-	// 			break;
-	// 		case values['f11_income'] > 50000:
-	// 			points['f11_income'] = 10;
-	// 			break;
-	// 	}
-
-	// 	//f11_diseases
-	// 	switch (values['f11_diseases']) {
-	// 		case "yes":
-	// 			points['f11_diseases'] = 0;
-	// 			break;
-	// 		case "no":
-	// 			points['f11_diseases'] = 10;
-	// 			break;
-	// 	}
-
-	// 	//f11_fertilizers
-	// 	switch (values['f11_fertilizers']) {
-	// 		case "Organic Fertilizers":
-	// 			points['f11_fertilizers'] = 10;
-	// 			break;
-	// 		case "Inorganic Fertilizers":
-	// 			points['f11_fertilizers'] = 5;
-	// 			break;
-	// 	}
-
-	// 	//f11_damaged_prev_crop
-	// 	switch (values['f11_damaged_prev_crop']) {
-	// 		case "yes":
-	// 			points['f11_damaged_prev_crop'] = 0;
-	// 			break;
-	// 		case "no":
-	// 			points['f11_damaged_prev_crop'] = 10;
-	// 			break;
-	// 	}
-
-	// 	//sum of calculated points
-	// 	for(let point in points){
-	// 		total += Number(points[point]);
-	// 	}
-
-	// 	console.log(total);
-	// 	total = parseFloat((total/3).toFixed(2));
-	// 	this.previous.get('f11_points').setValue(total, { emitEvent: false });
-	// }
 
 	showMessage(message, style: string, dur?: number){
 		const toast = this.toastCtrl.create({
@@ -163,7 +88,62 @@ export class CropPreviousAddPage {
 	save(){
 		this.submitAttempt = true;
 		if (this.previous.valid) {
-			console.log(this.previous.value);
+			console.log('success', this.previous.value);
+
+			let date = new Date();
+            let dateNow = date.getTime()/1000|0;
+
+            if (this.exist) {
+                this.sql.query('UPDATE tbl_yield_details SET f11_cultivating = ?, f11_achieved = ?, f11_income = ?, f11_diseases = ?, f11_fertilizers = ?, f11_modified_date = ? WHERE fm_id = ? and local_crop_id = ?', [
+
+                    this.previous.value.f11_cultivating,
+                    this.previous.value.f11_achieved,
+                    this.previous.value.f11_income,
+                    this.previous.value.f11_diseases,
+                    this.previous.value.f11_fertilizers,
+
+                    dateNow,
+                    this.fm_id,
+                    this.local_crop_id
+                ]).then(data => {
+                    let callback = this.navParams.get("callback") || false;
+	                if(callback){
+	                    callback(true).then(()=>{
+	                        this.navCtrl.pop();
+	                    });
+	                }else{
+	                    this.navCtrl.pop();
+	                }
+                },
+                err => {
+                    console.log(err);
+                });               
+            }
+            else{
+                this.sql.query('INSERT INTO tbl_yield_details(fm_id, f11_cultivating, f11_achieved, f11_income, f11_diseases, f11_fertilizers, f11_created_date, f11_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
+
+                    this.fm_id,
+                    this.previous.value.f11_cultivating,
+                    this.previous.value.f11_achieved,
+                    this.previous.value.f11_income,
+                    this.previous.value.f11_diseases,
+                    this.previous.value.f11_fertilizers,
+                    dateNow,
+                    dateNow
+                ]).then(data => {
+                    let callback = this.navParams.get("callback") || false;
+	                if(callback){
+	                    callback(true).then(()=>{
+	                        this.navCtrl.pop();
+	                    });
+	                }else{
+	                    this.navCtrl.pop();
+	                }
+                },
+                err => {
+                    console.log(err);
+                });
+            }
 		}else{
 			console.log('Validation error');
 			this.showMessage("Please fill valid data!", "danger", 100000);

@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { IonicPage, NavController, NavParams ,ToastController} from 'ionic-angular';
+import { Component } from '@angular/core';
+import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 
@@ -19,8 +19,8 @@ export class CropCultivationAddPage {
 	
 	cultivation: FormGroup;
 	submitAttempt: boolean = false;
-	addNew: boolean = true;
 	fm_id: any;
+    local_crop_id: any;
     exist: boolean = false;
 
 	constructor(public navCtrl: NavController, 
@@ -45,34 +45,36 @@ export class CropCultivationAddPage {
 	ionViewDidEnter() {
 		console.log('ionViewDidLoad cultivationFarmAddPage');
 
-		// console.log('ionViewDidLoad AssetsDetailsPage');
 		//Fetch value from sqlite and update form data 
-		this.exist = false;
-        this.fm_id = this.navParams.get('farmer_id');
+		this.exist         = false;
+		this.fm_id         = this.navParams.get('farmer_id');
+		this.local_crop_id = this.navParams.get('local_crop_id') || false;
 		
-		this.sql.query('SELECT * FROM tbl_cultivation_data WHERE fm_id = ? limit 1', [this.fm_id]).then( (data) => {
+		if(this.local_crop_id !== false){
+			this.sql.query('SELECT * FROM tbl_cultivation_data WHERE fm_id = ? and local_crop_id = ? limit 1', [this.fm_id, this.local_crop_id]).then( (data) => {
 
-            if (data.res.rows.length > 0) {
+	            if (data.res.rows.length > 0) {
 
-                let sqlData = data.res.rows.item(0);
-                let formData = [];
+	                let sqlData = data.res.rows.item(0);
+	                let formData = [];
 
-				formData['f10_land']          = sqlData.f10_land;
-				formData['f10_cultivating']   = sqlData.f10_cultivating;
-				formData['f10_crop_variety']  = sqlData.f10_crop_variety;
-				formData['f10_stage']         = sqlData.f10_stage;
-				formData['f10_expected']      = sqlData.f10_expected;
-				formData['f10_expectedprice'] = sqlData.f10_expectedprice;
-				formData['f10_diseases']      = sqlData.f10_diseases;
-				formData['f10_pest']          = sqlData.f10_pest;
+					formData['f10_land']          = sqlData.f10_land;
+					formData['f10_cultivating']   = sqlData.f10_cultivating;
+					formData['f10_crop_variety']  = sqlData.f10_crop_variety;
+					formData['f10_stage']         = sqlData.f10_stage;
+					formData['f10_expected']      = sqlData.f10_expected;
+					formData['f10_expectedprice'] = sqlData.f10_expectedprice;
+					formData['f10_diseases']      = sqlData.f10_diseases.split(',');
+					formData['f10_pest']          = sqlData.f10_pest;
 
-                this.cultivation.setValue(formData);
-                this.exist = true;
-            }
+	                this.cultivation.setValue(formData);
+	                this.exist = true;
+	            }
 
-        }, err => {
-            console.log(err);
-        });
+	        }, err => {
+	            console.log(err);
+	        });
+		}
 	}
 
 	showMessage(message, style: string, dur?: number){
@@ -94,17 +96,13 @@ export class CropCultivationAddPage {
 
 		if (this.cultivation.valid) 
 		{
-			// this.showMessage("Data added successfully!", "danger");
+			console.log('success', this.cultivation.value);
 
-			console.log('is POST ', this.addNew);
-			
-			//Check if data already exists
-			//accordingly update or inster data
 			let date = new Date();
             let dateNow = date.getTime()/1000|0;
 
 			if (this.exist) {
-                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ?', [
+                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_crop_id = ?', [
 
                     this.cultivation.value.f10_land || '',
                     this.cultivation.value.f10_cultivating || '',
@@ -116,9 +114,18 @@ export class CropCultivationAddPage {
                     this.cultivation.value.f10_pest || '', 
                     
                     dateNow,
-                    this.fm_id
+                    this.fm_id,
+                    this.local_crop_id
+
                 ]).then(data => {
-                    this.navCtrl.pop();
+                    let callback = this.navParams.get("callback") || false;
+	                if(callback){
+	                    callback(true).then(()=>{
+	                        this.navCtrl.pop();
+	                    });
+	                }else{
+	                    this.navCtrl.pop();
+	                }
                 },
                 err => {
                     console.log(err);
@@ -139,7 +146,14 @@ export class CropCultivationAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
-                    this.navCtrl.pop();
+                    let callback = this.navParams.get("callback") || false;
+	                if(callback){
+	                    callback(true).then(()=>{
+	                        this.navCtrl.pop();
+	                    });
+	                }else{
+	                    this.navCtrl.pop();
+	                }
                 },
                 err => {
                     console.log(err);
@@ -155,12 +169,4 @@ export class CropCultivationAddPage {
 
 	}
 
-	//this function will call while leaving the page
-    //the function will then call the callback of previous page method
-    ionViewWillLeave(){
-        let callback = this.navParams.get('callback') || false;
-        if(callback){
-            callback(true);
-        }
-    }
 }

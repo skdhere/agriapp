@@ -333,10 +333,30 @@ export class Sql {
             f10_created_date TEXT,
             f10_modified_date TEXT,
 
-            local_land_id INTEGER PRIMARY KEY,
+            local_crop_id INTEGER PRIMARY KEY,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_cultivation_data tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_yield_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            f11_cultivating TEXT,
+            f11_achieved TEXT,
+            f11_income TEXT,
+            f11_diseases TEXT,
+            f11_fertilizers TEXT,
+
+            f11_status INTEGER,
+            f11_created_date text,
+            f11_modified_date text,
+
+            local_crop_id INTEGER PRIMARY KEY,
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_yield_details tables', err.tx, err.err);
         });
     }
 
