@@ -358,6 +358,64 @@ export class Sql {
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_yield_details tables', err.tx, err.err);
         });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_financial_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            loan_want TEXT,
+            loan_amount TEXT,
+            fx_monthly_income TEXT,
+            f8_loan_taken TEXT,
+            f8_private_lenders TEXT,
+            f8_borrowed_amount_date TEXT,
+            f8_borrowed_amount TEXT,
+            f8_borrowed_loan_per TEXT,
+            f8_borrowed_loan_month TEXT,
+            f8_borrowed_total_amount TEXT,
+            f8_borrowed_total_int TEXT,
+            f8_borrowed_amount_emi TEXT,
+            f8_borrowed_emi_paid TEXT,
+            f8_borrowed_outstanding_amount TEXT,
+            f8_borrowed_outstanding_principal TEXT,
+            f8_borrowed_amount_emi_rem TEXT,
+
+            f8_status INTEGER,
+            f8_created_date text,
+            f8_modified_date text,
+
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_financial_details tables', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_loan_details (
+            fm_caid INTEGER,
+            fm_id INTEGER,
+            
+            loan_sanctioned TEXT,
+            loan_type TEXT,
+            loan_provider TEXT,
+            f15_borrowed_amount TEXT,
+            f15_borrowed_loan_per TEXT,
+            f15_borrowed_loan_month TEXT,
+            f15_borrowed_total_amount TEXT,
+            f15_borrowed_total_int TEXT,
+            f15_borrowed_amount_emi TEXT,
+            f15_borrowed_emi_paid TEXT,
+            f15_borrowed_outstanding_amount TEXT,
+            f15_borrowed_outstanding_principal TEXT,
+            f15_borrowed_amount_emi_rem TEXT,
+
+            f15_status INTEGER,
+            f15_created_date text,
+            f15_modified_date text,
+
+            local_loan_id INTEGER PRIMARY KEY,
+            local_upload INTEGER DEFAULT 0
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_loan_details tables', err.tx, err.err);
+        });
     }
 
     /**

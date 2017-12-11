@@ -1,0 +1,159 @@
+<!--
+  Generated template for the LoanFinancialPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="app">
+    <ion-title>Financial Details</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="loan">
+		<ion-list>
+			<ion-item>
+			    <ion-label floating>Do You Want A Loan? <span>*</span></ion-label>
+			    <ion-select formControlName="loan_want" interface="popover">
+			      <ion-option value="yes">Yes</ion-option>
+			      <ion-option value="no">No</ion-option>
+			    </ion-select>
+			</ion-item>
+			<div *ngIf="loan.controls.loan_want.invalid  && (loan.controls.loan_want.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.loan_want.errors.required">This field is required.</p>
+	        </div>
+
+	        <div *ngIf="loan.controls.loan_want.value === 'yes'">
+		        <ion-item>
+		            <ion-label floating>Loan Amount Required <span>*</span></ion-label>
+		            <ion-input formControlName="loan_amount" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="loan.controls.loan_amount.invalid  && (loan.controls.loan_amount.dirty || submitAttempt)">
+		            <p *ngIf="loan.controls.loan_amount.errors.required">This field is required.</p>
+		            <p *ngIf="loan.controls.loan_amount.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="loan.controls.loan_amount.errors.pattern">Please enter a valid number.</p>
+		        </div>
+	        </div>
+
+	        <ion-item>
+			    <ion-label floating>How Much Is Your Avg Or Fixed Monthly Income? <span>*</span></ion-label>
+			    <ion-select formControlName="fx_monthly_income" interface="popover">
+			      <ion-option value="500-2500">500-2500</ion-option>
+			      <ion-option value="2501-5000">2501-5000</ion-option>
+			      <ion-option value="5001-10000">5001-10000</ion-option>
+			      <ion-option value="10001-25000">10001-25000</ion-option>
+			      <ion-option value="25001-50000">25001-50000</ion-option>
+			      <ion-option value="50001-100000">50001-100000</ion-option>
+			      <ion-option value="100001-200000">100001-200000</ion-option>
+			      <ion-option value="200001-300000">200001-300000</ion-option>
+			    </ion-select>
+			</ion-item>
+			<div *ngIf="loan.controls.fx_monthly_income.invalid  && (loan.controls.fx_monthly_income.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.fx_monthly_income.errors.required">This field is required.</p>
+	        </div>
+
+	        <ion-item>
+			    <ion-label floating>Any Loan Taken? <span>*</span></ion-label>
+			    <ion-select formControlName="f8_loan_taken" interface="popover">
+			      <ion-option value="yes">Yes</ion-option>
+			      <ion-option value="no">No</ion-option>
+			    </ion-select>
+			</ion-item>
+			<div *ngIf="loan.controls.f8_loan_taken.invalid  && (loan.controls.f8_loan_taken.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.f8_loan_taken.errors.required">This field is required.</p>
+	        </div>
+
+	        <ion-item>
+			    <ion-label floating>Amount Borrowed From The Private Lenders / Friends And Family / Pawn Brokers? <span>*</span></ion-label>
+			    <ion-select formControlName="f8_private_lenders" interface="popover">
+			      <ion-option value="yes">Yes</ion-option>
+			      <ion-option value="no">No</ion-option>
+			    </ion-select>
+			</ion-item>
+			<div *ngIf="loan.controls.f8_private_lenders.invalid  && (loan.controls.f8_private_lenders.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.f8_private_lenders.errors.required">This field is required.</p>
+	        </div>
+
+	        <div *ngIf="loan.controls.f8_private_lenders.value === 'yes'">
+		        <ion-item>
+					<ion-label floating>When Did You Borrow The Loan? <span>*</span></ion-label>
+					<ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MMM YYYY" formControlName="f8_borrowed_amount_date"></ion-datetime>
+				</ion-item>
+				<div *ngIf="!loan.controls.f8_borrowed_amount_date.valid  && (loan.controls.f8_borrowed_amount_date.dirty || submitAttempt)">
+					<p *ngIf="loan.controls.f8_borrowed_amount_date.errors.required">Please enter a valid Date.</p>
+				</div>
+
+				<ion-item>
+		            <ion-label floating>Mention The Borrowed Amount <span>*</span></ion-label>
+		            <ion-input formControlName="f8_borrowed_amount" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="loan.controls.f8_borrowed_amount.invalid  && (loan.controls.f8_borrowed_amount.dirty || submitAttempt)">
+		            <p *ngIf="loan.controls.f8_borrowed_amount.errors.required">This field is required.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_amount.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_amount.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Rate Of Interest <span>*</span></ion-label>
+		            <ion-input formControlName="f8_borrowed_loan_per" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="loan.controls.f8_borrowed_loan_per.invalid  && (loan.controls.f8_borrowed_loan_per.dirty || submitAttempt)">
+		            <p *ngIf="loan.controls.f8_borrowed_loan_per.errors.required">This field is required.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_loan_per.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_loan_per.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+		            <ion-label floating>Loan Tenure In Months <span>*</span></ion-label>
+		            <ion-input formControlName="f8_borrowed_loan_month" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="loan.controls.f8_borrowed_loan_month.invalid  && (loan.controls.f8_borrowed_loan_month.dirty || submitAttempt)">
+		            <p *ngIf="loan.controls.f8_borrowed_loan_month.errors.required">This field is required.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_loan_month.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_loan_month.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+					Total Loan Amount : {{loan.controls.f8_borrowed_total_amount.value}}
+				</ion-item>
+				<ion-item>
+					Total Loan Interest : {{loan.controls.f8_borrowed_total_int.value}}
+				</ion-item>
+				<ion-item>
+					EMI Per Month : {{loan.controls.f8_borrowed_amount_emi.value}}
+				</ion-item>
+
+				<ion-item>
+		            <ion-label floating>How Much Emi Paid? <span>*</span></ion-label>
+		            <ion-input formControlName="f8_borrowed_emi_paid" type="number"></ion-input>
+		        </ion-item>
+		        <div *ngIf="loan.controls.f8_borrowed_emi_paid.invalid  && (loan.controls.f8_borrowed_emi_paid.dirty || submitAttempt)">
+		            <p *ngIf="loan.controls.f8_borrowed_emi_paid.errors.required">This field is required.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_emi_paid.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="loan.controls.f8_borrowed_emi_paid.errors.pattern">Please enter a valid number.</p>
+		        </div>
+
+		        <ion-item>
+					Loan Is Outstanding To Be Paid With Interest : {{loan.controls.f8_borrowed_outstanding_amount.value}}
+				</ion-item>
+				<ion-item>
+					Loan Is Outstanding To Be Paid : {{loan.controls.f8_borrowed_outstanding_principal.value}}
+				</ion-item>
+				<ion-item>
+					Therefore, No. Of Months To Clear Outstanding : {{loan.controls.f8_borrowed_amount_emi_rem.value}}
+				</ion-item>
+	        </div>
+		</ion-list>
+	</form>
+
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab>
+			<ion-icon name="checkmark"></ion-icon>
+		</button>
+	</ion-fab>
+
+</ion-content>

@@ -97,11 +97,6 @@ export class Forms {
 				{ title: 'Live Stock',      isUpdated:false, tableName: 'tbl_livestock_details', pageName: 'AssetsStockPage',   point: '0', icon : 'arrow-round-forward'},
 			];
 		}
-		else if(this.form_name == 'loan and liability'){
-			this.forms = [
-				{ title: 'Financial Details',     isUpdated:false, tableName: '', pageName: '', point: '0', icon : 'cash'},
-			];
-		}
 		else if(this.form_name == 'Documents'){
 			this.forms = [];
 
@@ -117,6 +112,33 @@ export class Forms {
 	}
 
 	ionViewDidEnter(){
+		
+		if(this.form_name === 'loan and liability'){
+
+			this.forms = [
+				{ title: 'Financial Details',     isUpdated:false, tableName: 'tbl_financial_details', pageName: 'LoanFinancialPage', point: '0', icon : 'cash'},
+			];
+
+			let that = this;
+			this.sql.query("SELECT * FROM tbl_financial_details WHERE f8_loan_taken = ? and fm_id = ? limit 1" , ['yes', this.current_farmer.local_id]).then( (data) => {
+				console.log('thissssss ',data);
+	            if (data.res.rows.length > 0) {
+					that.forms.push({ title: 'Loan Details',isUpdated:false, tableName: 'tbl_loan_details', pageName: 'LoanDetailsPage', point: '0', icon : 'cash'});
+
+					//check if its updated in local database
+					for (var i = 0; i < this.forms.length; i++) {
+						if(this.forms[i].tableName){
+							// console.log(this.forms[i].tableName);
+							this.updateStatus(i);
+						}
+					}
+					
+	            }
+	        }, err => {
+	            console.log(err);
+	        });
+		}
+
 		//check if its updated in local database
 		for (var i = 0; i < this.forms.length; i++) {
 			if(this.forms[i].tableName){
@@ -124,6 +146,7 @@ export class Forms {
 				this.updateStatus(i);
 			}
 		}
+
 	}
 
 	updateStatus(index){
