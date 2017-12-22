@@ -38,18 +38,6 @@ export class MyApp {
 
             splashScreen.hide();
             
-            setTimeout(()=>{
-                this.auth.isAuthenticated().subscribe(success => {
-                    if(success){
-                        this.nav.setRoot('HomePage');
-                    }
-                    else{
-                        this.nav.setRoot('UserLogin');
-                    }
-                });
-            }, 500);
-            
-
             platform.registerBackButtonAction(() => {
 
                 let currentView = this.nav.getActive();
@@ -105,10 +93,10 @@ export class MyApp {
 
         // used for an example of ngFor and navigation
         this.pages = [
-            { title: 'Home',       component: 'HomePage',    icon: 'home'},
-            { title: 'My Farmers', component: 'FarmersPage', icon: 'people'},
-            { title: 'Account',    component: 'HomePage',    icon: 'analytics'},
-            { title: 'Settings',   component: 'HomePage',    icon: 'settings'},
+            { title: 'Home',       component: 'HomePage',      icon: 'home'},
+            { title: 'My Farmers', component: 'FarmersPage',   icon: 'people'},
+            { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
+            { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
         ];
 
     }
@@ -117,7 +105,11 @@ export class MyApp {
         // Reset the content nav to have just this page
         // we wouldn't want the back button to show in this scenario
         if(page){
-            this.nav.setRoot(page.component);
+            if (page.component == "SlidesPage") {
+                this.nav.push(page.component);
+            }else{
+                this.nav.setRoot(page.component);
+            }
         }
     }
 

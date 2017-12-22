@@ -22,7 +22,7 @@ export class CropCultivationAddPage {
 	fm_id: any;
     local_crop_id: any;
     exist: boolean = false;
-
+    farms: any = [];
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams,
 				public sql: Sql, 
@@ -38,8 +38,10 @@ export class CropCultivationAddPage {
 			'f10_expectedprice' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')])],
 			'f10_diseases' : ['', Validators.required],
 			'f10_pest' : ['', Validators.required],
-			
 		});
+
+		//load Farms
+
 	}
 
 	ionViewDidEnter() {
@@ -49,7 +51,26 @@ export class CropCultivationAddPage {
 		this.exist         = false;
 		this.fm_id         = this.navParams.get('farmer_id');
 		this.local_crop_id = this.navParams.get('local_crop_id') || false;
-		
+
+		this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ? ORDER BY f9_modified_date DESC', [this.fm_id]).then( (data) => {
+
+            if (data.res.rows.length > 0) {
+            	this.farms = [];
+
+                for (var i = 0; i < data.res.rows.length; i++) {
+                	this.farms.push(data.res.rows.item(i));
+                }
+
+				console.log(this.farms);
+            }
+            else{
+            	this.farms = [];
+            }
+
+        }, err => {
+            console.log(err);
+        });
+
 		if(this.local_crop_id !== false){
 			this.sql.query('SELECT * FROM tbl_cultivation_data WHERE fm_id = ? and local_crop_id = ? limit 1', [this.fm_id, this.local_crop_id]).then( (data) => {
 

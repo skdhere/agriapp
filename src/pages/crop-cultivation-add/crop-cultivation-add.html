@@ -23,17 +23,12 @@
 				<ion-item>
 				    <ion-label floating>Select Farm Land<span>*</span></ion-label>
 				    <ion-select formControlName="f10_land" interface="popover">
-						<ion-option value="139">139</ion-option> 
-						<ion-option value="138">138</ion-option> 
-						<ion-option value="132">132</ion-option> 
+						<ion-option *ngFor="let f of farms" value="{{f.f9_name}}">{{f.f9_name}}</ion-option> 
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="cultivation.controls.f10_land.invalid  && (cultivation.controls.f10_land.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_land.errors.required">This field is required.</p>
 		        </div>
-
-
-		       
 
 				<ion-item>
 				    <ion-label floating>Type Of Crop Cultivating This Year <span>*</span></ion-label>

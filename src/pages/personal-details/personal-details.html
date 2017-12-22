@@ -17,6 +17,53 @@
 	<form [formGroup]="personal">
 		<ion-list>
 			<div padding>
+
+				<!-- Registration Details -->
+				<ion-item>
+					<ion-label floating>First Name</ion-label>
+					<ion-input formControlName="fm_fname" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_fname.valid  && (personal.controls.fm_fname.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fm_fname.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fm_fname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fm_fname.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Middle Name</ion-label>
+					<ion-input formControlName="fm_mname" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_mname.valid  && (personal.controls.fm_mname.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fm_mname.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fm_mname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fm_mname.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Last Name</ion-label>
+					<ion-input formControlName="fm_lname" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_lname.valid  && (personal.controls.fm_lname.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fm_lname.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fm_lname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fm_lname.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Mobile no.</ion-label>
+					<ion-input formControlName="fm_mobileno" type="tel"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_mobileno.valid  && (personal.controls.fm_mobileno.dirty || submitAttempt)">
+					<p>Please enter a 10 digit valid mobile no.</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Aadhaar no.</ion-label>
+					<ion-input formControlName="fm_aadhar" type="number"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_aadhar.valid  && (personal.controls.fm_aadhar.dirty || submitAttempt)">
+					<p>Please enter a 12 digit valid Aadhar no.</p>
+				</div>
+				<!-- End of Registration Details -->
+
+
 				<ion-item>
 					<ion-label floating>Father's / Spouse's Name</ion-label>
 					<ion-input formControlName="f1_mfname" type="text"></ion-input>

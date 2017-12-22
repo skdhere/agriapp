@@ -20,10 +20,43 @@ export class Sql {
             this._db = win.openDatabase(DB_NAME, '1.0', 'database', 5 * 1024 * 1024);
         }
         this.createTables();
+
+
     }
 
     // Initialize the DB with our required tables
     createTables() {
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_state (
+            id INTEGER PRIMARY KEY,
+            name text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_state', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_district (
+            id INTEGER PRIMARY KEY,
+            state_id INTERGER,
+            name text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_district', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_taluka (
+            id INTEGER PRIMARY KEY,
+            district_id INTERGER,
+            name text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_taluka', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_village (
+            id INTEGER PRIMARY KEY,
+            taluka_id INTERGER,
+            name text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_village', err.tx, err.err);
+        });
 
         this.query(`CREATE TABLE IF NOT EXISTS tbl_farmers (
             fm_caid INTEGER,
@@ -247,6 +280,7 @@ export class Sql {
             fm_caid INTEGER,
             fm_id INTEGER,
             
+            f9_name TEXT,
             f9_land_size TEXT,
             f9_owner TEXT,
             f9_lease_year TEXT,

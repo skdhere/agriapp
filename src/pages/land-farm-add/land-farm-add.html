@@ -22,6 +22,15 @@
 			<div>	
 
 				<ion-item>
+		            <ion-label floating>Farm Name <span>*</span></ion-label>
+		            <ion-input formControlName="f9_name" type="text"></ion-input>
+		        </ion-item>
+		        <div *ngIf="land.controls.f9_name.invalid  && (land.controls.f9_name.dirty || submitAttempt)">
+		            <p *ngIf="land.controls.f9_name.errors.required">This field is required.</p>
+		            <p *ngIf="land.controls.f9_name.errors.maxlength">Lenght should be smaller than or equal to 50.</p>
+		        </div>
+
+				<ion-item>
 		            <ion-label floating>Size In Acres <span>*</span></ion-label>
 		            <ion-input formControlName="f9_land_size" type="number"></ion-input>
 		        </ion-item>
@@ -82,29 +91,33 @@
 			            <p *ngIf="land.controls.f9_contract_year.errors.pattern">Please enter a valid number.</p>
 			        </div>
 		        </div>
-
+		        
 
 				<ion-item>
-				    <ion-label floating>state <span>*</span></ion-label>
-				    <ion-select formControlName="f9_state">
-				      <ion-option value="state">state1</ion-option>
-				      <ion-option value="state2">state2</ion-option>
-				      <ion-option value="state3">state3</ion-option>
-				      <ion-option value="state4">state4</ion-option>
-				    </ion-select>
+				    <select-searchable
+				        title="State"
+				        formControlName="f9_state"
+				        [items]="states"
+				        itemValueField="name"
+				        itemTextField="name"
+				        [canSearch]="true"
+				        (onChange)="stateChange('p', $event)">
+				    </select-searchable>
 				</ion-item>
 				<div *ngIf="land.controls.f9_state.invalid  && (land.controls.f9_state.dirty || submitAttempt)">
 		            <p *ngIf="land.controls.f9_state.errors.required">This field is required.</p>
 		        </div>
 
 				<ion-item>
-				    <ion-label floating>District <span>*</span></ion-label>
-				    <ion-select formControlName="f9_district">
-				      <ion-option value="district">district1</ion-option>
-				      <ion-option value="district2">district2</ion-option>
-				      <ion-option value="district3">district3</ion-option>
-				      <ion-option value="district4">district4</ion-option>
-				    </ion-select>
+				    <select-searchable
+		                title="District"
+		                formControlName="f9_district"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="districts"
+				        [canSearch]="true"
+		                (onChange)="districtChange('p', $event)">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="land.controls.f9_district.invalid  && (land.controls.f9_district.dirty || submitAttempt)">
 		            <p *ngIf="land.controls.f9_district.errors.required">This field is required.</p>
@@ -112,13 +125,15 @@
 
 
 				<ion-item>
-				    <ion-label floating>Taluka <span>*</span></ion-label>
-				    <ion-select formControlName="f9_taluka">
-				      <ion-option value="taluka">taluka1</ion-option>
-				      <ion-option value="taluka2">taluka2</ion-option>
-				      <ion-option value="taluka3">taluka3</ion-option>
-				      <ion-option value="taluka4">taluka4</ion-option>
-				    </ion-select>
+				    <select-searchable
+		                title="Taluka"
+		                formControlName="f9_taluka"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="talukas"
+				        [canSearch]="true"
+		                (onChange)="talukaChange('p', $event)">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="land.controls.f9_taluka.invalid  && (land.controls.f9_taluka.dirty || submitAttempt)">
 		            <p *ngIf="land.controls.f9_taluka.errors.required">This field is required.</p>
@@ -126,13 +141,14 @@
 
 
 				<ion-item>
-				    <ion-label floating>Village Name <span>*</span></ion-label>
-				    <ion-select formControlName="f9_vilage">
-				      <ion-option value="village">village1</ion-option>
-				      <ion-option value="village2">village2</ion-option>
-				      <ion-option value="village3">village3</ion-option>
-				      <ion-option value="village4">village4</ion-option>
-				    </ion-select>
+				    <select-searchable
+		                title="Village"
+		                formControlName="f9_vilage"
+		                itemValueField="name"
+		                itemTextField="name"
+				        [canSearch]="true"
+		                [items]="villages">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="land.controls.f9_vilage.invalid  && (land.controls.f9_vilage.dirty || submitAttempt)">
 		            <p *ngIf="land.controls.f9_vilage.errors.required">This field is required.</p>
@@ -145,7 +161,7 @@
 		        </ion-item>
 		        <div *ngIf="land.controls.f9_survey_number.invalid  && (land.controls.f9_survey_number.dirty || submitAttempt)">
 		            <p *ngIf="land.controls.f9_survey_number.errors.required">This field is required.</p>
-		            <p *ngIf="land.controls.f9_survey_number.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+		            <p *ngIf="land.controls.f9_survey_number.errors.maxlength">Lenght should be smaller than or equal to 50.</p>
 		        </div>
 
 

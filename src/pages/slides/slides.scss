@@ -1,0 +1,38 @@
+page-slides {
+
+	.slide-zoom {
+		height: 100%;
+	}
+
+	.slide-title {
+		margin-top: 2.8rem;
+		color: #fff;
+	}
+
+	.slide-image {
+		max-height: 50%;
+		max-width: 60%;
+		margin: 18px 0;
+		box-shadow: 1px 1px 6px black, 3px 3px 10px rgba(0, 0, 0, 0.3);
+		filter: blur(2px);
+	}
+
+	b {
+		font-weight: 500;
+	}
+
+	p {
+		padding: 0 40px;
+		font-size: 14px;
+		line-height: 1.5;
+		color: #e4e4e4;
+
+		b {
+			color: #000000;
+		}
+	}
+
+	.scroll-content{
+		padding: 0px !important;
+	}
+}

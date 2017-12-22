@@ -33,9 +33,9 @@ export class KycSpousePage {
 		//creating form via formbuilder 
 		this.spouse = formBuilder.group({
             'f3_married_status' : ['',Validators.required],
-            'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+            'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_age' : ['', Validators.compose([Validators.required, Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_mobno' : ['', Validators.compose([Validators.required, Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_adhno' : ['', Validators.compose([Validators.required, Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')])],
@@ -148,9 +148,8 @@ export class KycSpousePage {
 			controls['f3_spouse_mfi'].disable({ emitEvent: false });
 			controls['f3_spouse_shgname'].disable({ emitEvent: false });
 
-			if(controls['f3_spouse_occp'].value =="farmer" && controls['f3_spouse_occp'].value =="other")
+			if(controls['f3_spouse_occp'].value != 'housewife')
 			{
-
 				controls['f3_spouse_income'].enable({ emitEvent: false });
 			}
 			else

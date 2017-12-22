@@ -30,6 +30,12 @@ import { Sql } from '../../providers/sql/sql';
 
  		this.personal = formBuilder.group({
 
+            fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
+            fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
+            fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
+            fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required])],
+            fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required])],
+            
             f1_mfname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             f1_mmname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             f1_dob: ['', Validators.required],
@@ -66,12 +72,17 @@ import { Sql } from '../../providers/sql/sql';
         this.exist = false;
         this.fm_id = this.navParams.get('farmer_id');
 
-        this.sql.query('SELECT * FROM tbl_personal_detail WHERE fm_id = ? limit 1', [this.fm_id]).then( (data) => {
+        this.sql.query('SELECT * FROM tbl_farmers as f LEFT JOIN tbl_personal_detail as p ON f.local_id = p.fm_id WHERE f.local_id = ? limit 1', [this.fm_id]).then( (data) => {
 
             if (data.res.rows.length > 0) {
 
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
+                formData['fm_fname']         = sqlData.fm_fname;
+                formData['fm_mname']         = sqlData.fm_mname;
+                formData['fm_lname']         = sqlData.fm_lname;
+                formData['fm_mobileno']      = sqlData.fm_mobileno;
+                formData['fm_aadhar']        = sqlData.fm_aadhar;
 
                 formData['f1_mfname']        = sqlData.f1_mfname;
                 formData['f1_mmname']        = sqlData.f1_mmname;
@@ -87,7 +98,9 @@ import { Sql } from '../../providers/sql/sql';
                 formData['f1_expfarm']       = sqlData.f1_expfarm;
 
                 this.personal.setValue(formData);
-                this.exist = true;
+                if (formData['f1_mfname']) {
+                    this.exist = true;
+                }
             }
 
         }, err => {
@@ -106,56 +119,71 @@ import { Sql } from '../../providers/sql/sql';
 
             let date = new Date();
             let dateNow = date.getTime()/1000|0;
+            this.sql.query('UPDATE tbl_farmers SET fm_fname = ?, fm_mname = ?, fm_lname = ?, fm_mobileno = ?, fm_aadhar  = ?, fm_modifieddt = ? WHERE local_id = ?', [
 
-            if (this.exist) {
-                this.sql.query('UPDATE tbl_personal_detail SET f1_mfname = ?, f1_mmname = ?, f1_dob = ?, f1_age = ?, f1_altno  = ?, any_other_select = ?, f1_ppno = ?, f1_pancard = ?, f1_vote = ?, f1_licno = ?, f1_otherno = ?, f1_expfarm = ?, f1_modified_date = ? WHERE fm_id = ?', [
+                this.personal.value.fm_fname,
+                this.personal.value.fm_mname,
+                this.personal.value.fm_lname,
+                this.personal.value.fm_mobileno,
+                this.personal.value.fm_aadhar,
+                dateNow,
+                this.fm_id
+            ]).then(data => {
+                if (this.exist) {
+                    this.sql.query('UPDATE tbl_personal_detail SET f1_mfname = ?, f1_mmname = ?, f1_dob = ?, f1_age = ?, f1_altno  = ?, any_other_select = ?, f1_ppno = ?, f1_pancard = ?, f1_vote = ?, f1_licno = ?, f1_otherno = ?, f1_expfarm = ?, f1_modified_date = ? WHERE fm_id = ?', [
 
-                    this.personal.value.f1_mfname,
-                    this.personal.value.f1_mmname,
-                    this.personal.value.f1_dob,
-                    this.personal.value.f1_age,
-                    this.personal.value.f1_altno,
-                    this.personal.value.any_other_select,
-                    this.personal.value.f1_ppno, 
-                    this.personal.value.f1_pancard, 
-                    this.personal.value.f1_vote, 
-                    this.personal.value.f1_licno, 
-                    this.personal.value.f1_otherno, 
-                    this.personal.value.f1_expfarm,
-                    dateNow,
-                    this.fm_id
-                ]).then(data => {
-                    this.navCtrl.pop();
-                },
-                err => {
-                    console.log(err);
-                });               
-            }
-            else{
-                this.sql.query('INSERT INTO tbl_personal_detail(fm_id, f1_mfname, f1_mmname, f1_dob, f1_age, f1_altno ,any_other_select, f1_ppno, f1_pancard, f1_vote, f1_licno, f1_otherno, f1_expfarm, f1_created_date, f1_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                        this.personal.value.f1_mfname,
+                        this.personal.value.f1_mmname,
+                        this.personal.value.f1_dob,
+                        this.personal.value.f1_age,
+                        this.personal.value.f1_altno,
+                        this.personal.value.any_other_select,
+                        this.personal.value.f1_ppno, 
+                        this.personal.value.f1_pancard, 
+                        this.personal.value.f1_vote, 
+                        this.personal.value.f1_licno, 
+                        this.personal.value.f1_otherno, 
+                        this.personal.value.f1_expfarm,
+                        dateNow,
+                        this.fm_id
+                    ]).then(data => {
+                        console.log(data);
+                        this.navCtrl.pop();
+                    },
+                    err => {
+                        console.log(err);
+                    });               
+                }
+                else{
+                    this.sql.query('INSERT INTO tbl_personal_detail(fm_id, f1_mfname, f1_mmname, f1_dob, f1_age, f1_altno ,any_other_select, f1_ppno, f1_pancard, f1_vote, f1_licno, f1_otherno, f1_expfarm, f1_created_date, f1_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
-                    this.fm_id,
-                    this.personal.value.f1_mfname,
-                    this.personal.value.f1_mmname,
-                    this.personal.value.f1_dob,
-                    this.personal.value.f1_age,
-                    this.personal.value.f1_altno,
-                    this.personal.value.any_other_select,
-                    this.personal.value.f1_ppno, 
-                    this.personal.value.f1_pancard, 
-                    this.personal.value.f1_vote, 
-                    this.personal.value.f1_licno, 
-                    this.personal.value.f1_otherno, 
-                    this.personal.value.f1_expfarm,
-                    dateNow,
-                    dateNow
-                ]).then(data => {
-                    this.navCtrl.pop();
-                },
-                err => {
-                    console.log(err);
-                });
-            }
+                        this.fm_id,
+                        this.personal.value.f1_mfname,
+                        this.personal.value.f1_mmname,
+                        this.personal.value.f1_dob,
+                        this.personal.value.f1_age,
+                        this.personal.value.f1_altno,
+                        this.personal.value.any_other_select,
+                        this.personal.value.f1_ppno, 
+                        this.personal.value.f1_pancard, 
+                        this.personal.value.f1_vote, 
+                        this.personal.value.f1_licno, 
+                        this.personal.value.f1_otherno, 
+                        this.personal.value.f1_expfarm,
+                        dateNow,
+                        dateNow
+                    ]).then(data => {
+                        console.log(data);
+                        this.navCtrl.pop();
+                    },
+                    err => {
+                        console.log(err);
+                    });
+                }
+            },
+            err => {
+                console.log(err);
+            });
 
         }
     }

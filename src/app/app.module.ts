@@ -21,6 +21,8 @@ import { AuthService } from '../providers/providers';
 import { UserProvider } from '../providers/user/user';
 import { Sql } from '../providers/sql/sql';
 
+import { SelectSearchableModule } from '../components/select-searchable/select-searchable-module';
+
 @NgModule({
     declarations: [
         MyApp,
@@ -42,7 +44,8 @@ import { Sql } from '../providers/sql/sql';
         IonicStorageModule.forRoot({
             name: '__agribridgeDb',
             driverOrder: ['sqlite', 'indexeddb', 'websql']
-        })
+        }),
+        SelectSearchableModule,
     ],
     bootstrap: [IonicApp],
         entryComponents: [

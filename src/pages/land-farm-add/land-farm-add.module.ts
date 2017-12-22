@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
 import { LandFarmAddPage } from './land-farm-add';
+import { SelectSearchableModule } from '../../components/select-searchable/select-searchable-module';
 
 @NgModule({
   declarations: [
@@ -8,6 +9,7 @@ import { LandFarmAddPage } from './land-farm-add';
   ],
   imports: [
     IonicPageModule.forChild(LandFarmAddPage),
+    SelectSearchableModule,
   ],
 })
 export class LandFarmAddPageModule {}

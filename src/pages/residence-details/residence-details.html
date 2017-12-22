@@ -19,7 +19,7 @@
 			<div padding>
 				<ion-item>
 					<ion-label floating>Residence Status</ion-label>
-					<ion-select formControlName="f7_resistatus">
+					<ion-select formControlName="f7_resistatus" interface="popover">
 						<ion-option value="Rented">Rented</ion-option>
 						<ion-option value="Owned">Owned</ion-option>
 						<ion-option value="Ancestral">Ancestral</ion-option>
@@ -32,7 +32,7 @@
 			<ion-item-divider color="light">Address(permanent)</ion-item-divider>
 			<div padding>
 				<ion-item>
-					<ion-label floating>House no.</ion-label>
+					<ion-label floating>House no./ Building no.</ion-label>
 					<ion-input formControlName="f7_phouse" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_phouse.valid  && (personal.controls.f7_phouse.dirty || submitAttempt)">
@@ -52,54 +52,68 @@
 				<div *ngIf="!personal.controls.f7_parea.valid  && (personal.controls.f7_parea.dirty || submitAttempt)">
 					<p *ngIf="personal.controls.f7_parea.errors.required">Please enter a valid house no.</p>
 				</div>
+
 				<ion-item>
-					<ion-label floating>state</ion-label>
-					<ion-select formControlName="f7_pstate">
-						<ion-option value="state1">state1</ion-option>
-						<ion-option value="state2">state2</ion-option>
-						<ion-option value="state3">state3</ion-option>
-						<ion-option value="state4">state4</ion-option>
-					</ion-select>
+				    <select-searchable
+				        title="State"
+				        formControlName="f7_pstate"
+				        [items]="states"
+				        itemValueField="name"
+				        itemTextField="name"
+				        [canSearch]="true"
+				        (onChange)="stateChange('p', $event)">
+				    </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_pstate.valid  && (personal.controls.f7_pstate.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
+
 				<ion-item>
-					<ion-label floating>District</ion-label>
-					<ion-select formControlName="f7_pdistrict">
-						<ion-option value="district1">district1</ion-option>
-						<ion-option value="district2">district2</ion-option>
-						<ion-option value="district3">district3</ion-option>
-						<ion-option value="district4">district4</ion-option>
-					</ion-select>
+					<select-searchable
+		                title="District"
+		                formControlName="f7_pdistrict"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="districts"
+				        [canSearch]="true"
+		                (onChange)="districtChange('p', $event)">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_pdistrict.valid  && (personal.controls.f7_pdistrict.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
+
 				<ion-item>
-					<ion-label floating>Taluka</ion-label>
-					<ion-select formControlName="f7_ptaluka">
-						<ion-option value="taluka1">taluka1</ion-option>
-						<ion-option value="taluka2">taluka2</ion-option>
-						<ion-option value="taluka3">taluka3</ion-option>
-						<ion-option value="taluka4">taluka4</ion-option>
-					</ion-select>
+					<select-searchable
+		                title="Taluka"
+		                formControlName="f7_ptaluka"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="talukas"
+				        [canSearch]="true"
+		                (onChange)="talukaChange('p', $event)">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_ptaluka.valid  && (personal.controls.f7_ptaluka.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
+
 				<ion-item>
-					<ion-label floating>Village</ion-label>
-					<ion-select formControlName="f7_pvillage">
-						<ion-option value="village1">village1</ion-option>
-						<ion-option value="village2">village2</ion-option>
-						<ion-option value="village3">village3</ion-option>
-						<ion-option value="village4">village4</ion-option>
-					</ion-select>
+					<select-searchable
+		                title="Village"
+		                formControlName="f7_pvillage"
+		                itemValueField="name"
+		                itemTextField="name"
+				        [canSearch]="true"
+		                [items]="villages">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_pvillage.valid  && (personal.controls.f7_pvillage.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
+
+				
+
 				<ion-item>
 					<ion-label floating>Pin code</ion-label>
 					<ion-input formControlName="f7_ppin" type="number"></ion-input>
@@ -112,7 +126,7 @@
 			<div padding>
 				<button ion-button color="light" (click)="copyAddress()">Same as Permanent</button>
 				<ion-item>
-					<ion-label floating>House no.</ion-label>
+					<ion-label floating>House no./ Building no.</ion-label>
 					<ion-input formControlName="f7_chouse" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_chouse.valid  && (personal.controls.f7_chouse.dirty || submitAttempt)">
@@ -133,49 +147,56 @@
 					<p *ngIf="personal.controls.f7_carea.errors.required">Please enter a valid house no.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>state</ion-label>
-					<ion-select formControlName="f7_cstate">
-						<ion-option value="state1">state1</ion-option>
-						<ion-option value="state2">state2</ion-option>
-						<ion-option value="state3">state3</ion-option>
-						<ion-option value="state4">state4</ion-option>
-					</ion-select>
+					<select-searchable
+				        title="State"
+				        formControlName="f7_cstate"
+				        itemValueField="name"
+				        itemTextField="name"
+				        [items]="cstates"
+				        [canSearch]="true"
+				        (onChange)="stateChange('c', $event)">
+				    </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_cstate.valid  && (personal.controls.f7_cstate.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>District</ion-label>
-					<ion-select formControlName="f7_cdistrict">
-						<ion-option value="district1">district1</ion-option>
-						<ion-option value="district2">district2</ion-option>
-						<ion-option value="district3">district3</ion-option>
-						<ion-option value="district4">district4</ion-option>
-					</ion-select>
+					<select-searchable
+		                title="District"
+		                formControlName="f7_cdistrict"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="cdistricts"
+				        [canSearch]="true"
+		                (onChange)="districtChange('c', $event)">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_cdistrict.valid  && (personal.controls.f7_cdistrict.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>Taluka</ion-label>
-					<ion-select formControlName="f7_ctaluka">
-						<ion-option value="taluka1">taluka1</ion-option>
-						<ion-option value="taluka2">taluka2</ion-option>
-						<ion-option value="taluka3">taluka3</ion-option>
-						<ion-option value="taluka4">taluka4</ion-option>
-					</ion-select>
+					<select-searchable
+		                title="Taluka"
+		                formControlName="f7_ctaluka"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="ctalukas"
+				        [canSearch]="true"
+		                (onChange)="talukaChange('c', $event)">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_ctaluka.valid  && (personal.controls.f7_ctaluka.dirty || submitAttempt)">
 					<p>This field is required.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>Village</ion-label>
-					<ion-select formControlName="f7_cvillage">
-						<ion-option value="village1">village1</ion-option>
-						<ion-option value="village2">village2</ion-option>
-						<ion-option value="village3">village3</ion-option>
-						<ion-option value="village4">village4</ion-option>
-					</ion-select>
+					<select-searchable
+		                title="Village"
+		                formControlName="f7_cvillage"
+		                itemValueField="name"
+		                itemTextField="name"
+				        [canSearch]="true"
+		                [items]="cvillages">
+		            </select-searchable>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_cvillage.valid  && (personal.controls.f7_cvillage.dirty || submitAttempt)">
 					<p>This field is required.</p>
