@@ -28,9 +28,9 @@
                 <ion-icon name="">{{totalFarmers || 0}}</ion-icon>
                 <h6>TOTAL FARMERS</h6>
             </ion-col>
-            <ion-col ion-button color="dark" (click)="goto('FarmersPage')">
-                <ion-icon name="">{{totalUploaded || 0}}</ion-icon>
-                <h6>UPLOADED</h6>
+            <ion-col ion-button color="dark" (click)="upload()">
+                <ion-icon name="cloud-upload"></ion-icon>
+                <h6>UPLOADE To <br>SERVER</h6>
             </ion-col>
         </ion-row>
 

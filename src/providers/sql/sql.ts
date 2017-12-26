@@ -475,4 +475,8 @@ export class Sql {
             }
         });
     }
+
+    getDb(){
+        return this._db;
+    }
 }
