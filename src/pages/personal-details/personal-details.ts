@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
+import { ExtraValidator } from '../../validators/ExtraValidator';
 
 /**
  * Generated class for the PersonalDetailsPage page.
@@ -20,7 +21,7 @@ import { Sql } from '../../providers/sql/sql';
  	personal: FormGroup;
     submitAttempt: boolean = false;
     retryButton: boolean = false;
-    fm_id: any;
+    fm_id: any = null;
     exist: boolean = false;    
 
  	constructor(public navCtrl: NavController, 
@@ -33,8 +34,8 @@ import { Sql } from '../../providers/sql/sql';
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
-            fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required])],
-            fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required])],
+            fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required]), (control) => this.checkMobilePersonal(control, this.fm_id)],
+            fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), (control) => this.checkAadharPersonal(control, this.fm_id)],
             
             f1_mfname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             f1_mmname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
@@ -42,10 +43,10 @@ import { Sql } from '../../providers/sql/sql';
             f1_age: [''],
             f1_altno: ['', Validators.pattern('^[0-9]{10}$')],
             any_other_select: ['', Validators.required],
-            f1_ppno: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{12}$')],
+            f1_ppno: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{8}$')],
             f1_pancard: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{10}$')],
-            f1_vote: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{12}$')],
-            f1_licno: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{12}$')],
+            f1_vote: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{10}$')],
+            f1_licno: ['', Validators.pattern('^[0-9A-Za-z-/\_$&@]{10}$')],
             f1_otherno: ['', Validators.compose([Validators.maxLength(20),Validators.pattern('^[0-9A-Za-z-/\_$&@]*')] )],
             f1_expfarm: ['', Validators.compose([Validators.maxLength(2), Validators.pattern('^[0-9.]*'), Validators.required])],
         });
@@ -197,4 +198,70 @@ import { Sql } from '../../providers/sql/sql';
         }
     }
 
- }
+    checkMobilePersonal(control: FormControl, _fm_id): any {
+        
+        return new Promise(resolve => {
+
+            setTimeout(() => {
+                let sql = new Sql;
+                sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
+
+                    if (data.res.rows.length > 0) {
+                        resolve({
+                            "taken": true
+                        });
+                    }
+                    else{
+
+                        sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ?", [control.value]).then((data) => {
+
+                            if (data.res.rows.length > 0) {
+                                resolve({
+                                    "taken": true
+                                });
+                            }
+                            else{
+                                resolve(null);
+                            }
+                        });
+                    }
+                });
+            }, 100);
+
+        });
+    }
+
+    checkAadharPersonal(control: FormControl, _fm_id): any {
+        
+        return new Promise(resolve => {
+
+            setTimeout(() => {
+                let sql = new Sql;
+                sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
+
+                    if (data.res.rows.length > 0) {
+                        resolve({
+                            "taken": true
+                        });
+                    }
+                    else{
+
+                        sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ?", [control.value]).then((data) => {
+
+                            if (data.res.rows.length > 0) {
+                                resolve({
+                                    "taken": true
+                                });
+                            }
+                            else{
+                                resolve(null);
+                            }
+                        });
+                    }
+                });
+            }, 100);
+
+        });
+    }
+
+}

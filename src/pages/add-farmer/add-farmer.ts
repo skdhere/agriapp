@@ -3,6 +3,7 @@ import { IonicPage, NavController, NavParams } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 import { UserProvider } from '../../providers/user/user';
+import { ExtraValidator } from '../../validators/ExtraValidator';
 
 
 /**
@@ -35,8 +36,8 @@ export class AddFarmerPage {
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
-            fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required])],
-            fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required])],
+            fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required]), ExtraValidator.checkMobile],
+            fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), ExtraValidator.checkAadhar],
         });
     }
 
@@ -47,6 +48,8 @@ export class AddFarmerPage {
     save() {
 
         this.submitAttempt = true;
+        console.log(this.personal.controls);
+
         if (!this.personal.valid) {
             console.log("Validation error!")
         } else {

@@ -34,8 +34,8 @@ export class CropCultivationAddPage {
 			'f10_cultivating' : ['', Validators.required],
 			'f10_crop_variety' : ['', Validators.required],
 			'f10_stage' : ['', Validators.required],
-			'f10_expected' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
-			'f10_expectedprice' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')])],
+			'f10_expected' : ['', Validators.compose([ Validators.required, Validators.maxLength(8), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
+			'f10_expectedprice' : ['', Validators.compose([ Validators.required, Validators.maxLength(8), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')])],
 			'f10_diseases' : ['', Validators.required],
 			'f10_pest' : ['', Validators.required],
 		});

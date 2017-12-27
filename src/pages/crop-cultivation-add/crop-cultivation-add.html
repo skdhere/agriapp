@@ -21,7 +21,7 @@
 		<ion-list>
 			<div>
 				<ion-item>
-				    <ion-label floating>Select Farm Land<span>*</span></ion-label>
+				    <ion-label floating>Select Farm Land <span>*</span></ion-label>
 				    <ion-select formControlName="f10_land" interface="popover">
 						<ion-option *ngFor="let f of farms" value="{{f.f9_name}}">{{f.f9_name}}</ion-option> 
 				    </ion-select>
@@ -91,21 +91,21 @@
 
 				<ion-item>
 		            <ion-label floating>Total Yield Expected [Per Acre Per Crop] <span>*</span></ion-label>
-		            <ion-input formControlName="f10_expected" type="text"></ion-input>
+		            <ion-input formControlName="f10_expected" type="number"></ion-input>
 		        </ion-item>
 		        <div *ngIf="cultivation.controls.f10_expected.invalid  && (cultivation.controls.f10_expected.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_expected.errors.required">This field is required.</p>
-		            <p *ngIf="cultivation.controls.f10_expected.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
+		            <p *ngIf="cultivation.controls.f10_expected.errors.maxlength">Lenght should be smaller than or equal to 8.</p>
 		            <p *ngIf="cultivation.controls.f10_expected.errors.pattern">Please enter a valid number.</p>
 		        </div>
 				
 				<ion-item>
 		            <ion-label floating>Expected Price This Year [Per Quintal Per Acre] <span>*</span></ion-label>
-		            <ion-input formControlName="f10_expectedprice" type="text"></ion-input>
+		            <ion-input formControlName="f10_expectedprice" type="number"></ion-input>
 		        </ion-item>
 		        <div *ngIf="cultivation.controls.f10_expectedprice.invalid  && (cultivation.controls.f10_expectedprice.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.required">This field is required.</p>
-		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
+		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.maxlength">Lenght should be smaller than or equal to 8.</p>
 		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.pattern">Please enter a valid number.</p>
 		        </div>
 

@@ -18,7 +18,7 @@
 		<ion-list>
 			<div padding>
 				<ion-item>
-					<ion-label floating>Residence Status</ion-label>
+					<ion-label floating>Residence Status <span>*</span></ion-label>
 					<ion-select formControlName="f7_resistatus" interface="popover">
 						<ion-option value="Rented">Rented</ion-option>
 						<ion-option value="Owned">Owned</ion-option>
@@ -36,21 +36,21 @@
 					<ion-input formControlName="f7_phouse" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_phouse.valid  && (personal.controls.f7_phouse.dirty || submitAttempt)">
-					<p *ngIf="personal.controls.f7_phouse.errors.required">Please enter a valid house no.</p>
+					<p *ngIf="personal.controls.f7_phouse.errors.required">This field is required.</p>
 				</div>
 				<ion-item>
 					<ion-label floating>Street name.</ion-label>
 					<ion-input formControlName="f7_pstreet" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_pstreet.valid  && (personal.controls.f7_pstreet.dirty || submitAttempt)">
-					<p *ngIf="personal.controls.f7_pstreet.errors.required">Please enter a valid house no.</p>
+					<p *ngIf="personal.controls.f7_pstreet.errors.required">This field is required.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>Area name</ion-label>
+					<ion-label floating>Area name <span>*</span></ion-label>
 					<ion-input formControlName="f7_parea" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_parea.valid  && (personal.controls.f7_parea.dirty || submitAttempt)">
-					<p *ngIf="personal.controls.f7_parea.errors.required">Please enter a valid house no.</p>
+					<p *ngIf="personal.controls.f7_parea.errors.required">This field is required.</p>
 				</div>
 
 				<ion-item>
@@ -115,7 +115,7 @@
 				
 
 				<ion-item>
-					<ion-label floating>Pin code</ion-label>
+					<ion-label floating>Pin code <span>*</span></ion-label>
 					<ion-input formControlName="f7_ppin" type="number"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_ppin.valid  && (personal.controls.f7_ppin.dirty || submitAttempt)">
@@ -130,21 +130,21 @@
 					<ion-input formControlName="f7_chouse" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_chouse.valid  && (personal.controls.f7_chouse.dirty || submitAttempt)">
-					<p *ngIf="personal.controls.f7_chouse.errors.required">Please enter a valid house no.</p>
+					<p *ngIf="personal.controls.f7_chouse.errors.required">This field is required.</p>
 				</div>
 				<ion-item>
 					<ion-label floating>Street name.</ion-label>
 					<ion-input formControlName="f7_cstreet" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_cstreet.valid  && (personal.controls.f7_cstreet.dirty || submitAttempt)">
-					<p *ngIf="personal.controls.f7_cstreet.errors.required">Please enter a valid house no.</p>
+					<p *ngIf="personal.controls.f7_cstreet.errors.required">This field is required.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>Area name</ion-label>
+					<ion-label floating>Area name <span>*</span></ion-label>
 					<ion-input formControlName="f7_carea" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_carea.valid  && (personal.controls.f7_carea.dirty || submitAttempt)">
-					<p *ngIf="personal.controls.f7_carea.errors.required">Please enter a valid house no.</p>
+					<p *ngIf="personal.controls.f7_carea.errors.required">This field is required.</p>
 				</div>
 				<ion-item>
 					<select-searchable
@@ -202,7 +202,7 @@
 					<p>This field is required.</p>
 				</div>
 				<ion-item>
-					<ion-label floating>Pin code</ion-label>
+					<ion-label floating>Pin code <span>*</span></ion-label>
 					<ion-input formControlName="f7_cpin" type="number"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_cpin.valid  && (personal.controls.f7_cpin.dirty || submitAttempt)">

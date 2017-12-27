@@ -46,7 +46,7 @@ export class Farmerdetail {
 		this.parmsPage3     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'crop details' };
 		this.parmsPage4     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'assets' };
 		this.parmsPage5     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'loan and liability' };
-		// this.parmsPage6     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'Documents' };
+		this.parmsPage6     = {rootNavCtrl: this.navCtrl ,farmer: this.current_farmer, form_name : 'Documents' };
 	}
 
 	ngAfterViewInit() {

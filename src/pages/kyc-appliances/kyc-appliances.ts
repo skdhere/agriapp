@@ -101,16 +101,16 @@ export class KycAppliancesPage {
             if (this.exist) {
                 this.sql.query('UPDATE tbl_appliances_details SET f7_television = ?, f7_refrigerator = ?, f7_wmachine = ?, f7_mixer = ?, f7_stove = ?, f7_bicycle = ?, f7_ccylinder = ?, f7_fans = ?, f7_motorcycle = ?, f7_car = ?, f6_modified_date = ? WHERE fm_id = ?', [
 
-                    this.appliances.value.f7_television || '',
-                    this.appliances.value.f7_refrigerator || '',
-                    this.appliances.value.f7_wmachine || '',
-                    this.appliances.value.f7_mixer || '',
-                    this.appliances.value.f7_stove || '',
-                    this.appliances.value.f7_bicycle || '',
-                    this.appliances.value.f7_ccylinder || '',
-                    this.appliances.value.f7_fans || '',
-                    this.appliances.value.f7_motorcycle || '',
-                    this.appliances.value.f7_car || '',
+                    this.appliances.value.f7_television,
+                    this.appliances.value.f7_refrigerator,
+                    this.appliances.value.f7_wmachine,
+                    this.appliances.value.f7_mixer,
+                    this.appliances.value.f7_stove,
+                    this.appliances.value.f7_bicycle,
+                    this.appliances.value.f7_ccylinder,
+                    this.appliances.value.f7_fans,
+                    this.appliances.value.f7_motorcycle,
+                    this.appliances.value.f7_car,
 
                     dateNow,
                     this.fm_id
@@ -125,16 +125,16 @@ export class KycAppliancesPage {
                 this.sql.query('INSERT INTO tbl_appliances_details(fm_id, f7_television, f7_refrigerator, f7_wmachine, f7_mixer, f7_stove, f7_bicycle, f7_ccylinder, f7_fans, f7_motorcycle, f7_car, f7_created_date, f7_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
-                    this.appliances.value.f7_television || '',
-                    this.appliances.value.f7_refrigerator || '',
-                    this.appliances.value.f7_wmachine || '',
-                    this.appliances.value.f7_mixer || '',
-                    this.appliances.value.f7_stove || '',
-                    this.appliances.value.f7_bicycle || '',
-                    this.appliances.value.f7_ccylinder || '',
-                    this.appliances.value.f7_fans || '',
-                    this.appliances.value.f7_motorcycle || '',
-                    this.appliances.value.f7_car || '',
+                    this.appliances.value.f7_television,
+                    this.appliances.value.f7_refrigerator,
+                    this.appliances.value.f7_wmachine,
+                    this.appliances.value.f7_mixer,
+                    this.appliances.value.f7_stove,
+                    this.appliances.value.f7_bicycle,
+                    this.appliances.value.f7_ccylinder,
+                    this.appliances.value.f7_fans,
+                    this.appliances.value.f7_motorcycle,
+                    this.appliances.value.f7_car,
                     dateNow,
                     dateNow
                 ]).then(data => {

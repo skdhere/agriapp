@@ -21,19 +21,21 @@
 		<ion-list>
 
 		    <ion-item>
-			    <ion-label floating>Are you marrired? </ion-label>
+			    <ion-label floating>Are you marrired?  <span>*</span></ion-label>
 			    <ion-select formControlName="f3_married_status" interface="popover" >
 			      <ion-option value="yes">Yes</ion-option>
 			      <ion-option value="no">No</ion-option>
 			    </ion-select>
 			</ion-item>
-             
+            <div *ngIf="!spouse.controls.f3_married_status.valid  && (spouse.controls.f3_married_status.dirty || submitAttempt)">
+	            <p *ngIf="spouse.controls.f3_married_status.errors.required">This field is required.</p>
+	        </div>
+
 			<div *ngIf="spouse.controls.f3_married_status.value == 'yes'">
 				<ion-item>
-				    <ion-label floating>Spouse First Name</ion-label>
+				    <ion-label floating>Spouse First Name <span>*</span></ion-label>
 		            <ion-input formControlName="f3_spouse_fname" type="text" ></ion-input>
 				</ion-item>
-
 				<div *ngIf="!spouse.controls.f3_spouse_fname.valid  && (spouse.controls.f3_spouse_fname.dirty || submitAttempt)">
 		            <p *ngIf="spouse.controls.f3_spouse_fname.errors.required">This field is required.</p>
 		            <p *ngIf="spouse.controls.f3_spouse_fname.errors.minlength">Length shoud be equal to or smaller than {{spouse.controls.f3_spouse_fname.errors.minlength.requiredLength}}</p>
@@ -41,10 +43,9 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Spouse Middle Name</ion-label>
+				    <ion-label floating>Spouse Middle Name <span>*</span></ion-label>
 		            <ion-input formControlName="f3_spouse_mname" type="text" ></ion-input>
 				</ion-item>
-
 				<div *ngIf="!spouse.controls.f3_spouse_mname.valid  && (spouse.controls.f3_spouse_fname.dirty || submitAttempt)">
 		            <p *ngIf="spouse.controls.f3_spouse_mname.errors.required">This field is required.</p>
 		            <p *ngIf="spouse.controls.f3_spouse_mname.errors.minlength">Length shoud be equal to or smaller than {{spouse.controls.f3_spouse_mname.errors.minlength.requiredLength}}</p>
@@ -52,10 +53,9 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Spouse Last Name</ion-label>
+				    <ion-label floating>Spouse Last Name <span>*</span></ion-label>
 		            <ion-input formControlName="f3_spouse_lname" type="text" ></ion-input>
 				</ion-item>
-
 				<div *ngIf="!spouse.controls.f3_spouse_lname.valid  && (spouse.controls.f3_spouse_lname.dirty || submitAttempt)">
 		            <p *ngIf="spouse.controls.f3_spouse_lname.errors.required">This field is required.</p>
 		            <p *ngIf="spouse.controls.f3_spouse_lname.errors.minlength">Length shoud be equal to or smaller than {{spouse.controls.f3_spouse_lname.errors.minlength.requiredLength}}</p>
@@ -63,7 +63,7 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Age </ion-label>
+				    <ion-label floating>Age <span>*</span></ion-label>
 		            <ion-input formControlName="f3_spouse_age" type="number" ></ion-input>
 				</ion-item>
 				<div *ngIf="!spouse.controls.f3_spouse_age.valid  && (spouse.controls.f3_spouse_age.dirty || submitAttempt)">
@@ -73,25 +73,33 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Mobile no.</ion-label>
+				    <ion-label floating>Mobile no. <span>*</span></ion-label>
 		            <ion-input formControlName="f3_spouse_mobno" type="number"></ion-input>
 				</ion-item>
-				<div *ngIf="!spouse.controls.f3_spouse_mobno.valid  && (spouse.controls.f3_spouse_mobno.dirty || submitAttempt)">
-		            <p *ngIf="spouse.controls.f3_spouse_mobno.errors.required">This field is required.</p>
-		            <p *ngIf="spouse.controls.f3_spouse_mobno.errors.minlength || spouse.controls.f3_spouse_mobno.errors.maxlength">Please enter a valid mobile no.</p>
+				<div *ngIf="spouse.controls.f3_spouse_mobno.pending">
+	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!spouse.controls.f3_spouse_mobno.pending && !spouse.controls.f3_spouse_mobno.valid  && (spouse.controls.f3_spouse_mobno.dirty || submitAttempt)">
+		            <p *ngIf="spouse.controls.f3_spouse_mobno.errors['required']">This field is required.</p>
+		            <p *ngIf="spouse.controls.f3_spouse_mobno.errors['minlength'] || spouse.controls.f3_spouse_mobno.errors['maxlength']">Please enter a valid mobile no.</p>
+					<p *ngIf="spouse.controls.f3_spouse_mobno.errors['taken']">The Mobile no. is already assigned to another user.</p>
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Aadhaar no.</ion-label>
+				    <ion-label floating>Aadhaar no. <span>*</span></ion-label>
 		            <ion-input formControlName="f3_spouse_adhno" type="number"></ion-input>
 				</ion-item>
-				<div *ngIf="!spouse.controls.f3_spouse_adhno.valid  && (spouse.controls.f3_spouse_adhno.dirty || submitAttempt)">
+				<div *ngIf="spouse.controls.f3_spouse_adhno.pending">
+	                <p>Checking aadhar... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!spouse.controls.f3_spouse_adhno.pending && !spouse.controls.f3_spouse_adhno.valid  && (spouse.controls.f3_spouse_adhno.dirty || submitAttempt)">
 		            <p *ngIf="spouse.controls.f3_spouse_adhno.errors.required">This field is required.</p>
 		            <p *ngIf="spouse.controls.f3_spouse_adhno.errors.minlength || spouse.controls.f3_spouse_adhno.errors.maxlength">Please enter a valid Aadhaar no.</p>
+					<p *ngIf="spouse.controls.f3_spouse_adhno.errors.taken">The Aadhar no. is already assigned to another user.</p>
 		        </div>
 
 				<ion-item>
-				    <ion-label floating>Is Your Spouse A Part Of Any SHG?</ion-label>
+				    <ion-label floating>Is Your Spouse A Part Of Any SHG? <span>*</span></ion-label>
 				    <ion-select formControlName="f3_spouse_shg" interface="popover" >
 				      <ion-option value="yes">Yes</ion-option>
 				      <ion-option value="no">No</ion-option>
@@ -103,7 +111,7 @@
 				
 				<div *ngIf="spouse.controls.f3_spouse_shg.value == 'yes'">
 			        <ion-item>
-					    <ion-label floating>Name Of SHG </ion-label>
+					    <ion-label floating>Name Of SHG  <span>*</span></ion-label>
 			            <ion-input formControlName="f3_spouse_shgname" type="text" ></ion-input>
 					</ion-item>
 					<div *ngIf="!spouse.controls.f3_spouse_shgname.valid  && (spouse.controls.f3_spouse_shgname.dirty || submitAttempt)">
@@ -114,7 +122,7 @@
 				</div>
 
 				<ion-item>
-				    <ion-label floating>Occupation</ion-label>
+				    <ion-label floating>Occupation <span>*</span></ion-label>
 				    <ion-select formControlName="f3_spouse_occp" interface="popover" >
 				      <ion-option value="housewife">House wife</ion-option>
 				      <ion-option value="farmer">Farmer</ion-option>
@@ -129,10 +137,13 @@
 		        <div *ngIf="spouse.controls.f3_spouse_occp.value != 'housewife'">
 			        <ion-item>
 					    <ion-label floating>Spouse Income Per Month</ion-label>
-			            <ion-input formControlName="f3_spouse_income" type="text" ></ion-input>
+			            <ion-input formControlName="f3_spouse_income" type="number" ></ion-input>
 					</ion-item>
 				</div>
-
+				<div *ngIf="!spouse.controls.f3_spouse_income.valid  && (spouse.controls.f3_spouse_income.dirty || submitAttempt)">
+		            <p *ngIf="spouse.controls.f3_spouse_income.errors.maxlength">Length shoud be equal to or smaller {{spouse.controls.f3_spouse_income.errors.maxlength.requiredLength}}</p>
+		        </div>
+		        
 				<ion-item>
 				    <ion-label floating>Any Micro Finance Help Taken By Spouse?</ion-label>
 				    <ion-select formControlName="f3_spouse_mfi" interface="popover" >
@@ -155,7 +166,7 @@
 				    </ion-item>
 
 					<ion-item>
-					    <ion-label floating>Name Of Microfinance</ion-label>
+					    <ion-label floating>Name Of Microfinance <span>*</span></ion-label>
 			            <ion-input formControlName="f3_spouse_mfiname" type="text" ></ion-input>
 					</ion-item>
 					<div *ngIf="!spouse.controls.f3_spouse_mfiname.valid  && (spouse.controls.f3_spouse_mfiname.dirty || submitAttempt)">
@@ -165,8 +176,8 @@
 			        </div>
 
 			        <ion-item>
-					    <ion-label floating>Amount Taken From Microfinance</ion-label>
-			            <ion-input formControlName="f3_spouse_mfiamount" type="text" ></ion-input>
+					    <ion-label floating>Amount Taken From Microfinance <span>*</span></ion-label>
+			            <ion-input formControlName="f3_spouse_mfiamount" type="number" ></ion-input>
 					</ion-item>
 					<div *ngIf="!spouse.controls.f3_spouse_mfiamount.valid  && (spouse.controls.f3_spouse_mfiamount.dirty || submitAttempt)">
 			            <p *ngIf="spouse.controls.f3_spouse_mfiamount.errors.required">This field is required.</p>
@@ -176,8 +187,8 @@
 
 
 			        <ion-item>
-					    <ion-label floating>Rate Of Interest*</ion-label>
-			            <ion-input formControlName="f3_loan_interest" type="text" ></ion-input>
+					    <ion-label floating>Rate Of Interest <span>*</span></ion-label>
+			            <ion-input formControlName="f3_loan_interest" type="number" ></ion-input>
 					</ion-item>
 					<div *ngIf="!spouse.controls.f3_loan_interest.valid  && (spouse.controls.f3_loan_interest.dirty || submitAttempt)">
 			            <p *ngIf="spouse.controls.f3_loan_interest.errors.required">This field is required.</p>
@@ -186,8 +197,8 @@
 			        </div>
 
 			        <ion-item>
-					    <ion-label floating>Loan Tenure In Months*</ion-label>
-			            <ion-input formControlName="f3_loan_tenure" type="text" ></ion-input>
+					    <ion-label floating>Loan Tenure In Months <span>*</span></ion-label>
+			            <ion-input formControlName="f3_loan_tenure" type="number" ></ion-input>
 					</ion-item>
 					<div *ngIf="!spouse.controls.f3_loan_tenure.valid  && (spouse.controls.f3_loan_tenure.dirty || submitAttempt)">
 			            <p *ngIf="spouse.controls.f3_loan_tenure.errors.required">This field is required.</p>
@@ -196,8 +207,8 @@
 			        </div>
 
 			        <ion-item>
-					    <ion-label floating>No. Of EMI Paid*</ion-label>
-			            <ion-input formControlName="f3_loan_emi" type="text" ></ion-input>
+					    <ion-label floating>No. Of EMI Paid <span>*</span></ion-label>
+			            <ion-input formControlName="f3_loan_emi" type="number" ></ion-input>
 					</ion-item>
 					<div *ngIf="!spouse.controls.f3_loan_emi.valid  && (spouse.controls.f3_loan_emi.dirty || submitAttempt)">
 			            <p *ngIf="spouse.controls.f3_loan_emi.errors.required">This field is required.</p>

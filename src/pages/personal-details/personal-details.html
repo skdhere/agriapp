@@ -20,7 +20,7 @@
 
 				<!-- Registration Details -->
 				<ion-item>
-					<ion-label floating>First Name</ion-label>
+					<ion-label floating>First Name <span>*</span></ion-label>
 					<ion-input formControlName="fm_fname" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.fm_fname.valid  && (personal.controls.fm_fname.dirty || submitAttempt)">
@@ -29,7 +29,7 @@
 				</div>
 
 				<ion-item>
-					<ion-label floating>Middle Name</ion-label>
+					<ion-label floating>Middle Name <span>*</span></ion-label>
 					<ion-input formControlName="fm_mname" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.fm_mname.valid  && (personal.controls.fm_mname.dirty || submitAttempt)">
@@ -38,7 +38,7 @@
 				</div>
 
 				<ion-item>
-					<ion-label floating>Last Name</ion-label>
+					<ion-label floating>Last Name <span>*</span></ion-label>
 					<ion-input formControlName="fm_lname" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.fm_lname.valid  && (personal.controls.fm_lname.dirty || submitAttempt)">
@@ -47,25 +47,33 @@
 				</div>
 
 				<ion-item>
-					<ion-label floating>Mobile no.</ion-label>
+					<ion-label floating>Mobile no. <span>*</span></ion-label>
 					<ion-input formControlName="fm_mobileno" type="tel"></ion-input>
 				</ion-item>
-				<div *ngIf="!personal.controls.fm_mobileno.valid  && (personal.controls.fm_mobileno.dirty || submitAttempt)">
-					<p>Please enter a 10 digit valid mobile no.</p>
+				<div *ngIf="personal.controls.fm_mobileno.pending">
+	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fm_mobileno.pending && !personal.controls.fm_mobileno.valid  && (personal.controls.fm_mobileno.dirty || submitAttempt)">
+					<p *ngIf="!personal.controls.fm_mobileno.errors.taken">Please enter a 10 digit valid mobile no. </p>
+					<p *ngIf="personal.controls.fm_mobileno.errors.taken">The Mobile no. is already assigned to another user.</p>
 				</div>
 
 				<ion-item>
-					<ion-label floating>Aadhaar no.</ion-label>
+					<ion-label floating>Aadhaar no. <span>*</span></ion-label>
 					<ion-input formControlName="fm_aadhar" type="number"></ion-input>
 				</ion-item>
-				<div *ngIf="!personal.controls.fm_aadhar.valid  && (personal.controls.fm_aadhar.dirty || submitAttempt)">
-					<p>Please enter a 12 digit valid Aadhar no.</p>
+				<div *ngIf="personal.controls.fm_aadhar.pending">
+	                <p>Checking aadhar... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fm_aadhar.pending && !personal.controls.fm_aadhar.valid  && (personal.controls.fm_aadhar.dirty || submitAttempt)">
+					<p *ngIf="!personal.controls.fm_aadhar.errors.taken">Please enter a 12 digit valid Aadhar no.</p>
+					<p *ngIf="personal.controls.fm_aadhar.errors.taken">The Aadhar no. is already assigned to another user.</p>
 				</div>
 				<!-- End of Registration Details -->
 
 
 				<ion-item>
-					<ion-label floating>Father's / Spouse's Name</ion-label>
+					<ion-label floating>Father's / Spouse's Name <span>*</span></ion-label>
 					<ion-input formControlName="f1_mfname" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f1_mfname.valid  && (personal.controls.f1_mfname.dirty || submitAttempt)">
@@ -73,7 +81,7 @@
 					<p *ngIf="personal.controls.f1_mfname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.f1_mfname.errors.maxlength.requiredLength}}</p>
 				</div>
 				<ion-item>
-					<ion-label floating>Mother's Name</ion-label>
+					<ion-label floating>Mother's Name <span>*</span></ion-label>
 					<ion-input formControlName="f1_mmname" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f1_mmname.valid  && (personal.controls.f1_mmname.dirty || submitAttempt)">
@@ -82,7 +90,7 @@
 				</div>
 
 				<ion-item>
-					<ion-label floating>Date of Birth</ion-label>
+					<ion-label floating>Date of Birth <span>*</span></ion-label>
 					<ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MMM YYYY" formControlName="f1_dob"></ion-datetime>
 				</ion-item>
 				<div *ngIf="!personal.controls.f1_dob.valid  && (personal.controls.f1_dob.dirty || submitAttempt)">
@@ -101,7 +109,7 @@
 				</div>
 
 				<ion-item>
-					<ion-label floating>Any Other ID Proof? </ion-label>
+					<ion-label floating>Any Other ID Proof? <span>*</span> </ion-label>
 					<ion-select formControlName="any_other_select" interface="popover">
 						<ion-option value="yes">Yes</ion-option>
 						<ion-option value="no">No</ion-option>
@@ -116,7 +124,7 @@
 						<ion-input formControlName="f1_ppno" type="text"></ion-input>
 					</ion-item>
 					<div *ngIf="!personal.controls.f1_ppno.valid  && (personal.controls.f1_ppno.dirty || submitAttempt)">
-						<p>Please enter a 12 digit valid Passport no.</p>
+						<p>Please enter a 8 digit valid Passport no.</p>
 					</div>
 
 					<ion-item>
@@ -132,7 +140,7 @@
 						<ion-input formControlName="f1_vote" type="text"></ion-input>
 					</ion-item>
 					<div *ngIf="!personal.controls.f1_vote.valid  && (personal.controls.f1_vote.dirty || submitAttempt)">
-						<p>Please enter a 12 digit valid Voting no.</p>
+						<p>Please enter a 10 digit valid Voting no.</p>
 					</div>
 
 					<ion-item>
@@ -140,7 +148,7 @@
 						<ion-input formControlName="f1_licno" type="text"></ion-input>
 					</ion-item>
 					<div *ngIf="!personal.controls.f1_licno.valid  && (personal.controls.f1_licno.dirty || submitAttempt)">
-						<p>Please enter a 12 digit valid Driving Licence no.</p>
+						<p>Please enter a 10 digit valid Driving Licence no.</p>
 					</div>
 					
 					<ion-item>
@@ -153,7 +161,7 @@
 				</div>
 
 				<ion-item>
-					<ion-label floating>Experience In Farming (In Years)</ion-label>
+					<ion-label floating>Experience In Farming (In Years) <span>*</span></ion-label>
 					<ion-input formControlName="f1_expfarm" type="number"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.f1_expfarm.valid  && (personal.controls.f1_expfarm.dirty || submitAttempt)">

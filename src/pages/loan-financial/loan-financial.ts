@@ -30,18 +30,18 @@ export class LoanFinancialPage {
 		this.loan = formBuilder.group({
 
 			loan_want:                         ['', Validators.required],
-            loan_amount:                       ['', Validators.compose([Validators.maxLength(7), Validators.pattern('^[0-9]*'), Validators.required])],
+            loan_amount:                       ['', Validators.compose([Validators.maxLength(8), Validators.pattern('^[0-9]*'), Validators.required])],
 			fx_monthly_income:                 ['', Validators.required],
 			f8_loan_taken:                     ['', Validators.required],
 			f8_private_lenders:                ['', Validators.required],
 			f8_borrowed_amount_date:           ['', Validators.required],
-            f8_borrowed_amount:                ['', Validators.compose([Validators.maxLength(7), Validators.pattern('^[0-9]*'), Validators.required])],
-            f8_borrowed_loan_per:              ['', Validators.compose([Validators.maxLength(7), Validators.pattern('^[0-9.]*'), Validators.required])],
+            f8_borrowed_amount:                ['', Validators.compose([Validators.maxLength(8), Validators.pattern('^[0-9]*'), Validators.required])],
+            f8_borrowed_loan_per:              ['', Validators.compose([Validators.maxLength(8), Validators.pattern('^[0-9.]*'), Validators.required])],
             f8_borrowed_loan_month:            ['', Validators.compose([Validators.maxLength(5), Validators.pattern('^[0-9.]*'), Validators.required])],
 			f8_borrowed_total_amount:          [0, Validators.required],
 			f8_borrowed_total_int:             [0, Validators.required],
 			f8_borrowed_amount_emi:            [0, Validators.required],
-            f8_borrowed_emi_paid:              ['', Validators.compose([Validators.maxLength(5), Validators.pattern('^[0-9.]*'), Validators.required])],
+            f8_borrowed_emi_paid:              ['', Validators.compose([Validators.maxLength(5), Validators.pattern('^[0-9.]*'), Validators.required]), (control) => this.compareMinEqual(control, this.loan.controls.f8_borrowed_loan_month.value)],
 			f8_borrowed_outstanding_amount:    [0, Validators.required],
 			f8_borrowed_outstanding_principal: [0, Validators.required],
 			f8_borrowed_amount_emi_rem:        [0, Validators.required]
@@ -281,5 +281,27 @@ export class LoanFinancialPage {
         if(callback){
             callback(true);
         }
+    }
+
+    compareMinEqual(control, maxVal){
+
+    	return new Promise(resolve => {
+	    	if(maxVal != null || maxVal != '' || maxVal != 0){
+
+	    		if(maxVal < parseInt(control.value)){
+	    			resolve({
+		    			'notvalid': true
+		    		});
+	    		}
+	    		else{
+	    			resolve(null);
+	    		}
+
+	    	}else{
+	    		resolve({
+	    			'notvalid': true
+	    		});
+	    	}
+        });
     }
 }

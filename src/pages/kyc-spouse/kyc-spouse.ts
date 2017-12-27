@@ -1,7 +1,9 @@
 import { Component, Input } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
+import { ExtraValidator } from '../../validators/ExtraValidator';
+
 /**
  * Generated class for the KycSpousePage page.
  *
@@ -37,13 +39,13 @@ export class KycSpousePage {
 			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_age' : ['', Validators.compose([Validators.required, Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
-			'f3_spouse_mobno' : ['', Validators.compose([Validators.required, Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
-			'f3_spouse_adhno' : ['', Validators.compose([Validators.required, Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')])],
+			'f3_spouse_mobno' : ['', Validators.compose([Validators.required, Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')]), (control) => this.checkMobileSpouse(control, this.fm_id)],
+			'f3_spouse_adhno' : ['', Validators.compose([Validators.required, Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')]), (control) => this.checkAadharSpouse(control, this.fm_id)],
 			'f3_loan_interest' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_loan_tenure' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_loan_emi' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_shg' : ['', Validators.required],
-			'f3_spouse_income' : ['',Validators.required],
+			'f3_spouse_income' : ['',Validators.compose([Validators.maxLength(8), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_shgname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_occp' : ['', Validators.required],
 			'f3_spouse_mfi' : ['', Validators.required],
@@ -306,4 +308,69 @@ export class KycSpousePage {
         }
     }
 
+    checkMobileSpouse(control: FormControl, _fm_id): any {
+        
+        return new Promise(resolve => {
+
+            setTimeout(() => {
+                let sql = new Sql;
+                sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
+
+                    if (data.res.rows.length > 0) {
+                        resolve({
+                            "taken": true
+                        });
+                    }
+                    else{
+
+                        sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ?", [control.value]).then((data) => {
+
+                            if (data.res.rows.length > 0) {
+                                resolve({
+                                    "taken": true
+                                });
+                            }
+                            else{
+                                resolve(null);
+                            }
+                        });
+                    }
+                });
+            }, 100);
+
+        });
+    }
+
+    checkAadharSpouse(control: FormControl, _fm_id): any {
+        
+        return new Promise(resolve => {
+
+            setTimeout(() => {
+                let sql = new Sql;
+                sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
+
+                    if (data.res.rows.length > 0) {
+                        resolve({
+                            "taken": true
+                        });
+                    }
+                    else{
+
+                        sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ?", [control.value]).then((data) => {
+
+                            if (data.res.rows.length > 0) {
+                                resolve({
+                                    "taken": true
+                                });
+                            }
+                            else{
+                                resolve(null);
+                            }
+                        });
+                    }
+                });
+            }, 100);
+
+        });
+    }
 }
