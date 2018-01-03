@@ -34,7 +34,7 @@ export class AddFarmerPage {
 
         this.personal = formBuilder.group({
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
-            fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
+            fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*')])],
             fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required]), ExtraValidator.checkMobile],
             fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), ExtraValidator.checkAadhar],

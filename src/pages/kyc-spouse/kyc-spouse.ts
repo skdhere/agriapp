@@ -39,18 +39,18 @@ export class KycSpousePage {
 			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_age' : ['', Validators.compose([Validators.required, Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
-			'f3_spouse_mobno' : ['', Validators.compose([Validators.required, Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')]), (control) => this.checkMobileSpouse(control, this.fm_id)],
-			'f3_spouse_adhno' : ['', Validators.compose([Validators.required, Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')]), (control) => this.checkAadharSpouse(control, this.fm_id)],
-			'f3_loan_interest' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
-			'f3_loan_tenure' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
-			'f3_loan_emi' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
+			'f3_spouse_mobno' : ['', Validators.compose([Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')]), (control) => this.checkMobileSpouse(control, this.fm_id)],
+			'f3_spouse_adhno' : ['', Validators.compose([Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')]), (control) => this.checkAadharSpouse(control, this.fm_id)],
+			'f3_loan_interest' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(3), Validators.pattern('^[0-9.]+$')])],
+			'f3_loan_tenure' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(3), Validators.pattern('^[0-9.]+$')])],
+			'f3_loan_emi' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(3), Validators.pattern('^[0-9.]+$')])],
 			'f3_spouse_shg' : ['', Validators.required],
 			'f3_spouse_income' : ['',Validators.compose([Validators.maxLength(8), Validators.pattern('^[0-9]+$')])],
-			'f3_spouse_shgname' : ['', Validators.compose([Validators.maxLength(50), Validators.minLength(3), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_shgname' : ['', Validators.compose([Validators.maxLength(50), Validators.required])],
 			'f3_spouse_occp' : ['', Validators.required],
 			'f3_spouse_mfi' : ['', Validators.required],
 			'f3_loan_purpose' : ['',Validators.required],
-			'f3_spouse_mfiname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_mfiname' : ['', Validators.compose([Validators.maxLength(50), Validators.required])],
 			'f3_spouse_mfiamount' : ['', Validators.compose([Validators.required, Validators.maxLength(8), Validators.pattern('^[0-9]+$')])],
 		});
 
@@ -75,7 +75,6 @@ export class KycSpousePage {
 
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
-
 				formData['f3_married_status']   = sqlData.f3_married_status;
 				formData['f3_spouse_fname']     = sqlData.f3_spouse_fname;
 				formData['f3_spouse_mname']     = sqlData.f3_spouse_mname;
@@ -125,7 +124,6 @@ export class KycSpousePage {
 		}
 		else
 		{
-			console.log('cbsdjsdg');
 			controls['f3_spouse_fname'].setValue('', { emitEvent: false });
 			controls['f3_spouse_lname'].setValue('', { emitEvent: false });
 			controls['f3_spouse_mname'].setValue('', { emitEvent: false });
@@ -178,16 +176,7 @@ export class KycSpousePage {
 
 		
 
-		if(controls['f3_spouse_mfi'].value =="yes")
-		{
-			 controls['f3_loan_purpose'].enable({ emitEvent: false });
-			 controls['f3_spouse_mfiname'].enable({ emitEvent: false });
-			 controls['f3_spouse_mfiamount'].enable({ emitEvent: false });
-			 controls['f3_loan_interest'].enable({ emitEvent: false });
-			 controls['f3_loan_tenure'].enable({ emitEvent: false });
-			 controls['f3_loan_emi'].enable({ emitEvent: false });
-		}
-		else
+		if(controls['f3_spouse_mfi'].value == "no")
 		{
 			 controls['f3_loan_purpose'].setValue('', { emitEvent: false });
 			 controls['f3_spouse_mfiname'].setValue('', { emitEvent: false });
@@ -202,6 +191,15 @@ export class KycSpousePage {
 			 controls['f3_loan_interest'].disable({ emitEvent: false });
 			 controls['f3_loan_tenure'].disable({ emitEvent: false });
 			 controls['f3_loan_emi'].disable({ emitEvent: false });
+		}
+		else
+		{
+			 controls['f3_loan_purpose'].enable({ emitEvent: false });
+			 controls['f3_spouse_mfiname'].enable({ emitEvent: false });
+			 controls['f3_spouse_mfiamount'].enable({ emitEvent: false });
+			 controls['f3_loan_interest'].enable({ emitEvent: false });
+			 controls['f3_loan_tenure'].enable({ emitEvent: false });
+			 controls['f3_loan_emi'].enable({ emitEvent: false });
 		}
 	}
 
@@ -233,24 +231,24 @@ export class KycSpousePage {
 			if (this.exist) {
                 this.sql.query('UPDATE tbl_spouse_details SET f3_married_status = ?, f3_spouse_fname = ?, f3_spouse_mname = ?, f3_spouse_lname = ?, f3_spouse_age = ?, f3_spouse_mobno = ?, f3_spouse_adhno = ?, f3_loan_interest = ?, f3_loan_tenure = ?, f3_loan_emi = ?, f3_spouse_shg = ?, f3_spouse_income = ?, f3_spouse_shgname = ?, f3_spouse_occp = ?, f3_spouse_mfi = ?, f3_loan_purpose = ?, f3_spouse_mfiname = ?, f3_spouse_mfiamount = ?,  f3_modified_date = ? WHERE fm_id = ?', [
 
-                    this.spouse.value.f3_married_status || '',
-                    this.spouse.value.f3_spouse_fname || '',
-                    this.spouse.value.f3_spouse_mname || '',
-                    this.spouse.value.f3_spouse_lname || '',
-                    this.spouse.value.f3_spouse_age || '',
-                    this.spouse.value.f3_spouse_mobno || '',
-                    this.spouse.value.f3_spouse_adhno || '', 
-                    this.spouse.value.f3_loan_interest || '', 
-                    this.spouse.value.f3_loan_tenure || '',
-                    this.spouse.value.f3_loan_emi || '',
-                    this.spouse.value.f3_spouse_shg || '',
-                    this.spouse.value.f3_spouse_income || '',
-                    this.spouse.value.f3_spouse_shgname || '',
-                    this.spouse.value.f3_spouse_occp || '',
-                    this.spouse.value.f3_spouse_mfi || '',
-                    this.spouse.value.f3_loan_purpose || '', 
-                    this.spouse.value.f3_spouse_mfiname || '', 
-                    this.spouse.value.f3_spouse_mfiamount || '',
+                    this.spouse.value.f3_married_status,
+                    this.spouse.value.f3_spouse_fname,
+                    this.spouse.value.f3_spouse_mname,
+                    this.spouse.value.f3_spouse_lname,
+                    this.spouse.value.f3_spouse_age,
+                    this.spouse.value.f3_spouse_mobno,
+                    this.spouse.value.f3_spouse_adhno, 
+                    this.spouse.value.f3_loan_interest, 
+                    this.spouse.value.f3_loan_tenure,
+                    this.spouse.value.f3_loan_emi,
+                    this.spouse.value.f3_spouse_shg,
+                    this.spouse.value.f3_spouse_income,
+                    this.spouse.value.f3_spouse_shgname,
+                    this.spouse.value.f3_spouse_occp,
+                    this.spouse.value.f3_spouse_mfi,
+                    this.spouse.value.f3_loan_purpose, 
+                    this.spouse.value.f3_spouse_mfiname, 
+                    this.spouse.value.f3_spouse_mfiamount,
 
                     dateNow,
                     this.fm_id
@@ -265,24 +263,24 @@ export class KycSpousePage {
                 this.sql.query('INSERT INTO tbl_spouse_details(fm_id, f3_married_status, f3_spouse_fname, f3_spouse_mname, f3_spouse_lname, f3_spouse_age, f3_spouse_mobno, f3_spouse_adhno, f3_loan_interest, f3_loan_tenure, f3_loan_emi, f3_spouse_shg, f3_spouse_income, f3_spouse_shgname, f3_spouse_occp, f3_spouse_mfi, f3_loan_purpose, f3_spouse_mfiname, f3_spouse_mfiamount, f3_created_date, f3_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
-                    this.spouse.value.f3_married_status || '',
-                    this.spouse.value.f3_spouse_fname || '',
-                    this.spouse.value.f3_spouse_mname || '',
-                    this.spouse.value.f3_spouse_lname || '',
-                    this.spouse.value.f3_spouse_age || '',
-                    this.spouse.value.f3_spouse_mobno || '',
-                    this.spouse.value.f3_spouse_adhno || '', 
-                    this.spouse.value.f3_loan_interest || '', 
-                    this.spouse.value.f3_loan_tenure || '',
-                    this.spouse.value.f3_loan_emi || '',
-                    this.spouse.value.f3_spouse_shg || '',
-                    this.spouse.value.f3_spouse_income || '',
-                    this.spouse.value.f3_spouse_shgname || '',
-                    this.spouse.value.f3_spouse_occp || '',
-                    this.spouse.value.f3_spouse_mfi || '',
-                    this.spouse.value.f3_loan_purpose || '', 
-                    this.spouse.value.f3_spouse_mfiname || '', 
-                    this.spouse.value.f3_spouse_mfiamount || '',
+                    this.spouse.value.f3_married_status,
+                    this.spouse.value.f3_spouse_fname,
+                    this.spouse.value.f3_spouse_mname,
+                    this.spouse.value.f3_spouse_lname,
+                    this.spouse.value.f3_spouse_age,
+                    this.spouse.value.f3_spouse_mobno,
+                    this.spouse.value.f3_spouse_adhno, 
+                    this.spouse.value.f3_loan_interest, 
+                    this.spouse.value.f3_loan_tenure,
+                    this.spouse.value.f3_loan_emi,
+                    this.spouse.value.f3_spouse_shg,
+                    this.spouse.value.f3_spouse_income,
+                    this.spouse.value.f3_spouse_shgname,
+                    this.spouse.value.f3_spouse_occp,
+                    this.spouse.value.f3_spouse_mfi,
+                    this.spouse.value.f3_loan_purpose, 
+                    this.spouse.value.f3_spouse_mfiname, 
+                    this.spouse.value.f3_spouse_mfiamount,
                     dateNow,
                     dateNow
                 ]).then(data => {

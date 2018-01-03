@@ -1,5 +1,5 @@
 import { Component, ViewChild } from '@angular/core';
-import { Nav, Platform, LoadingController, MenuController, AlertController } from 'ionic-angular';
+import { Nav, Platform, LoadingController, MenuController, AlertController, IonicApp } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { AuthService } from '../providers/providers';
@@ -20,6 +20,7 @@ export class MyApp {
     pages: Array<{title: string, component: any, icon:string}>;
 
     constructor(private auth: AuthService,
+                private ionicApp: IonicApp,
                 platform: Platform, 
                 statusBar: StatusBar, 
                 splashScreen: SplashScreen, 
@@ -83,7 +84,16 @@ export class MyApp {
                         this.nav.setRoot('HomePage');
                     }
                     else{
-                        this.nav.pop();
+
+                        let activePopover = this.ionicApp._modalPortal.getActive() ||
+                                            this.ionicApp._toastPortal.getActive() ||
+                                            this.ionicApp._overlayPortal.getActive();
+                        if(activePopover){
+                            activePopover.dismiss();
+                        }
+                        else{
+                            this.nav.pop();
+                        }
                     }
                 }
 
