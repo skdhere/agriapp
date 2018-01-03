@@ -99,7 +99,7 @@ export class KycAppliancesPage {
             let dateNow = date.getTime()/1000|0;
 
             if (this.exist) {
-                this.sql.query('UPDATE tbl_appliances_details SET f7_television = ?, f7_refrigerator = ?, f7_wmachine = ?, f7_mixer = ?, f7_stove = ?, f7_bicycle = ?, f7_ccylinder = ?, f7_fans = ?, f7_motorcycle = ?, f7_car = ?, f6_modified_date = ? WHERE fm_id = ?', [
+                this.sql.query('UPDATE tbl_appliances_details SET f7_television = ?, f7_refrigerator = ?, f7_wmachine = ?, f7_mixer = ?, f7_stove = ?, f7_bicycle = ?, f7_ccylinder = ?, f7_fans = ?, f7_motorcycle = ?, f7_car = ?, f7_modified_date = ? WHERE fm_id = ?', [
 
                     this.appliances.value.f7_television,
                     this.appliances.value.f7_refrigerator,
