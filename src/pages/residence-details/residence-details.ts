@@ -232,6 +232,7 @@ export class ResidenceDetailsPage {
                     dateNow,
                     this.fm_id
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_residence_details', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

@@ -43,7 +43,7 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Spouse Middle Name <span>*</span></ion-label>
+				    <ion-label floating>Spouse Middle Name</ion-label>
 		            <ion-input formControlName="f3_spouse_mname" type="text" ></ion-input>
 				</ion-item>
 				<div *ngIf="!spouse.controls.f3_spouse_mname.valid  && (spouse.controls.f3_spouse_fname.dirty || submitAttempt)">
@@ -73,7 +73,7 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Mobile no. <span>*</span></ion-label>
+				    <ion-label floating>Mobile no.</ion-label>
 		            <ion-input formControlName="f3_spouse_mobno" type="number"></ion-input>
 				</ion-item>
 				<div *ngIf="spouse.controls.f3_spouse_mobno.pending">
@@ -86,7 +86,7 @@
 		        </div>
 
 		        <ion-item>
-				    <ion-label floating>Aadhaar no. <span>*</span></ion-label>
+				    <ion-label floating>Aadhaar no.</ion-label>
 		            <ion-input formControlName="f3_spouse_adhno" type="number"></ion-input>
 				</ion-item>
 				<div *ngIf="spouse.controls.f3_spouse_adhno.pending">
@@ -145,7 +145,7 @@
 		        </div>
 		        
 				<ion-item>
-				    <ion-label floating>Any Micro Finance Help Taken By Spouse?</ion-label>
+				    <ion-label floating>Any Micro Finance Help Taken By Spouse? <span>*</span></ion-label>
 				    <ion-select formControlName="f3_spouse_mfi" interface="popover" >
 				      <ion-option value="yes">Yes</ion-option>
 				      <ion-option value="no">No</ion-option>

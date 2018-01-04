@@ -139,6 +139,7 @@ export class CropCultivationAddPage {
                     this.local_crop_id
 
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_cultivation_data', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

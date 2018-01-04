@@ -106,6 +106,7 @@ export class CropPreviousAddPage {
                     this.fm_id,
                     this.local_crop_id
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_yield_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

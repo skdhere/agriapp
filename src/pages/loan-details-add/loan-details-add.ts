@@ -175,6 +175,7 @@ export class LoanDetailsAddPage {
                     dateNow,
                     this.local_loan_id
                 ]).then(data => {
+                	this.sql.updateUploadStatus('tbl_loan_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

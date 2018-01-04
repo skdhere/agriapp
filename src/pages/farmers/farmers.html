@@ -19,10 +19,10 @@
                 </ion-avatar>
                 <h2 color="app">{{farmer.fm_name}}</h2>
                 <p>{{farmer.fm_mobileno}}</p>
-                <!-- <ion-note item-end>{{farmer.points}}</ion-note> -->
 
-                <!-- <ion-icon *ngIf="!local_upload" name="time" color="danger" item-end></ion-icon> -->
-                <ion-icon *ngIf="!local_upload" color="secondary" name="cloud-done" item-end></ion-icon>
+                <ion-icon name="checkmark-circle" color="{{ farmer.update ? 'secondary' : 'light'}}" item-end></ion-icon>
+                <ion-icon name="cloud-done" color="{{ farmer.local_upload ? 'secondary' : 'light'}}" item-end></ion-icon>
+
             </ion-item>
             <ion-item-options>
                 <button ion-button color="danger" icon-start (click)="deleteItem(farmer)">

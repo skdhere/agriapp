@@ -162,6 +162,7 @@ export class SpouseKnowledgePage {
                     dateNow,
                     this.fm_id
                 ]).then(data => {
+                	this.sql.updateUploadStatus('tbl_spouse_knowledge', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

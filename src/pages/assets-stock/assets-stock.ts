@@ -18,6 +18,7 @@ import { Sql } from '../../providers/sql/sql';
 export class AssetsStockPage {
 
 	assets: FormGroup;
+	numbers: Array<number> = Array(11).fill(0).map((x,i)=>i);
 	submitAttempt: boolean = false;
 	addNew: boolean = true;
 	fm_id: any;
@@ -104,19 +105,20 @@ export class AssetsStockPage {
 			if (this.exist) {
                 this.sql.query('UPDATE tbl_livestock_details SET f13_dairy_cattle = ?, f13_draft_cattle = ?, f13_buffalo = ?, f13_ox = ?, f13_sheep = ?, f13_goat = ?, f13_pig = ?, f13_poultry = ?, f13_donkeys = ?,   f13_modified_date = ? WHERE fm_id = ?', [
 
-                    this.assets.value.f13_dairy_cattle || '',
-                    this.assets.value.f13_draft_cattle || '',
-                    this.assets.value.f13_buffalo || '',
-                    this.assets.value.f13_ox || '',
-                    this.assets.value.f13_sheep || '',
-                    this.assets.value.f13_goat || '',
-                    this.assets.value.f13_pig || '', 
-                    this.assets.value.f13_poultry || '', 
-                    this.assets.value.f13_donkeys || '',
+                    this.assets.value.f13_dairy_cattle,
+                    this.assets.value.f13_draft_cattle,
+                    this.assets.value.f13_buffalo,
+                    this.assets.value.f13_ox,
+                    this.assets.value.f13_sheep,
+                    this.assets.value.f13_goat,
+                    this.assets.value.f13_pig, 
+                    this.assets.value.f13_poultry, 
+                    this.assets.value.f13_donkeys,
                     
                     dateNow,
                     this.fm_id
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_livestock_details', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {
@@ -127,15 +129,15 @@ export class AssetsStockPage {
                 this.sql.query('INSERT INTO tbl_livestock_details(fm_id, f13_dairy_cattle, f13_draft_cattle, f13_buffalo, f13_ox, f13_sheep, f13_goat, f13_pig, f13_poultry, f13_donkeys, f13_created_date, f13_modified_date) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)', [
 
                     this.fm_id,
-                    this.assets.value.f13_dairy_cattle || '',
-                    this.assets.value.f13_draft_cattle || '',
-                    this.assets.value.f13_buffalo || '',
-                    this.assets.value.f13_ox || '',
-                    this.assets.value.f13_sheep || '',
-                    this.assets.value.f13_goat || '',
-                    this.assets.value.f13_pig || '', 
-                    this.assets.value.f13_poultry || '', 
-                    this.assets.value.f13_donkeys || '',
+                    this.assets.value.f13_dairy_cattle,
+                    this.assets.value.f13_draft_cattle,
+                    this.assets.value.f13_buffalo,
+                    this.assets.value.f13_ox,
+                    this.assets.value.f13_sheep,
+                    this.assets.value.f13_goat,
+                    this.assets.value.f13_pig, 
+                    this.assets.value.f13_poultry, 
+                    this.assets.value.f13_donkeys,
                     dateNow,
                     dateNow
                 ]).then(data => {

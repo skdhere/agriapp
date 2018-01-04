@@ -479,4 +479,18 @@ export class Sql {
     getDb(){
         return this._db;
     }
+
+    async updateUploadStatus(tablename, farmerId, status){
+        await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE fm_id = ?', [status, farmerId])
+        .then(success => {
+            if (status == 0) {
+                this.query('UPDATE tbl_farmers SET local_upload = ? WHERE local_id = ?', [status, farmerId]).catch(err => {
+                    console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
+                });
+            }
+        },
+        err => {
+            console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
+        });
+    }
 }

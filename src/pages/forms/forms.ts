@@ -149,8 +149,8 @@ export class Forms {
 
 	}
 
-	updateStatus(index){
-		this.sql.query('SELECT fm_id FROM ' + this.forms[index].tableName + ' WHERE fm_id = ? LIMIT 1', [this.current_farmer.local_id]).then(data => {
+	async updateStatus(index){
+		await this.sql.query('SELECT fm_id FROM ' + this.forms[index].tableName + ' WHERE fm_id = ? LIMIT 1', [this.current_farmer.local_id]).then(data => {
 			if (data.res.rows.length > 0) {
 				this.forms[index].isUpdated = true;
 			}

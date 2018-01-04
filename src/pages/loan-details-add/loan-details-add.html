@@ -7,7 +7,7 @@
 <ion-header>
 
   <ion-navbar color="app">
-    <ion-title>loan-details-add</ion-title>
+    <ion-title>Loan Detail</ion-title>
   </ion-navbar>
 
 </ion-header>
@@ -96,7 +96,7 @@
 			</ion-item>
 
 			<ion-item>
-	            <ion-label floating>How Much Emi Paid? <span>*</span></ion-label>
+	            <ion-label floating>How Much Emi Paid? (In Months) <span>*</span></ion-label>
 	            <ion-input formControlName="f15_borrowed_emi_paid" type="number"></ion-input>
 	        </ion-item>
 	        <div *ngIf="loan.controls.f15_borrowed_emi_paid.invalid  && (loan.controls.f15_borrowed_emi_paid.dirty || submitAttempt)">
@@ -106,10 +106,10 @@
 	        </div>
 
 	        <ion-item>
-				Loan Is Outstanding To Be Paid With Interest : {{loan.controls.f15_borrowed_outstanding_amount.value}}
+				Outstanding Loan Amount (With Interest) : {{loan.controls.f15_borrowed_outstanding_amount.value}}
 			</ion-item>
 			<ion-item>
-				Loan Is Outstanding To Be Paid : {{loan.controls.f15_borrowed_outstanding_principal.value}}
+				Outstanding Loan Amount (Principal) : {{loan.controls.f15_borrowed_outstanding_principal.value}}
 			</ion-item>
 			<ion-item>
 				Therefore, No. Of Months To Clear Outstanding : {{loan.controls.f15_borrowed_amount_emi_rem.value}}

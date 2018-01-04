@@ -36,7 +36,7 @@ export class KycSpousePage {
 		this.spouse = formBuilder.group({
             'f3_married_status' : ['',Validators.required],
             'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
-			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
+			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*')])],
 			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_age' : ['', Validators.compose([Validators.required, Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
 			'f3_spouse_mobno' : ['', Validators.compose([Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')]), (control) => this.checkMobileSpouse(control, this.fm_id)],
@@ -82,9 +82,6 @@ export class KycSpousePage {
 				formData['f3_spouse_age']       = sqlData.f3_spouse_age;
 				formData['f3_spouse_mobno']     = sqlData.f3_spouse_mobno;
 				formData['f3_spouse_adhno']     = sqlData.f3_spouse_adhno;
-				formData['f3_loan_interest']    = sqlData.f3_loan_interest;
-				formData['f3_loan_tenure']      = sqlData.f3_loan_tenure;
-				formData['f3_loan_emi']         = sqlData.f3_loan_emi;
 				formData['f3_spouse_shg']       = sqlData.f3_spouse_shg;
 				formData['f3_spouse_income']    = sqlData.f3_spouse_income;
 				formData['f3_spouse_shgname']   = sqlData.f3_spouse_shgname;
@@ -93,6 +90,9 @@ export class KycSpousePage {
 				formData['f3_loan_purpose']     = sqlData.f3_loan_purpose;
 				formData['f3_spouse_mfiname']   = sqlData.f3_spouse_mfiname;
 				formData['f3_spouse_mfiamount'] = sqlData.f3_spouse_mfiamount;
+				formData['f3_loan_interest']    = sqlData.f3_loan_interest;
+				formData['f3_loan_tenure']      = sqlData.f3_loan_tenure;
+				formData['f3_loan_emi']         = sqlData.f3_loan_emi;
 
                 this.spouse.setValue(formData);
                 this.exist = true;
@@ -176,7 +176,16 @@ export class KycSpousePage {
 
 		
 
-		if(controls['f3_spouse_mfi'].value == "no")
+		if(controls['f3_spouse_mfi'].value == "yes")
+		{
+			 controls['f3_loan_purpose'].enable({ emitEvent: false });
+			 controls['f3_spouse_mfiname'].enable({ emitEvent: false });
+			 controls['f3_spouse_mfiamount'].enable({ emitEvent: false });
+			 controls['f3_loan_interest'].enable({ emitEvent: false });
+			 controls['f3_loan_tenure'].enable({ emitEvent: false });
+			 controls['f3_loan_emi'].enable({ emitEvent: false });
+		}
+		else
 		{
 			 controls['f3_loan_purpose'].setValue('', { emitEvent: false });
 			 controls['f3_spouse_mfiname'].setValue('', { emitEvent: false });
@@ -191,15 +200,6 @@ export class KycSpousePage {
 			 controls['f3_loan_interest'].disable({ emitEvent: false });
 			 controls['f3_loan_tenure'].disable({ emitEvent: false });
 			 controls['f3_loan_emi'].disable({ emitEvent: false });
-		}
-		else
-		{
-			 controls['f3_loan_purpose'].enable({ emitEvent: false });
-			 controls['f3_spouse_mfiname'].enable({ emitEvent: false });
-			 controls['f3_spouse_mfiamount'].enable({ emitEvent: false });
-			 controls['f3_loan_interest'].enable({ emitEvent: false });
-			 controls['f3_loan_tenure'].enable({ emitEvent: false });
-			 controls['f3_loan_emi'].enable({ emitEvent: false });
 		}
 	}
 
@@ -253,6 +253,7 @@ export class KycSpousePage {
                     dateNow,
                     this.fm_id
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_spouse_details', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {
@@ -310,31 +311,35 @@ export class KycSpousePage {
         
         return new Promise(resolve => {
 
-            setTimeout(() => {
-                let sql = new Sql;
-                sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
+        	if (control.value) {
+	            setTimeout(() => {
+	                let sql = new Sql;
+	                sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
 
-                    if (data.res.rows.length > 0) {
-                        resolve({
-                            "taken": true
-                        });
-                    }
-                    else{
+	                    if (data.res.rows.length > 0) {
+	                        resolve({
+	                            "taken": true
+	                        });
+	                    }
+	                    else{
 
-                        sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ?", [control.value]).then((data) => {
+	                        sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ?", [control.value]).then((data) => {
 
-                            if (data.res.rows.length > 0) {
-                                resolve({
-                                    "taken": true
-                                });
-                            }
-                            else{
-                                resolve(null);
-                            }
-                        });
-                    }
-                });
-            }, 100);
+	                            if (data.res.rows.length > 0) {
+	                                resolve({
+	                                    "taken": true
+	                                });
+	                            }
+	                            else{
+	                                resolve(null);
+	                            }
+	                        });
+	                    }
+	                });
+	            }, 100);
+        	}else{
+        		resolve(null);
+        	}
 
         });
     }
@@ -343,31 +348,35 @@ export class KycSpousePage {
         
         return new Promise(resolve => {
 
-            setTimeout(() => {
-                let sql = new Sql;
-                sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
+        	if (control.value) {
+	            setTimeout(() => {
+	                let sql = new Sql;
+	                sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
 
-                    if (data.res.rows.length > 0) {
-                        resolve({
-                            "taken": true
-                        });
-                    }
-                    else{
+	                    if (data.res.rows.length > 0) {
+	                        resolve({
+	                            "taken": true
+	                        });
+	                    }
+	                    else{
 
-                        sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ?", [control.value]).then((data) => {
+	                        sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ?", [control.value]).then((data) => {
 
-                            if (data.res.rows.length > 0) {
-                                resolve({
-                                    "taken": true
-                                });
-                            }
-                            else{
-                                resolve(null);
-                            }
-                        });
-                    }
-                });
-            }, 100);
+	                            if (data.res.rows.length > 0) {
+	                                resolve({
+	                                    "taken": true
+	                                });
+	                            }
+	                            else{
+	                                resolve(null);
+	                            }
+	                        });
+	                    }
+	                });
+	            }, 100);
+	        }else{
+	        	resolve(null);
+	        }
 
         });
     }

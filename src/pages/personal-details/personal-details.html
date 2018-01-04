@@ -50,7 +50,7 @@
 					<ion-label floating>Mobile no. <span>*</span></ion-label>
 					<ion-input formControlName="fm_mobileno" type="tel"></ion-input>
 				</ion-item>
-				<div *ngIf="personal.controls.fm_mobileno.pending">
+				<div *ngIf="personal.controls.fm_mobileno.pending && (personal.controls.fm_mobileno.dirty || submitAttempt)">
 	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
 	            </div>
 				<div *ngIf="!personal.controls.fm_mobileno.pending && !personal.controls.fm_mobileno.valid  && (personal.controls.fm_mobileno.dirty || submitAttempt)">
@@ -62,7 +62,7 @@
 					<ion-label floating>Aadhaar no. <span>*</span></ion-label>
 					<ion-input formControlName="fm_aadhar" type="number"></ion-input>
 				</ion-item>
-				<div *ngIf="personal.controls.fm_aadhar.pending">
+				<div *ngIf="personal.controls.fm_aadhar.pending && (personal.controls.fm_aadhar.dirty || submitAttempt)">
 	                <p>Checking aadhar... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
 	            </div>
 				<div *ngIf="!personal.controls.fm_aadhar.pending && !personal.controls.fm_aadhar.valid  && (personal.controls.fm_aadhar.dirty || submitAttempt)">

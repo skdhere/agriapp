@@ -31,6 +31,13 @@ export class FarmersPage {
 			// this.initializeItems();
 		}
 
+		ionViewDidEnter(){
+			for (let i = 0; i < this.items.length; i++) {
+				this.isUpdated(i);
+				this.isUploaded(i);
+			}
+		}
+
 		ionViewDidLoad() {
 			this.platform.ready().then(() => {
 	        	this.initializeItems();
@@ -52,7 +59,12 @@ export class FarmersPage {
 				console.log(data);
 	            if (data.res.rows.length > 0) {
 	                for(let i=0; i<data.res.rows.length; i++){
-						this.items.push(data.res.rows.item(i));
+
+	                	let item = data.res.rows.item(i);
+	                	item.update = false;
+
+	                	this.isUpdated(this.items.push(item) - 1);
+
 					}
 					infiniteScroll ? infiniteScroll.complete() : {};
 					if(data.res.rows.length < 10){
@@ -176,6 +188,44 @@ export class FarmersPage {
 
 			this.navCtrl.push(page, {
 			    callback: myCallbackFunction
+			});
+		}
+
+		async isUpdated(len){
+			let item = this.items[len];
+			await this.sql.query(`SELECT t0.fm_id
+				FROM tbl_personal_detail AS t0 JOIN tbl_residence_details AS t1
+					 ON t0.fm_id = t1.fm_id JOIN tbl_applicant_knowledge AS t2
+					 ON t0.fm_id = t2.fm_id JOIN tbl_spouse_knowledge AS t3 
+					 ON t0.fm_id = t3.fm_id JOIN tbl_applicant_phone AS t4 
+					 ON t0.fm_id = t4.fm_id JOIN tbl_family_details AS t5 
+					 ON t0.fm_id = t5.fm_id JOIN tbl_appliances_details AS t6 
+					 ON t0.fm_id = t6.fm_id JOIN tbl_spouse_details AS t7 
+					 ON t0.fm_id = t7.fm_id JOIN tbl_asset_details AS t8 
+					 ON t0.fm_id = t8.fm_id JOIN tbl_livestock_details AS t9 
+					 ON t0.fm_id = t9.fm_id JOIN tbl_financial_details AS t10
+					 ON t0.fm_id = t10.fm_id JOIN tbl_land_details AS t11
+					 ON t0.fm_id = t11.fm_id JOIN tbl_cultivation_data AS t12
+					 ON t0.fm_id = t12.fm_id JOIN tbl_yield_details AS t13
+					 ON t0.fm_id = t13.fm_id JOIN tbl_loan_details AS t14
+					 ON t0.fm_id = t14.fm_id 
+				WHERE t0.fm_id = ?`, [item.local_id])
+			.then(d => {
+				if(d.res.rows.length > 0){
+					this.items[len].update = true;
+				}else{
+					this.items[len].update = false;
+				}
+			});
+		}
+
+		async isUploaded(len){
+			let item = this.items[len];
+			await this.sql.query('SELECT local_upload FROM tbl_farmers WHERE local_id = ?', [item.local_id])
+			.then(d => {
+				if(d.res.rows.length > 0){
+					this.items[len].local_upload = d.res.rows.item(0).local_upload;
+				}
 			});
 		}
 }

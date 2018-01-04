@@ -149,6 +149,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                         this.fm_id
                     ]).then(data => {
                         console.log(data);
+                        this.sql.updateUploadStatus('tbl_personal_detail', this.fm_id, '0');
                         this.navCtrl.pop();
                     },
                     err => {
@@ -174,7 +175,6 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                         dateNow,
                         dateNow
                     ]).then(data => {
-                        console.log(data);
                         this.navCtrl.pop();
                     },
                     err => {
@@ -201,32 +201,35 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
     checkMobilePersonal(control: FormControl, _fm_id): any {
         
         return new Promise(resolve => {
+            if (control.value) {
+                setTimeout(() => {
+                    let sql = new Sql;
+                    sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
 
-            setTimeout(() => {
-                let sql = new Sql;
-                sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
+                        if (data.res.rows.length > 0) {
+                            resolve({
+                                "taken": true
+                            });
+                        }
+                        else{
 
-                    if (data.res.rows.length > 0) {
-                        resolve({
-                            "taken": true
-                        });
-                    }
-                    else{
+                            sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ?", [control.value]).then((data) => {
 
-                        sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ?", [control.value]).then((data) => {
-
-                            if (data.res.rows.length > 0) {
-                                resolve({
-                                    "taken": true
-                                });
-                            }
-                            else{
-                                resolve(null);
-                            }
-                        });
-                    }
-                });
-            }, 100);
+                                if (data.res.rows.length > 0) {
+                                    resolve({
+                                        "taken": true
+                                    });
+                                }
+                                else{
+                                    resolve(null);
+                                }
+                            });
+                        }
+                    });
+                }, 100);
+            }else{
+                resolve(null);
+            }
 
         });
     }
@@ -235,31 +238,36 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
         
         return new Promise(resolve => {
 
-            setTimeout(() => {
-                let sql = new Sql;
-                sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
+            if (control.value) {
+                setTimeout(() => {
+                    let sql = new Sql;
+                    sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
 
-                    if (data.res.rows.length > 0) {
-                        resolve({
-                            "taken": true
-                        });
-                    }
-                    else{
+                        if (data.res.rows.length > 0) {
+                            resolve({
+                                "taken": true
+                            });
+                        }
+                        else{
 
-                        sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ?", [control.value]).then((data) => {
+                            sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ?", [control.value]).then((data) => {
 
-                            if (data.res.rows.length > 0) {
-                                resolve({
-                                    "taken": true
-                                });
-                            }
-                            else{
-                                resolve(null);
-                            }
-                        });
-                    }
-                });
-            }, 100);
+                                if (data.res.rows.length > 0) {
+                                    resolve({
+                                        "taken": true
+                                    });
+                                }
+                                else{
+                                    resolve(null);
+                                }
+                            });
+                        }
+                    });
+                }, 100);
+            }
+            else{
+                resolve(null);
+            }
 
         });
     }

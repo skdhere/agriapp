@@ -246,6 +246,7 @@ export class LandFarmAddPage {
                     this.fm_id,
                     this.local_land_id
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_land_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{
