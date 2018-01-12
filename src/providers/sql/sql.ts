@@ -1,4 +1,5 @@
 import {Injectable} from "@angular/core";
+import { Events } from 'ionic-angular';
 
 const DB_NAME: string = '__agribridgeDb';
 const win: any = window;
@@ -7,7 +8,7 @@ const win: any = window;
 export class Sql {
     private _db: any;
 
-    constructor() {
+    constructor(public events?: Events) {
         if (win.sqlitePlugin) {
             this._db = win.sqlitePlugin.openDatabase({
                 name: DB_NAME,
@@ -20,12 +21,20 @@ export class Sql {
             this._db = win.openDatabase(DB_NAME, '1.0', 'database', 5 * 1024 * 1024);
         }
         this.createTables();
-
-
     }
 
     // Initialize the DB with our required tables
     createTables() {
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_errors (
+            id INTEGER PRIMARY KEY,
+            local_id INTEGER,
+            tablename text,
+            error_code text,
+            error_message text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_error', err.tx, err.err);
+        });
 
         this.query(`CREATE TABLE IF NOT EXISTS tbl_state (
             id INTEGER PRIMARY KEY,
@@ -481,16 +490,54 @@ export class Sql {
     }
 
     async updateUploadStatus(tablename, farmerId, status){
-        await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE fm_id = ?', [status, farmerId])
-        .then(success => {
-            if (status == 0) {
-                this.query('UPDATE tbl_farmers SET local_upload = ? WHERE local_id = ?', [status, farmerId]).catch(err => {
-                    console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
+        if(tablename === 'tbl_farmers'){
+            await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE local_id = ?', [status, farmerId])
+            .then(success => {
+                //nothing to do for now
+            },
+            err => {
+                console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
+            });
+        }else{
+            await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE fm_id = ?', [status, farmerId])
+            .then(success => {
+                if (status == 0) {
+                    this.events.publish('table:updated', tablename, farmerId);
+                    this.query('UPDATE tbl_farmers SET local_upload = ? WHERE local_id = ?', [status, farmerId]).catch(err => {
+                        console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
+                    });
+                }
+            },
+            err => {
+                console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
+            });
+        }
+    }
+
+
+    getFarmerByLocalId(local_id){
+        return this.query('SELECT * FROM tbl_farmers WHERE local_id = ?', [local_id]);
+    }
+
+    set_fm_id(fm_id, local_id){
+        this.query('UPDATE tbl_farmers SET fm_id = ? WHERE local_id = ?', [fm_id, local_id]).catch(err => {
+            console.log(err);
+        });
+    }
+
+    addError(tablename, local_id, code, msg){
+
+        this.query('SELECT * FROM tbl_errors WHERE local_id = ? and tablename = ? and error_code = ?', [local_id, tablename, code]).then(data => {
+            if(data.res.rows.length < 1){
+                this.query('INSERT INTO tbl_errors(local_id, tablename, error_code, error_message) VALUES(?, ?, ?, ?)', [
+                    local_id,
+                    tablename,
+                    code,
+                    msg
+                ]).catch(err => {
+                    console.log(err);
                 });
             }
-        },
-        err => {
-            console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
         });
     }
 }

@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 import { UserProvider } from '../../providers/user/user';
 import { ExtraValidator } from '../../validators/ExtraValidator';
-
+import { Events } from 'ionic-angular';
 
 /**
  * Generated class for the AddFarmerPage page.
@@ -30,6 +30,7 @@ export class AddFarmerPage {
         public navCtrl: NavController,
         public navParams: NavParams,
         public user: UserProvider,
+        public events: Events,
         public formBuilder: FormBuilder) {
 
         this.personal = formBuilder.group({
@@ -68,7 +69,11 @@ export class AddFarmerPage {
                     dateNow
                 ])
                 .then((data) => {
-                    console.log("success!");
+                    console.log("success!", data);
+                    if(data.res.insertId != undefined){
+                        this.events.publish('table:farmerAdded', data.res.insertId);
+                    }
+
                     let callback = this.navParams.get("callback") || false;
                     if (callback) {
                         callback(true).then(() => {

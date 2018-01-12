@@ -175,6 +175,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                         dateNow,
                         dateNow
                     ]).then(data => {
+                        this.sql.updateUploadStatus('tbl_personal_detail', this.fm_id, '0');
                         this.navCtrl.pop();
                     },
                     err => {
