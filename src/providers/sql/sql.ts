@@ -512,6 +512,20 @@ export class Sql {
                 console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
             });
         }
+
+
+        if(tablename == "tbl_personal_detail"){
+            //clear all existing errors for this device
+            this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, "tbl_farmers"]).catch(err => {
+                console.log("SQL : errors while removing errors from table", err);
+            });
+        }
+
+        //clear all existing errors for this device
+        this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, tablename]).catch(err => {
+            console.log("SQL : errors while removing errors from table", err);
+            this.events.publish('farmer:updateToServer');
+        });
     }
 
 
@@ -534,7 +548,10 @@ export class Sql {
                     tablename,
                     code,
                     msg
-                ]).catch(err => {
+                ]).then(data => {
+                    this.events.publish('farmer:updateToServer');
+                },
+                err => {
                     console.log(err);
                 });
             }

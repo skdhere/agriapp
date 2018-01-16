@@ -14,14 +14,17 @@
         <ion-list-header>Your Farmers</ion-list-header>
         <ion-item-sliding *ngFor="let farmer of items">
             <ion-item (click)="itemTapped($event, farmer)">
+                
                 <ion-avatar item-start>
                     <img src="assets/images/user.png" onerror="this.onerror=null; this.src='assets/images/user.png';">
+                    <!-- <ion-icon name="information-circle" color="danger" style="font-size: 38px;"></ion-icon> -->
                 </ion-avatar>
                 <h2 color="app">{{farmer.fm_name}}</h2>
                 <p>{{farmer.fm_mobileno}}</p>
 
-                <ion-icon name="checkmark-circle" color="{{ farmer.update ? 'secondary' : 'light'}}" item-end></ion-icon>
-                <ion-icon name="cloud-done" color="{{ farmer.local_upload ? 'secondary' : 'light'}}" item-end></ion-icon>
+                <ion-icon *ngIf="!farmer.hasErrors" name="checkmark-circle" color="{{ farmer.update ? 'secondary' : 'light'}}" item-end></ion-icon>
+                <ion-icon *ngIf="!farmer.hasErrors" name="cloud-done" color="{{ farmer.local_upload ? 'secondary' : 'light'}}" item-end></ion-icon>
+                <ion-icon *ngIf="farmer.hasErrors" name="information-circle" color="danger" item-end></ion-icon>
 
             </ion-item>
             <ion-item-options>

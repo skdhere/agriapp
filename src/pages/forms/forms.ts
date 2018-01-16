@@ -27,6 +27,7 @@ export class Forms {
 	forms:Array<any>;
 	rootNavCtrl: NavController;
 	images: any = [];
+	errors: any = [];
 	// lastImage: string = null;
 
 	constructor(public navCtrl: NavController, 
@@ -40,7 +41,6 @@ export class Forms {
 		this.current_farmer = navParams.get('farmer');
 		this.form_name = navParams.get('form_name');
 		this.rootNavCtrl = navParams.get('rootNavCtrl');
-		
 		this.getFarmerPoints(this.current_farmer.id);
 		// let loading = this.presentLoading('Please wait...');
 		// loading.present();
@@ -112,6 +112,7 @@ export class Forms {
 	}
 
 	ionViewDidEnter(){
+		this.getErrors(this.current_farmer.local_id);
 		
 		if(this.form_name === 'loan and liability'){
 
@@ -236,5 +237,17 @@ export class Forms {
 				callback: myCallback
 			});
 		}
+	}
+
+	async getErrors(local_id){
+		await this.sql.query("SELECT * FROM tbl_errors WHERE local_id = ?", [local_id])
+		.then(d => {
+			this.errors = [];
+			if(d.res.rows.length > 0){
+				for (var i = 0; i < d.res.rows.length; i++) {
+					this.errors.push(d.res.rows.item(i));
+				}
+			}
+		});
 	}
 }

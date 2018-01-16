@@ -31,6 +31,7 @@ export class Farmerdetail {
 	pageTitle: string   = 'Farmer Name';
 	bgColor: any = 'app';
 	current_farmer: any;
+	errors: any = [];
 	parmsPage1: any;
 	parmsPage2: any;
 	parmsPage3: any;

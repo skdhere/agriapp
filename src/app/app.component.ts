@@ -75,7 +75,11 @@ export class MyApp {
             
             
             //subscribe for global events
-            this.events.subscribe('table:updated', (tablename, fm_id) => { this.eventTableUpdated(tablename, fm_id); });
+            this.events.subscribe('table:updated', (tablename, fm_id) => { 
+                //clear all existing errors for this device
+                // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [fm_id, tablename]).then();
+                this.eventTableUpdated(tablename, fm_id);
+            });
             this.events.subscribe('table:farmerAdded', (local_fm_id) => { this.serverAddFarmer(local_fm_id); });
 
             //Register hardware back button
@@ -184,7 +188,7 @@ export class MyApp {
         //look for internet
         if(this.online){
             // console.log('test', this.online);
-            
+
             //Get data from local sql
             await this.sql.query("SELECT * FROM " + tablename + " WHERE fm_id = ?", [lfm_id]).then(sdata => {
                     // console.log('loop test', sdata);
@@ -233,7 +237,6 @@ export class MyApp {
                     //on success change upload status to 1
                     if(success.success){
                         this.sql.updateUploadStatus(data.tablename, lfm_id, '1');
-                        this.events.publish('farmer:updateToServer');
                     }
                     else{
                         //add error messages to error table
@@ -272,7 +275,6 @@ export class MyApp {
                             //on success change upload status to 1
                             if(suc.success){
                                 this.sql.updateUploadStatus(data.tablename, lfm_id, '1');
-                                this.events.publish('farmer:updateToServer');
                             }
                             else{
                                 //add error messages to error table
@@ -292,7 +294,7 @@ export class MyApp {
                         console.log(success.data);
                         //add error messages to error table
                         for(let j = 0; j < success.data.length; j++){
-                            this.sql.addError('tbl_farmer', lfm_id, success.data[j].error_code, success.data[j].error_message);
+                            this.sql.addError('tbl_farmers', lfm_id, success.data[j].error_code, success.data[j].error_message);
                         }
                     }
                 }, error => {
@@ -364,11 +366,13 @@ export class MyApp {
                 for (var j = 0; j < farmers.res.rows.length; j++) {
                     let single = farmers.res.rows.item(j);
 
+
                     //if farmer main details has some changes and it's already send to the server
                     //then update his main data too
                     if(single.local_upload == 0 && single.fm_id !== 'false' && single.fm_id != '' && single.fm_id != null){
                         single['tablename'] = 'tbl_farmers';
-                        let req = this.api.post("send_table", single)
+
+                        let req = this.api.put("add_farmer", single)
                         .map((res) => res.json())
                         .subscribe(success => {
                             //on success change upload status to 1
@@ -401,6 +405,8 @@ export class MyApp {
                                     && table.name != "tbl_village" 
                                     && table.name != "tbl_farmers" 
                                 ){
+                                    //clear all existing errors for this device
+                                    // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [single['local_id'], table.name]).then();
                                     //the following function will upload the data 
                                     //if upload failed for any reason it will store the data in error table
                                     this.eventTableUpdated(table.name, single['local_id']);

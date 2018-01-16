@@ -3,6 +3,17 @@
     <!-- <div class="splash-info">
         <div class="splash-logo" style="background: url('../assets/img/images.jpg') repeat transparent;"></div>
     </div> -->
+    <ion-card *ngIf="form_name=='kyc' && errors.length > 0">
+        <ion-card-header> Please correct the following issues. </ion-card-header>
+        <ion-card-content>
+            <div *ngFor="let err of errors">
+                <ion-icon name="information-circle" color="danger">
+                    {{err.error_message}}
+                </ion-icon>
+            </div>
+        </ion-card-content>
+    </ion-card>
+
     <ion-grid>
         <ion-row>
             <ion-col col-12>
