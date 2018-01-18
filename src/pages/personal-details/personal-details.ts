@@ -150,6 +150,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                     ]).then(data => {
                         console.log(data);
                         this.sql.updateUploadStatus('tbl_personal_detail', this.fm_id, '0');
+                        this.sql.updateUploadStatus('tbl_farmers', this.fm_id, '0');
                         this.navCtrl.pop();
                     },
                     err => {
@@ -176,6 +177,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                         dateNow
                     ]).then(data => {
                         this.sql.updateUploadStatus('tbl_personal_detail', this.fm_id, '0');
+                        this.sql.updateUploadStatus('tbl_farmers', this.fm_id, '0');
                         this.navCtrl.pop();
                     },
                     err => {

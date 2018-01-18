@@ -68,8 +68,10 @@ export class MyApp {
                 this.online = false;
                 for (let i = 0; i < this.httpSubscriptions.length; i++) {
                     // console.log('offline mode : deleting inprogress http subscriptions', i);
-                    this.httpSubscriptions[i].unsubscribe();
-                    delete this.httpSubscriptions[i];
+                    if(this.httpSubscriptions[i] != undefined){
+                        this.httpSubscriptions[i].unsubscribe();
+                        delete this.httpSubscriptions[i];
+                    }
                 }
             });
             
@@ -191,7 +193,40 @@ export class MyApp {
 
             //Get data from local sql
             await this.sql.query("SELECT * FROM " + tablename + " WHERE fm_id = ?", [lfm_id]).then(sdata => {
-                    // console.log('loop test', sdata);
+                
+                // if table name is personal_detail then check if tbl_farmer data is sent or not
+                // if its already sent then make a put request to update the data
+                if(tablename === 'tbl_personal_detail'){
+                    this.sql.query("SELECT * FROM tbl_farmers WHERE local_id = ?", [lfm_id]).then(farmerData => {
+                        if (farmerData.res.rows.length > 0) {
+                            let fmdata = farmerData.res.rows.item(0);
+                            if(fmdata['fm_id'] !== 'false' && fmdata['fm_id'] != '' && fmdata['fm_id'] != null){
+                                if(fmdata['local_upload'] == 0){
+                                    let req = this.api.put("add_farmer", fmdata)
+                                    .map((res) => res.json())
+                                    .subscribe(success => {
+                                        //on success change upload status to 1
+                                        if(success.success){
+                                            this.sql.updateUploadStatus('tbl_farmers', fmdata['local_id'], '1');
+                                        }
+                                        else{
+                                            //add error messages to error table
+                                            for(let j = 0; j < success.data.length; j++){
+                                                this.sql.addError('tbl_farmers', fmdata['local_id'], success.data[j].error_code, success.data[j].error_message);
+                                            }
+                                        }
+                                    }, error => {
+                                        console.log(error);
+                                    });
+                                    this.httpSubscriptions.push(req);
+                                }
+                            }
+                        }
+                    },err => {
+                        console.log(err);
+                    });
+                }
+
                 if (sdata.res.rows.length > 0) {
                     //send one by one data to server
                     for(var i = 0; i < sdata.res.rows.length; i++) {
@@ -230,6 +265,7 @@ export class MyApp {
 
             if(fm_id !== 'false' && fm_id != '' && fm_id != null){
                 //its already has been sent
+                
                 data['fm_id'] = fm_id;
                 let req = this.api.post("send_table", data)
                 .map((res) => res.json())
@@ -302,8 +338,8 @@ export class MyApp {
                 });
 
                 this.httpSubscriptions.push(req);
-
             }
+            
         }, err => {
             console.log(err);
         });
@@ -381,8 +417,8 @@ export class MyApp {
                             }
                             else{
                                 //add error messages to error table
-                                for(let j = 0; j < success.single.length; j++){
-                                    this.sql.addError(single.tablename, single['local_id'], success.single[j].error_code, success.data[j].error_message);
+                                for(let j = 0; j < success.data.length; j++){
+                                    this.sql.addError(single.tablename, single['local_id'], success.data[j].error_code, success.data[j].error_message);
                                 }
                             }
                         }, error => {

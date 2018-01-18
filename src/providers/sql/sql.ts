@@ -493,7 +493,14 @@ export class Sql {
         if(tablename === 'tbl_farmers'){
             await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE local_id = ?', [status, farmerId])
             .then(success => {
-                //nothing to do for now
+                console.log('STATUS UPDATE', tablename, status);
+                // if(status == 0){
+                //     this.events.publish('table:updated', tablename, farmerId);
+                // }
+                //clear all existing errors for this device
+                this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, tablename]).catch(err => {
+                    console.log("SQL : errors while removing errors from table", err);
+                });
             },
             err => {
                 console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
@@ -501,31 +508,21 @@ export class Sql {
         }else{
             await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE fm_id = ?', [status, farmerId])
             .then(success => {
-                if (status == 0) {
+                console.log('STATUS UPDATE', tablename, status);
+                if(status == 0){
                     this.events.publish('table:updated', tablename, farmerId);
-                    this.query('UPDATE tbl_farmers SET local_upload = ? WHERE local_id = ?', [status, farmerId]).catch(err => {
-                        console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
-                    });
                 }
+                //clear all existing errors for this device
+                this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, tablename]).catch(err => {
+                    console.log("SQL : errors while removing errors from table", err);
+                    this.events.publish('farmer:updateToServer');
+                });
             },
             err => {
                 console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
             });
         }
-
-
-        if(tablename == "tbl_personal_detail"){
-            //clear all existing errors for this device
-            this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, "tbl_farmers"]).catch(err => {
-                console.log("SQL : errors while removing errors from table", err);
-            });
-        }
-
-        //clear all existing errors for this device
-        this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, tablename]).catch(err => {
-            console.log("SQL : errors while removing errors from table", err);
-            this.events.publish('farmer:updateToServer');
-        });
+        this.events.publish('farmer:updateToServer');
     }
 
 
