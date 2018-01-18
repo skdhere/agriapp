@@ -1,8 +1,8 @@
 <?xml version='1.0' encoding='utf-8'?>
-<widget id="com.agribridge.agribridge" version="0.0.5" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+<widget id="com.agribridge.agribridge" version="0.0.6" xmlns="http://www.w3.org/ns/widgets" xmlns:android="http://schemas.android.com/apk/res/android" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <name>Agribridge</name>
     <description>Agribridge Data logger for farmers</description>
-    <author email="hi@ionicframework" href="http://ionicframework.com/">Ionic Framework Team</author>
+    <author email="ejaz@riverbridgeventures.com" href="http://riverbridgeventures.com/">Riverbridge ventures team</author>
     <content src="index.html" />
     <access origin="*" />
     <allow-intent href="http://*/*" />
@@ -91,4 +91,8 @@
     <plugin name="cordova-plugin-filepath" spec="^1.1.0" />
     <plugin name="uk.co.workingedge.cordova.plugin.sqliteporter" spec="^1.0.2" />
     <plugin name="cordova-plugin-network-information" spec="^2.0.1" />
+    <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
+        <application android:allowBackup="false" />
+        <application android:fullBackupContent="false" />
+    </edit-config>
 </widget>
