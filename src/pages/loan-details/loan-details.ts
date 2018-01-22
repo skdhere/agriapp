@@ -65,7 +65,7 @@ export class LoanDetailsPage {
 
 		this.navCtrl.push('LoanDetailsAddPage', {
 			farmer_id : this.fm_id,
-			local_loan_id : loan.local_loan_id,
+			local_id : loan.local_id,
 			callback: myCallbackFunction
 		});
 	}
@@ -87,7 +87,7 @@ export class LoanDetailsPage {
                 text: 'Yes',
                 cssClass: 'danger',
                 handler: () => {
-					this.sql.query("Delete from tbl_loan_details where local_loan_id = ?" , [loan.local_loan_id]).then(data => {
+					this.sql.query("Delete from tbl_loan_details where local_id = ?" , [loan.local_id]).then(data => {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.loans.indexOf(loan);

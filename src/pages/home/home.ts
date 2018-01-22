@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, LoadingController, ToastController, Platform } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController, ToastController, Platform, Events } from 'ionic-angular';
 import { MenuController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 import { UserProvider } from '../../providers/user/user';
@@ -27,6 +27,7 @@ import 'rxjs/add/operator/map';
  	totalFarmers: any = 0;
  	totalUploaded: any = 0;
  	isApp: boolean = false;
+ 	sync: any = false; 
  	constructor(private menu: MenuController, 
  				public navCtrl: NavController,
                 public  platform: Platform, 
@@ -37,6 +38,7 @@ import 'rxjs/add/operator/map';
  				public http: Http,
  				private loadingCtrl: LoadingController, 
 				public toastCtrl: ToastController,
+				public events: Events,
  				public currentUser: UserProvider) {
 
  		this.menu.enable(true);
@@ -48,6 +50,22 @@ import 'rxjs/add/operator/map';
  			}else{
  				this.isApp = true;
  			}
+ 		});
+
+ 		this.api.getHttpStatus().then( (data) => {
+ 			console.log('storage', data);
+ 			this.sync = data;
+ 		});
+
+ 		console.log(this.sync);
+ 		this.events.subscribe('API:RequestBusy', () => {
+ 			console.log('busy......');
+ 			this.sync = 'true';
+ 		});
+
+ 		this.events.subscribe('API:RequestIdle', () => {
+ 			console.log('Idle......');
+ 			this.sync = 'false';
  		});
  	}
 
@@ -150,4 +168,10 @@ import 'rxjs/add/operator/map';
  			this.showMessage('To upload the data open this application in device.', 'black', 10000);
  		}
  	}
- }
+
+ 	
+ 	ionViewDidLeave(){
+ 		this.events.unsubscribe('API:RequestBusy');
+ 		this.events.unsubscribe('API:RequestIdle');
+ 	}
+}

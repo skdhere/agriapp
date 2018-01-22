@@ -141,6 +141,7 @@ export class KycFamilyPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_family_details', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

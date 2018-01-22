@@ -308,7 +308,8 @@ export class Sql {
             f9_created_date text,
             f9_modified_date text,
 
-            local_land_id INTEGER PRIMARY KEY,
+            local_id INTEGER PRIMARY KEY,
+            server_id text,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_land_details tables', err.tx, err.err);
@@ -327,7 +328,6 @@ export class Sql {
             f12_created_date text,
             f12_modified_date text,
 
-            local_land_id INTEGER PRIMARY KEY,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_asset_details tables', err.tx, err.err);
@@ -351,7 +351,6 @@ export class Sql {
             f13_created_date text,
             f13_modified_date text,
 
-            local_land_id INTEGER PRIMARY KEY,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_livestock_details tables', err.tx, err.err);
@@ -376,7 +375,8 @@ export class Sql {
             f10_created_date TEXT,
             f10_modified_date TEXT,
 
-            local_crop_id INTEGER PRIMARY KEY,
+            local_id INTEGER PRIMARY KEY,
+            server_id text,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_cultivation_data tables', err.tx, err.err);
@@ -396,7 +396,8 @@ export class Sql {
             f11_created_date text,
             f11_modified_date text,
 
-            local_crop_id INTEGER PRIMARY KEY,
+            local_id INTEGER PRIMARY KEY,
+            server_id text,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_yield_details tables', err.tx, err.err);
@@ -454,7 +455,8 @@ export class Sql {
             f15_created_date text,
             f15_modified_date text,
 
-            local_loan_id INTEGER PRIMARY KEY,
+            local_id INTEGER PRIMARY KEY,
+            server_id text,
             local_upload INTEGER DEFAULT 0
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_loan_details tables', err.tx, err.err);
@@ -554,4 +556,17 @@ export class Sql {
             }
         });
     }
+
+    updateExtraTableServerID(tablename, local_id, insert_id){
+        this.query("UPDATE " + tablename + " SET server_id = ? WHERE local_id = ?" , [
+            insert_id,
+            local_id
+        ]).then(data => {
+            this.events.publish('farmer:updateToServer');
+        },
+        err => {
+            console.log(err);
+        });
+    }
+
 }

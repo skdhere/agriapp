@@ -65,7 +65,7 @@ export class LandFarmPage {
 
 		this.navCtrl.push('LandFarmAddPage', {
 			farmer_id : this.fm_id,
-			local_land_id : land.local_land_id,
+			local_id : land.local_id,
 			callback: myCallbackFunction
 		});
 	}
@@ -87,7 +87,7 @@ export class LandFarmPage {
                 text: 'Yes',
                 cssClass: 'danger',
                 handler: () => {
-					this.sql.query("Delete from tbl_land_details where local_land_id = ?" , [land.local_land_id]).then(data => {
+					this.sql.query("Delete from tbl_land_details where local_id = ?" , [land.local_id]).then(data => {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.lands.indexOf(land);

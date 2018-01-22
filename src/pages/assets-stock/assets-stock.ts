@@ -141,6 +141,7 @@ export class AssetsStockPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_livestock_details', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

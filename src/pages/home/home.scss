@@ -5,6 +5,15 @@ page-home {
 		to { background-position: 100% 0; }
 	}
 
+	.spinner-md-crescent circle {
+	    stroke: #fff;
+	}
+
+	ion-spinner {
+	    width: 13px;
+	    height: 13px;
+	}
+
 	ion-content{
 		.scroll-content{
 			margin: 0px !important;
@@ -62,6 +71,10 @@ page-home {
 		    text-align: center;
 		    font-size: 40px;
 		    font-family: cursive;
+		    small{
+		    	font-family: normal;
+		    	font-size: 13px;
+		    }
 		}
 		
 		.button-inner{

@@ -139,6 +139,7 @@ export class KycAppliancesPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_appliances_details', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

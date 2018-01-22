@@ -65,7 +65,7 @@ export class CropCultivationPage {
 
 		this.navCtrl.push('CropCultivationAddPage', {
 			farmer_id : this.fm_id,
-			local_crop_id : crop.local_crop_id,
+			local_id : crop.local_id,
 			callback: myCallbackFunction
 		});
 	}
@@ -87,7 +87,7 @@ export class CropCultivationPage {
                 text: 'Yes',
                 cssClass: 'danger',
                 handler: () => {
-					this.sql.query("Delete from tbl_cultivation_data where local_crop_id = ?" , [crop.local_crop_id]).then(data => {
+					this.sql.query("Delete from tbl_cultivation_data where local_id = ?" , [crop.local_id]).then(data => {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.crops.indexOf(crop);

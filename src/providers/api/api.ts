@@ -5,6 +5,7 @@ import { Http, RequestOptions, URLSearchParams, Headers } from '@angular/http';
 import { Storage } from '@ionic/storage';
 import { Observable } from 'rxjs/Observable';
 import { UserProvider } from '../user/user';
+import { Events } from 'ionic-angular';
 
 
 /**
@@ -16,8 +17,11 @@ export class Api {
     url: string = 'http://localhost/app/Github/agribridge-api/v1';
     // url: string = 'http://sqoreyard.com/sqyardpanel/rest/v1';
     options: RequestOptions;
+    activeCalls: number = 0;
 
-    constructor(public http: Http, private storage: Storage, public currentUser: UserProvider) {}
+    constructor(public http: Http, private storage: Storage, public currentUser: UserProvider, public events?: Events) {
+        this.storage.set('httpStatus', 'false');
+    }
 
     setHeaders(){
         let myHeaders: Headers = new Headers;
@@ -41,8 +45,10 @@ export class Api {
             // a search field set in options.
             // this.options.search = p;
         }
-
-        return this.http.get(this.url + '/' + endpoint , this.options);
+        this.httpCallRequested();
+        return this.http.get(this.url + '/' + endpoint , this.options).finally(() => {
+            this.httpCallReady();
+        });
     }
 
     post(endpoint: string, body: any) {
@@ -51,8 +57,11 @@ export class Api {
         for(let key in body){
             params.set(key, body[key]) 
         }
-
-        return this.http.post(this.url + '/' + endpoint, params, this.options);
+        this.httpCallRequested();
+        return this.http.post(this.url + '/' + endpoint, params, this.options)
+        .finally(() => {
+            this.httpCallReady();
+        });
     }
 
     put(endpoint: string, body: any) {
@@ -61,14 +70,45 @@ export class Api {
         for(let key in body){
             params.set(key, body[key]) 
         }
-        return this.http.put(this.url + '/' + endpoint, params, this.options);
+        this.httpCallRequested();
+        return this.http.put(this.url + '/' + endpoint, params, this.options)
+        .finally(() => {
+            this.httpCallReady();
+        });
     }
 
     delete(endpoint: string) {
-        return this.http.delete(this.url + '/' + endpoint, this.options);
+        this.httpCallRequested();
+        return this.http.delete(this.url + '/' + endpoint, this.options)
+        .finally(() => {
+            this.httpCallReady();
+        });
     }
 
     patch(endpoint: string, body: any) {
         return this.http.put(this.url + '/' + endpoint, body, this.options);
+    }
+
+
+    private httpCallReady(): void {
+        this.activeCalls--;
+        if (this.activeCalls === 0) {
+            // console.log('Http Done!');
+            this.events.publish('API:RequestIdle');
+            this.storage.set('httpStatus', 'false');
+        }
+    }
+
+    private httpCallRequested(): void {
+        if (this.activeCalls === 0) {
+            // console.log('Http start!');
+            this.events.publish('API:RequestBusy');
+            this.storage.set('httpStatus', 'true');    
+        }
+        this.activeCalls++;
+    }
+
+    getHttpStatus(){
+        return this.storage.get('httpStatus');
     }
 }

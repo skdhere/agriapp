@@ -5,7 +5,10 @@
                 <ion-title>Agribridge</ion-title>
             </ion-toolbar>
             <ion-toolbar class="custom-subheader" color="app">
-                <ion-title>{{currentUser.emailId}} <ion-icon name="radio-button-on" color="secondary"> </ion-icon></ion-title>
+                <ion-title>{{currentUser.emailId}}
+                    <ion-icon *ngIf="online" name="radio-button-on" color="secondary"> </ion-icon>
+                    <ion-icon *ngIf="!online" name="radio-button-on" color="danger"> </ion-icon>
+                </ion-title>
             </ion-toolbar>
         </ion-header>
         <ion-content>

@@ -23,7 +23,7 @@
 				<ion-item>
 				    <ion-label floating>Select Farm Land <span>*</span></ion-label>
 				    <ion-select formControlName="f10_land" interface="popover">
-						<ion-option *ngFor="let f of farms" value="{{f.f9_name}}">{{f.f9_name}}</ion-option> 
+						<ion-option *ngFor="let f of farms" value="{{f.local_id}}">{{f.f9_name}}</ion-option> 
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="cultivation.controls.f10_land.invalid  && (cultivation.controls.f10_land.dirty || submitAttempt)">

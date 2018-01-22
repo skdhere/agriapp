@@ -20,7 +20,7 @@ export class CropPreviousAddPage {
   	previous: FormGroup;
   	submitAttempt: boolean = false;
   	fm_id: any;
-    local_crop_id: any;
+    local_id: any;
     exist: boolean = false;
 
 	constructor(public navCtrl: NavController, 
@@ -46,10 +46,14 @@ export class CropPreviousAddPage {
 
 		this.exist         = false;
 		this.fm_id         = this.navParams.get('farmer_id');
-		this.local_crop_id = this.navParams.get('local_crop_id') || false;
+		
+		this.local_id = false;
+		if(this.navParams.get('local_id') != undefined){
+			this.local_id = this.navParams.get('local_id');
+		}
 
-		if(this.local_crop_id !== false){
-	        this.sql.query('SELECT * FROM tbl_yield_details WHERE fm_id = ? and local_crop_id = ? limit 1', [this.fm_id, this.local_crop_id]).then( (data) => {
+		if(this.local_id !== false){
+	        this.sql.query('SELECT * FROM tbl_yield_details WHERE fm_id = ? and local_id = ? limit 1', [this.fm_id, this.local_id]).then( (data) => {
 
 	            if (data.res.rows.length > 0) {
 
@@ -94,7 +98,7 @@ export class CropPreviousAddPage {
             let dateNow = date.getTime()/1000|0;
 
             if (this.exist) {
-                this.sql.query('UPDATE tbl_yield_details SET f11_cultivating = ?, f11_achieved = ?, f11_income = ?, f11_diseases = ?, f11_fertilizers = ?, f11_modified_date = ? WHERE fm_id = ? and local_crop_id = ?', [
+                this.sql.query('UPDATE tbl_yield_details SET f11_cultivating = ?, f11_achieved = ?, f11_income = ?, f11_diseases = ?, f11_fertilizers = ?, f11_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
                     this.previous.value.f11_cultivating,
                     this.previous.value.f11_achieved,
@@ -104,7 +108,7 @@ export class CropPreviousAddPage {
 
                     dateNow,
                     this.fm_id,
-                    this.local_crop_id
+                    this.local_id
                 ]).then(data => {
                     this.sql.updateUploadStatus('tbl_yield_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
@@ -132,6 +136,7 @@ export class CropPreviousAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_yield_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

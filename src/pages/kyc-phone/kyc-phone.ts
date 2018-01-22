@@ -163,6 +163,7 @@ export class KycPhonePage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_applicant_phone', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

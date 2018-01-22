@@ -22,7 +22,7 @@ export class LoanDetailsAddPage {
 	fm_id: any;
     local_crop_id: any;
     exist: boolean = false;
-    local_loan_id: any;
+    local_id: any;
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams,
@@ -109,10 +109,14 @@ export class LoanDetailsAddPage {
 
 		this.exist         = false;
 		this.fm_id         = this.navParams.get('farmer_id');
-		this.local_loan_id = this.navParams.get('local_loan_id') || false;
+		
+		this.local_id = false;
+		if(this.navParams.get('local_id') != undefined){
+			this.local_id = this.navParams.get('local_id');
+		}
 
-		if(this.local_loan_id !== false){
-	        this.sql.query('SELECT * FROM tbl_loan_details WHERE local_loan_id = ? limit 1', [this.local_loan_id]).then( (data) => {
+		if(this.local_id !== false){
+	        this.sql.query('SELECT * FROM tbl_loan_details WHERE local_id = ? limit 1', [this.local_id]).then( (data) => {
 
 	            if (data.res.rows.length > 0) {
 
@@ -156,7 +160,7 @@ export class LoanDetailsAddPage {
             let dateNow = date.getTime()/1000 | 0;
 
             if (this.exist) {
-                this.sql.query('UPDATE tbl_loan_details SET loan_sanctioned = ?, loan_type = ?, loan_provider = ?, f15_borrowed_amount = ?, f15_borrowed_loan_per = ?, f15_borrowed_loan_month = ?, f15_borrowed_total_amount = ?, f15_borrowed_total_int = ?, f15_borrowed_amount_emi = ?, f15_borrowed_emi_paid = ?, f15_borrowed_outstanding_amount = ?, f15_borrowed_outstanding_principal = ?, f15_borrowed_amount_emi_rem = ?, f15_modified_date = ? WHERE local_loan_id = ?', [
+                this.sql.query('UPDATE tbl_loan_details SET loan_sanctioned = ?, loan_type = ?, loan_provider = ?, f15_borrowed_amount = ?, f15_borrowed_loan_per = ?, f15_borrowed_loan_month = ?, f15_borrowed_total_amount = ?, f15_borrowed_total_int = ?, f15_borrowed_amount_emi = ?, f15_borrowed_emi_paid = ?, f15_borrowed_outstanding_amount = ?, f15_borrowed_outstanding_principal = ?, f15_borrowed_amount_emi_rem = ?, f15_modified_date = ? WHERE local_id = ?', [
 
                     this.loan.value.loan_sanctioned,
                     this.loan.value.loan_type,
@@ -173,7 +177,7 @@ export class LoanDetailsAddPage {
                     this.loan.value.f15_borrowed_amount_emi_rem,
 
                     dateNow,
-                    this.local_loan_id
+                    this.local_id
                 ]).then(data => {
                 	this.sql.updateUploadStatus('tbl_loan_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
@@ -209,6 +213,7 @@ export class LoanDetailsAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                	this.sql.updateUploadStatus('tbl_loan_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

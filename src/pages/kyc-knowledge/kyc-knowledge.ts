@@ -179,6 +179,7 @@ export class KycKnowledgePage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_applicant_knowledge', this.fm_id, '0');
                     this.navCtrl.pop();
                 },
                 err => {

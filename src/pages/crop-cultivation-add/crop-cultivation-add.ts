@@ -20,7 +20,7 @@ export class CropCultivationAddPage {
 	cultivation: FormGroup;
 	submitAttempt: boolean = false;
 	fm_id: any;
-    local_crop_id: any;
+    local_id: any;
     exist: boolean = false;
     farms: any = [];
 	constructor(public navCtrl: NavController, 
@@ -50,7 +50,11 @@ export class CropCultivationAddPage {
 		//Fetch value from sqlite and update form data 
 		this.exist         = false;
 		this.fm_id         = this.navParams.get('farmer_id');
-		this.local_crop_id = this.navParams.get('local_crop_id') || false;
+		
+		this.local_id = false;
+		if(this.navParams.get('local_id') != undefined){
+			this.local_id = this.navParams.get('local_id');
+		}
 
 		this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ? ORDER BY f9_modified_date DESC', [this.fm_id]).then( (data) => {
 
@@ -71,8 +75,8 @@ export class CropCultivationAddPage {
             console.log(err);
         });
 
-		if(this.local_crop_id !== false){
-			this.sql.query('SELECT * FROM tbl_cultivation_data WHERE fm_id = ? and local_crop_id = ? limit 1', [this.fm_id, this.local_crop_id]).then( (data) => {
+		if(this.local_id !== false){
+			this.sql.query('SELECT * FROM tbl_cultivation_data WHERE fm_id = ? and local_id = ? limit 1', [this.fm_id, this.local_id]).then( (data) => {
 
 	            if (data.res.rows.length > 0) {
 
@@ -123,7 +127,7 @@ export class CropCultivationAddPage {
             let dateNow = date.getTime()/1000|0;
 
 			if (this.exist) {
-                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_crop_id = ?', [
+                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
                     this.cultivation.value.f10_land || '',
                     this.cultivation.value.f10_cultivating || '',
@@ -136,7 +140,7 @@ export class CropCultivationAddPage {
                     
                     dateNow,
                     this.fm_id,
-                    this.local_crop_id
+                    this.local_id
 
                 ]).then(data => {
                     this.sql.updateUploadStatus('tbl_cultivation_data', this.fm_id, '0');
@@ -168,6 +172,7 @@ export class CropCultivationAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_cultivation_data', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

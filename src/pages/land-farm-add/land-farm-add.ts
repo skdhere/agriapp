@@ -20,7 +20,7 @@ export class LandFarmAddPage {
     land: FormGroup;
     submitAttempt: boolean = false;
     fm_id: any;
-    local_land_id: any;
+    local_id: any;
     exist: boolean = false;
     states: any[];
     districts: any[];
@@ -107,10 +107,13 @@ export class LandFarmAddPage {
 
 		this.exist         = false;
 		this.fm_id         = this.navParams.get('farmer_id');
-		this.local_land_id = this.navParams.get('local_land_id') || false;
+		this.local_id = false;
+        if(this.navParams.get('local_id') != ''){
+            this.local_id = this.navParams.get('local_id');
+        }
 
-		if(this.local_land_id !== false){
-	        this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ? and local_land_id = ? limit 1', [this.fm_id, this.local_land_id]).then( (data) => {
+		if(this.local_id !== false){
+	        this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ? and local_id = ? limit 1', [this.fm_id, this.local_id]).then( (data) => {
 
 	            if (data.res.rows.length > 0) {
 
@@ -226,7 +229,7 @@ export class LandFarmAddPage {
             let dateNow = date.getTime()/1000|0;
 
             if (this.exist) {
-                this.sql.query('UPDATE tbl_land_details SET f9_name = ?, f9_land_size = ?, f9_owner = ?, f9_lease_year = ?, f9_amount_on_rent = ?, f9_contract_year = ?, f9_state = ?, f9_district = ?, f9_taluka = ?, f9_vilage = ?, f9_survey_number = ?, f9_pincode = ?, f9_soil_type = ?, f9_soil_tested = ?, f9_modified_date = ? WHERE fm_id = ? and local_land_id = ?', [
+                this.sql.query('UPDATE tbl_land_details SET f9_name = ?, f9_land_size = ?, f9_owner = ?, f9_lease_year = ?, f9_amount_on_rent = ?, f9_contract_year = ?, f9_state = ?, f9_district = ?, f9_taluka = ?, f9_vilage = ?, f9_survey_number = ?, f9_pincode = ?, f9_soil_type = ?, f9_soil_tested = ?, f9_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
                     this.land.value.f9_name,
                     this.land.value.f9_land_size,
@@ -244,7 +247,7 @@ export class LandFarmAddPage {
                     this.land.value.f9_soil_tested,
                     dateNow,
                     this.fm_id,
-                    this.local_land_id
+                    this.local_id
                 ]).then(data => {
                     this.sql.updateUploadStatus('tbl_land_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
@@ -281,6 +284,7 @@ export class LandFarmAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
+                    this.sql.updateUploadStatus('tbl_land_details', this.fm_id, '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{
