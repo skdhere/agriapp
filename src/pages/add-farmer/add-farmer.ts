@@ -23,6 +23,7 @@ export class AddFarmerPage {
     personal: FormGroup;
     submitAttempt: boolean = false;
     retryButton: boolean = false;
+    ca_id: any = "";
 
     private storage: Storage;
 
@@ -33,6 +34,9 @@ export class AddFarmerPage {
         public events: Events,
         public formBuilder: FormBuilder) {
 
+        //get ca_id
+        this.ca_id = this.user.id;
+        
         this.personal = formBuilder.group({
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*')])],
@@ -40,6 +44,7 @@ export class AddFarmerPage {
             fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required]), ExtraValidator.checkMobile],
             fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), ExtraValidator.checkAadhar],
         });
+
     }
 
     ionViewDidLoad() {
@@ -58,8 +63,9 @@ export class AddFarmerPage {
             let date = new Date();
             let dateNow = date.getTime() / 1000 | 0;
 
-            this.sql.query("INSERT INTO tbl_farmers (fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?)",
+            this.sql.query("INSERT INTO tbl_farmers (fm_caid, fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
                 [
+                    this.ca_id,
                     this.personal.value.fm_fname,
                     this.personal.value.fm_mname,
                     this.personal.value.fm_lname,

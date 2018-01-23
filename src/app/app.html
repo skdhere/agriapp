@@ -2,7 +2,7 @@
     <ion-menu [content]="content">
         <ion-header>
             <ion-toolbar color="app">
-                <ion-title>Agribridge</ion-title>
+                <ion-title>Agribridge <small class="_version">({{version}})</small></ion-title>
             </ion-toolbar>
             <ion-toolbar class="custom-subheader" color="app">
                 <ion-title>{{currentUser.emailId}}
@@ -18,10 +18,10 @@
                     {{p.title}}
                 </button>
                 <hr>
-                <button menuClose ion-item (click)="logout()">
+                <!-- <button menuClose ion-item (click)="logout()">
                     <ion-icon name="power" item-start></ion-icon>
                     Logout
-                </button>
+                </button> -->
             </ion-list>
         </ion-content>
     </ion-menu>

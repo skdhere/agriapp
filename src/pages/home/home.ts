@@ -70,7 +70,7 @@ import 'rxjs/add/operator/map';
  	}
 
  	ionViewDidEnter() {
- 		this.sql.query('SELECT count(*) as total FROM tbl_farmers').then(data => {
+ 		this.sql.query('SELECT count(*) as total FROM tbl_farmers WHERE fm_caid = ?', [this.currentUser.id]).then(data => {
  			console.log(data);
  			if(data.res.rows.length > 0){
  				this.totalFarmers = data.res.rows.item(0).total;

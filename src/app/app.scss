@@ -15,6 +15,12 @@
 // for the .md, .ios, or .wp mode classes. The mode class is
 // automatically applied to the <body> element in the app.
 
+small._version{
+	font-size: 12px;
+	font-style: italic;
+    color: #ccc;
+}
+
 .list-md{
 	.item-input:last-child{
 		border-bottom: none;

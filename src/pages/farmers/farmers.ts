@@ -3,6 +3,7 @@ import { NavController, NavParams, IonicPage, LoadingController, ToastController
 import 'rxjs/add/operator/map';
 import { Api } from '../../providers/api/api';
 import { Sql } from '../../providers/sql/sql';
+import { UserProvider } from '../../providers/user/user';
 
 @IonicPage()
 @Component({
@@ -20,16 +21,21 @@ export class FarmersPage {
 	query: string;
 	infinit_complete: boolean = false;
 	errors:any = [];
+	ca_id: any = "";
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
 				private api: Api,
+				public currentUser: UserProvider,
 				public platform: Platform,
 				private sql: Sql,
 				public events: Events,
 				public alertCtrl: AlertController,
 				private loadingCtrl: LoadingController,
 				public toastCtrl: ToastController) {
+
+		//get ca_id
+		this.ca_id = this.currentUser.id;
 		// this.initializeItems();
 		this.events.subscribe('farmer:updateToServer', () => {
 			this.ionViewDidEnter();
@@ -55,13 +61,13 @@ export class FarmersPage {
 		this.limit = 10;
 		this.offset = 0;
 
-		this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers ORDER BY fm_modifieddt DESC LIMIT ?,?';
+		this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? ORDER BY fm_modifieddt DESC LIMIT ?,?';
 		this.doInfinite();
 	}
 
 	doInfinite(infiniteScroll?) {
 
-		this.sql.query(this.query, [this.offset, this.limit]).then(data => {
+		this.sql.query(this.query, [this.ca_id, this.offset, this.limit]).then(data => {
 			console.log(data);
             if (data.res.rows.length > 0) {
                 for(let i=0; i<data.res.rows.length; i++){
@@ -202,7 +208,7 @@ export class FarmersPage {
 		// if the value is an empty string don't filter the items
 		// val = val.trim();
 		if (val && val.trim() != '') {
-			this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE (fm_mobileno LIKE \'%'+ val +'%\' OR fm_name LIKE \'%'+ val +'%\')';
+			this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? and (fm_mobileno LIKE \'%'+ val +'%\' OR fm_name LIKE \'%'+ val +'%\')';
 			this.query +=' ORDER BY fm_modifieddt DESC LIMIT ?,?';
 			this.doInfinite();
 		}
@@ -336,4 +342,20 @@ export class FarmersPage {
 			}
 		});
 	}
+
+
+	// loadOnlineFarmers(){
+	// 	//send request
+	// 	//on success
+	// 	//go through each table
+	// 	let tablename = 'tbl_farmers';
+
+	// 	if(tablename != ''){
+	// 		this.sql.query("SELECT sql FROM sqlite_master WHERE tbl_name = 'tbl_farmers' AND type = 'table'").then(data => {
+	// 			var columnNames = data.res.rows.item(0).sql.replace(/^[^\(]+\(([^\)]+)\)/g, '$1').replace(/ [^,]+/g, '').split(',');
+	// 		    console.log(columnNames);
+	// 		});
+	// 	}
+
+	// }
 }
