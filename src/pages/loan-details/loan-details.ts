@@ -91,8 +91,14 @@ export class LoanDetailsPage {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.loans.indexOf(loan);
+							let server_id = loan.server_id != undefined ? loan.server_id : '';
+
 							if(index !== -1){
 								this.loans.splice(index, 1);
+								//if its sent to server then add server_id to delete queu
+			                	if (server_id != '' && server_id !== null) {
+			                		this.sql.addToDelete("tbl_loan_details", server_id);
+			                	}
 							}
 						}
 					});

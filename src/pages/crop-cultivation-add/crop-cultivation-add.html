@@ -31,43 +31,44 @@
 		        </div>
 
 				<ion-item>
-				    <ion-label floating>Type Of Crop Cultivating This Year <span>*</span></ion-label>
-				    <ion-select formControlName="f10_cultivating" interface="popover">
-				      <ion-option value="TOMATO">TOMATO</ion-option>
-				      <ion-option value="OKRA">OKRA</ion-option>
-				      <ion-option value="FRENCH BEANS">FRENCH BEANS</ion-option>
-				      <ion-option value="CLUSTER BEANS (GUARGUM)">CLUSTER BEANS (GUARGUM)</ion-option>
-				      <ion-option value="ONION">ONION</ion-option>
-				      <ion-option value="AMARANTHUS">AMARANTHUS</ion-option>
-				      <ion-option value="SPINACH">SPINACH</ion-option>
-				      <ion-option value="FENUGREEK">FENUGREEK</ion-option>
-				      <ion-option value="CORIANDER">CORIANDER</ion-option>
-				      <ion-option value="RIDGE GOURD">RIDGE GOURD</ion-option>
-				      <ion-option value="BOTTLE GOURD">BOTTLE GOURD</ion-option>
-				      <ion-option value="BRINJAL">BRINJAL</ion-option>
-				      <ion-option value="CARROT">CARROT</ion-option>
-				      <ion-option value="FIELD BEANS">FIELD BEANS</ion-option>
-				      <ion-option value="GROUNDNUT">GROUNDNUT</ion-option>
-				      <ion-option value="BENGAL GRAM">BENGAL GRAM</ion-option>
-				      <ion-option value="CHILLIES">CHILLIES</ion-option>
-				      <ion-option value="RICE">RICE</ion-option>
-				    </ion-select>
+				    <select-searchable
+				        title="Type Of Crop Cultivating This Year"
+				        formControlName="f10_cultivating"
+				        [items]="crops"
+				        itemValueField="id"
+				        itemTextField="name"
+				        [canSearch]="true"
+				        (onChange)="cropChange('p', $event)">
+				    </select-searchable>
 				</ion-item>
 				<div *ngIf="cultivation.controls.f10_cultivating.invalid  && (cultivation.controls.f10_cultivating.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_cultivating.errors.required">This field is required.</p>
 		        </div>
 
 
-		         <ion-item>
-				    <ion-label floating>Select Crop Variety<span>*</span></ion-label>
-				    <ion-select formControlName="f10_crop_variety" interface="popover">
-						<ion-option value="Tomato">Tomato</ion-option> 
-						<ion-option value="Potato">Potato</ion-option> 
-						<ion-option value="Carrot">Carrot</ion-option> 
-				    </ion-select>
+		        <ion-item>
+				    <select-searchable
+				        title="Select Crop Variety"
+				        formControlName="f10_crop_variety"
+				        [items]="varieties"
+				        itemValueField="id"
+				        itemTextField="name"
+				        [canSearch]="true">
+				    </select-searchable>
 				</ion-item>
 				<div *ngIf="cultivation.controls.f10_crop_variety.invalid  && (cultivation.controls.f10_crop_variety.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_crop_variety.errors.required">This field is required.</p>
+		        </div>
+
+		        <div *ngIf="cultivation.controls.f10_crop_variety.value.id == '0'">
+			        <ion-item>
+			            <ion-label floating>Please Specify the variety name <span>*</span></ion-label>
+			            <ion-input formControlName="f10_other_variety" type="text"></ion-input>
+			        </ion-item>
+			        <div *ngIf="cultivation.controls.f10_other_variety.invalid  && (cultivation.controls.f10_other_variety.dirty || submitAttempt)">
+			            <p *ngIf="cultivation.controls.f10_other_variety.errors.required">This field is required.</p>
+			            <p *ngIf="cultivation.controls.f10_other_variety.errors.maxlength">Length should be smaller than or equal to 50.</p>
+			        </div>
 		        </div>
 
 				<ion-item>
@@ -87,7 +88,6 @@
 				<div *ngIf="cultivation.controls.f10_stage.invalid  && (cultivation.controls.f10_stage.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_stage.errors.required">This field is required.</p>
 		        </div>
-
 
 				<ion-item>
 		            <ion-label floating>Total Yield Expected [In Tonnes] <span>*</span></ion-label>
@@ -109,10 +109,6 @@
 		            <p *ngIf="cultivation.controls.f10_expectedprice.errors.pattern">Please enter a valid number.</p>
 		        </div>
 
-
-		       
-
-
 				<ion-item>
 				    <ion-label floating>Potential Crop Diseases <span>*</span></ion-label>
 				    <ion-select formControlName="f10_diseases" interface="popover" multiple="true">
@@ -127,7 +123,6 @@
 		            <p *ngIf="cultivation.controls.f10_diseases.errors.required">This field is required.</p>
 		        </div>
 
-
 				<ion-item>
 				    <ion-label floating>Potential Pest Control Problems <span>*</span></ion-label>
 				    <ion-select formControlName="f10_pest" interface="popover">
@@ -138,8 +133,6 @@
 				<div *ngIf="cultivation.controls.f10_pest.invalid  && (cultivation.controls.f10_pest.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_pest.errors.required">This field is required.</p>
 		        </div>
-
-
 
 			</div>
 		</ion-list>

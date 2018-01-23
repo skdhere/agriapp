@@ -23,6 +23,9 @@ export class CropCultivationAddPage {
     local_id: any;
     exist: boolean = false;
     farms: any = [];
+    crops: any[];
+    varieties: any[];
+
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams,
 				public sql: Sql, 
@@ -33,6 +36,7 @@ export class CropCultivationAddPage {
 			'f10_land' : ['', Validators.required],
 			'f10_cultivating' : ['', Validators.required],
 			'f10_crop_variety' : ['', Validators.required],
+			'f10_other_variety' : ['', Validators.compose([ Validators.required, Validators.maxLength(50)]) ],
 			'f10_stage' : ['', Validators.required],
 			'f10_expected' : ['', Validators.compose([ Validators.required, Validators.maxLength(8), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
 			'f10_expectedprice' : ['', Validators.compose([ Validators.required, Validators.maxLength(8), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')])],
@@ -40,12 +44,40 @@ export class CropCultivationAddPage {
 			'f10_pest' : ['', Validators.required],
 		});
 
-		//load Farms
+		// load crops
+        this.sql.query('SELECT * FROM tbl_crops', []).then( (data) => {
+            if (data.res.rows.length > 0) {
+            	let sta = [];
+                for(let i=0; i<data.res.rows.length; i++){
+                    sta.push(data.res.rows.item(i));
+                }
+                this.crops = sta;
+            }
+        }, (error) =>{
+            console.log(error);
+        });
 
+        //Listen for form changes
+		this.cultivation.controls['f10_crop_variety'].valueChanges.subscribe(() => {this.setValidation();});
+
+	}
+
+	setValidation(){
+		let controls = this.cultivation.controls;
+		if(controls['f10_crop_variety'].value.id != undefined){
+			if(controls['f10_crop_variety'].value.id == 0){
+				controls['f10_other_variety'].enable({ emitEvent: false });
+			}
+			else{
+				controls['f10_other_variety'].setValue('', { emitEvent: false });
+				controls['f10_other_variety'].disable({ emitEvent: false });
+			}
+		}
 	}
 
 	ionViewDidEnter() {
 		console.log('ionViewDidLoad cultivationFarmAddPage');
+		this.setValidation();
 
 		//Fetch value from sqlite and update form data 
 		this.exist         = false;
@@ -86,6 +118,7 @@ export class CropCultivationAddPage {
 					formData['f10_land']          = sqlData.f10_land;
 					formData['f10_cultivating']   = sqlData.f10_cultivating;
 					formData['f10_crop_variety']  = sqlData.f10_crop_variety;
+					formData['f10_other_variety'] = sqlData.f10_other_variety;
 					formData['f10_stage']         = sqlData.f10_stage;
 					formData['f10_expected']      = sqlData.f10_expected;
 					formData['f10_expectedprice'] = sqlData.f10_expectedprice;
@@ -129,14 +162,15 @@ export class CropCultivationAddPage {
 			if (this.exist) {
                 this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
-                    this.cultivation.value.f10_land || '',
-                    this.cultivation.value.f10_cultivating || '',
-                    this.cultivation.value.f10_crop_variety || '',
-                    this.cultivation.value.f10_stage || '',
-                    this.cultivation.value.f10_expected || '',
-                    this.cultivation.value.f10_expectedprice || '',
-                    this.cultivation.value.f10_diseases || '', 
-                    this.cultivation.value.f10_pest || '', 
+                    this.cultivation.value.f10_land,
+                    this.cultivation.value.f10_cultivating.id,
+                    this.cultivation.value.f10_crop_variety.id,
+                    this.cultivation.value.f10_other_variety,
+                    this.cultivation.value.f10_stage,
+                    this.cultivation.value.f10_expected,
+                    this.cultivation.value.f10_expectedprice,
+                    this.cultivation.value.f10_diseases, 
+                    this.cultivation.value.f10_pest, 
                     
                     dateNow,
                     this.fm_id,
@@ -161,14 +195,15 @@ export class CropCultivationAddPage {
                 this.sql.query('INSERT INTO tbl_cultivation_data(fm_id, f10_land, f10_cultivating, f10_crop_variety, f10_stage, f10_expected, f10_expectedprice, f10_diseases, f10_pest, f10_created_date, f10_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
-                    this.cultivation.value.f10_land || '',
-                    this.cultivation.value.f10_cultivating || '',
-                    this.cultivation.value.f10_crop_variety || '',
-                    this.cultivation.value.f10_stage || '',
-                    this.cultivation.value.f10_expected || '',
-                    this.cultivation.value.f10_expectedprice || '',
-                    this.cultivation.value.f10_diseases || '', 
-                    this.cultivation.value.f10_pest || '', 
+                    this.cultivation.value.f10_land,
+                    this.cultivation.value.f10_cultivating.id,
+                    this.cultivation.value.f10_crop_variety.id,
+                    this.cultivation.value.f10_other_variety,
+                    this.cultivation.value.f10_stage,
+                    this.cultivation.value.f10_expected,
+                    this.cultivation.value.f10_expectedprice,
+                    this.cultivation.value.f10_diseases, 
+                    this.cultivation.value.f10_pest, 
                     dateNow,
                     dateNow
                 ]).then(data => {
@@ -196,4 +231,18 @@ export class CropCultivationAddPage {
 
 	}
 
+
+	cropChange( type, event?: any) {
+        this.sql.query('SELECT * FROM tbl_varieties WHERE crop_id=(SELECT id FROM tbl_crops WHERE name=? LIMIT 1)', [event.value.name]).then( (data) => {
+            this.varieties = [{id: 0, name: 'Other'}];
+            if (data.res.rows.length > 0) {
+                for(let i=0; i<data.res.rows.length; i++){
+                    this.varieties.push(data.res.rows.item(i));
+                }
+            }
+        }, (error) =>{
+            console.log(error);
+        });
+        this.cultivation.controls["f10_crop_variety"].setValue('');
+    }
 }

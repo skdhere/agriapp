@@ -91,8 +91,14 @@ export class LandFarmPage {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.lands.indexOf(land);
+							let server_id = land.server_id != undefined ? land.server_id : '';
+
 							if(index !== -1){
 								this.lands.splice(index, 1);
+								//if its sent to server then add server_id to delete queu
+			                	if (server_id != '' && server_id !== null) {
+			                		this.sql.addToDelete("tbl_land_details", server_id);
+			                	}
 							}
 						}
 					});

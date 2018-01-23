@@ -91,8 +91,14 @@ export class CropCultivationPage {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.crops.indexOf(crop);
+							let server_id = crop.server_id != undefined ? crop.server_id : '';
+
 							if(index !== -1){
 								this.crops.splice(index, 1);
+								//if its sent to server then add server_id to delete queu
+			                	if (server_id != '' && server_id !== null) {
+			                		this.sql.addToDelete("tbl_cultivation_data", server_id);
+			                	}
 							}
 						}
 					});

@@ -8,6 +8,7 @@ import { UserProvider } from '../providers/user/user';
 import { Sql } from '../providers/sql/sql';
 import { Api } from '../providers/api/api';
 
+
 import { HttpClientModule } from '@angular/common/http';
 import 'rxjs/add/operator/map';
 
@@ -50,21 +51,32 @@ export class MyApp {
 
             splashScreen.hide();
 
-            //network connection status
-            if (this.network.type !== 'none' && this.network.type !== 'undefined') {
-                this.online = true;
-                setTimeout(() => {
-                    console.log("sending data to server....");
-                    this.sendAllData();
-                }, 5000);
-            }
+            this.auth.isAuthenticated().subscribe(success => {
+                if(success){
+                    //network connection status
+                    if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
+                        this.online = true;
+                        setTimeout(() => {
+                            console.log("syncing server....");
+                            this.deleteServer();
+                            this.sendAllData();
+                        }, 5000);
+                    }
+                }
+            });
+
 
             this.network.onConnect().subscribe(() => { 
-                this.online = true;
-                setTimeout(() => {
-                    console.log("sending data to server....");
-                    this.sendAllData();
-                }, 5000);
+                this.auth.isAuthenticated().subscribe(success => {
+                    if(success){
+                        this.online = true;
+                        setTimeout(() => {
+                            console.log("syncing server....");
+                            this.deleteServer();
+                            this.sendAllData();
+                        }, 5000);
+                    }
+                });
             });
             
             this.network.onDisconnect().subscribe(() => { 
@@ -80,16 +92,29 @@ export class MyApp {
             
             
             //subscribe for global events
+            this.events.subscribe('auth:onLogin', () => {
+                //network connection status
+                if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
+                    this.online = true;
+                    setTimeout(() => {
+                        console.log("syncing server....");
+                        this.deleteServer();
+                        this.sendAllData();
+                    }, 5000);
+                }
+            });
             this.events.subscribe('table:updated', (tablename, fm_id) => { 
                 //clear all existing errors for this device
                 // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [fm_id, tablename]).then();
                 if(tablename == 'tbl_land_details' || tablename == 'tbl_cultivation_data' || tablename == 'tbl_yield_details' || tablename == 'tbl_loan_details'){
-                    this.eventExtraTableUpdated(tablename, fm_id);
+                    this.eventExtraTableUpdated(tablename, fm_id, true);
                 }else{
                     this.eventTableUpdated(tablename, fm_id);
                 }
             });
             this.events.subscribe('table:farmerAdded', (local_fm_id) => { this.serverAddFarmer(local_fm_id); });
+            //subscribe for global events
+            this.events.subscribe('farmer:deletedLocal', () => { this.deleteServer(); });
 
             //Register hardware back button
             platform.registerBackButtonAction(() => {
@@ -199,6 +224,7 @@ export class MyApp {
             // console.log('test', this.online);
 
             //Get data from local sql
+            // console.log(tablename);
             await this.sql.query("SELECT * FROM " + tablename + " WHERE fm_id = ?", [lfm_id]).then(sdata => {
                 
                 // if table name is personal_detail then check if tbl_farmer data is sent or not
@@ -353,7 +379,7 @@ export class MyApp {
     }
 
     //fired when extra table form udated
-    async eventExtraTableUpdated(tablename, lfm_id){
+    async eventExtraTableUpdated(tablename, lfm_id, cultivation = false){
         // console.log(tablename,'event called', this.online);
         //look for internet
         if(this.online){
@@ -369,8 +395,7 @@ export class MyApp {
 
                             data['tablename'] = tablename;
                             //check if table is crop_cultivation
-                            if(tablename == 'tbl_cultivation_data'){
-                                console.log('Inside cuntivation');
+                            if(tablename == 'tbl_cultivation_data' && cultivation){
                                 this.sql.query("SELECT * FROM tbl_land_details WHERE local_id = ?", [data['f10_land']]).then(land => {
                                     if (land.res.rows.length > 0) {
                                         let item = land.res.rows.item(0);
@@ -383,7 +408,8 @@ export class MyApp {
                                         }
                                     }
                                 });
-                            }else{
+                            }
+                            else if(tablename != 'tbl_cultivation_data'){
                                 this.updateExtraServer(lfm_id, data);
                             }
                         }
@@ -424,6 +450,11 @@ export class MyApp {
                             //update upcomming insert id as server id
                             if(success.data.insert_id != undefined){
                                 this.sql.updateExtraTableServerID(data.tablename, data['local_id'], success.data.insert_id);
+
+                                //now send cultivation data
+                                if(data.tablename == 'tbl_land_details'){
+                                    this.eventExtraTableUpdated('tbl_cultivation_data', lfm_id, true);
+                                }
                             }
                         }
                         else{
@@ -559,13 +590,14 @@ export class MyApp {
                                     && table.name != "tbl_taluka" 
                                     && table.name != "tbl_village" 
                                     && table.name != "tbl_farmers" 
+                                    && table.name != "tbl_delete" 
                                 ){
                                     //clear all existing errors for this device
                                     // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [single['local_id'], table.name]).then();
                                     //the following function will upload the data 
                                     //if upload failed for any reason it will store the data in error table
                                     if(table.name == 'tbl_land_details' || table.name == 'tbl_cultivation_data' || table.name == 'tbl_yield_details' || table.name == 'tbl_loan_details'){
-                                        this.eventExtraTableUpdated(table.name, single['local_id']);
+                                        this.eventExtraTableUpdated(table.name, single['local_id'], true);
                                     }else{
                                         this.eventTableUpdated(table.name, single['local_id']);
                                     }
@@ -578,4 +610,53 @@ export class MyApp {
         });
     }
 
+    //Delete functionality
+    async deleteServer(){
+        if(this.online){
+            await this.sql.query("SELECT * FROM tbl_delete", []).then(sdata => {
+                if(sdata.res.rows.length > 0){
+                    for (var i = 0; i < sdata.res.rows.length; i++) {
+
+                        let single = {};
+                        let tbl_delete = sdata.res.rows.item(i);
+                        if(tbl_delete['tablename'] == 'tbl_farmers'){
+
+                            single['fm_id'] = tbl_delete['server_id'];
+
+                            let req = this.api.post("fm_delete", single)
+                            .map((res) => res.json())
+                            .subscribe(success => {
+                                //on success change upload status to 1
+                                if(success.success){
+                                    this.sql.query("DELETE FROM tbl_delete WHERE server_id = ? and tablename = ? ", [single['fm_id'], 'tbl_farmers']).catch(err => { console.log(err) });
+                                }
+                            }, error => {
+                                console.log(error);
+                            });
+                            this.httpSubscriptions.push(req);
+
+                        }else{
+
+                            single['tablename'] = tbl_delete['tablename'];
+                            single['server_id'] = tbl_delete['server_id'];
+
+                            let req = this.api.post("delete_extra_table", single)
+                            .map((res) => res.json())
+                            .subscribe(success => {
+                                //on success change upload status to 1
+                                if(success.success){
+                                    this.sql.query("DELETE FROM tbl_delete WHERE server_id = ? and tablename = ? ", [single['server_id'], single['tablename']]).catch(err => { console.log(err) });
+                                }
+                            }, error => {
+                                console.log(error);
+                            });
+                            this.httpSubscriptions.push(req);
+
+                        }
+
+                    }
+                }
+            });
+        }
+    }
 }

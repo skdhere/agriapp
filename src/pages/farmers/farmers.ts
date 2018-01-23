@@ -102,6 +102,7 @@ export class FarmersPage {
 	}
 
 	deleteItem(farmer){
+		console.log(farmer);
 		let alert = this.alertCtrl.create({
             title: 'Delete',
             subTitle: 'This action cant\'t be undo!',
@@ -118,17 +119,64 @@ export class FarmersPage {
                 text: 'Yes',
                 cssClass: 'danger',
                 handler: () => {
-					let local_id = farmer.local_id;
-					this.sql.query("Delete from tbl_farmers where local_id=" + local_id , []).then(data => {
-						console.log(data);
-						if(data.res.rowsAffected > 0){
 
-							let index = this.items.indexOf(farmer);
-							if(index !== -1){
-								this.items.splice(index, 1);
-							}
-						}
-					});
+                	let local_id = farmer.local_id;
+                	//crawl each table and send if local_upload is 0
+                    this.sql.query("SELECT name FROM sqlite_master WHERE type='table'").then( (data) => {
+                        // console.log(data);
+                        if (data.res.rows.length > 0) {
+                            for (var i = 0; i < data.res.rows.length; i++) {
+                                let table = data.res.rows.item(i);
+                                if(table.name == 'tbl_personal_detail'
+									|| table.name == 'tbl_residence_details'
+									|| table.name == 'tbl_applicant_knowledge'
+									|| table.name == 'tbl_spouse_knowledge'
+									|| table.name == 'tbl_applicant_phone'
+									|| table.name == 'tbl_family_details'
+									|| table.name == 'tbl_appliances_details'
+									|| table.name == 'tbl_spouse_details'
+									|| table.name == 'tbl_land_details'
+									|| table.name == 'tbl_asset_details'
+									|| table.name == 'tbl_livestock_details'
+									|| table.name == 'tbl_cultivation_data'
+									|| table.name == 'tbl_yield_details'
+									|| table.name == 'tbl_financial_details'
+									|| table.name == 'tbl_loan_details' 
+                                ){
+                                    
+									this.sql.query( "Delete from "+table.name+" where fm_id = ?;", [local_id])
+									.catch(err => { console.log(err) });
+                                }
+                            }
+
+                            this.sql.query( "SELECT * from tbl_farmers where local_id = ?;", [local_id])
+							.then(d => {
+								if(d.res.rows.length > 0){
+									let final_farmer = d.res.rows.item(0);
+
+		                            this.sql.query( "Delete from tbl_farmers where local_id = ?;", [local_id])
+									.then(data => {
+										
+			                            let index = this.items.indexOf(farmer);
+			                            
+										console.log(final_farmer);
+										let server_id = final_farmer.fm_id;
+										if(index !== -1){
+											this.items.splice(index, 1);
+											//if its sent to server then add server_id to delete queu
+						                	if (server_id != '' && server_id !== null) {
+						                		this.sql.addToDelete("tbl_farmers", server_id);
+						                	}
+										}
+										
+									},err => { console.log(err) });
+								}
+
+							},err => { console.log(err) });
+
+							
+                        }
+                    });
                 }
             }]
         });

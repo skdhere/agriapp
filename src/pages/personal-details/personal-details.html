@@ -91,7 +91,7 @@
 
 				<ion-item>
 					<ion-label floating>Date of Birth <span>*</span></ion-label>
-					<ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MMM YYYY" formControlName="f1_dob"></ion-datetime>
+					<ion-datetime displayFormat="DD/MM/YYYY" min="1940" max="2000" pickerFormat="DD MMM YYYY" formControlName="f1_dob"></ion-datetime>
 				</ion-item>
 				<div *ngIf="!personal.controls.f1_dob.valid  && (personal.controls.f1_dob.dirty || submitAttempt)">
 					<p *ngIf="personal.controls.f1_dob.errors.required">Please enter a valid Date.</p>

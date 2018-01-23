@@ -112,7 +112,37 @@ export class PreloadPage {
 			this.goHome();
         });
 
+        // load crops
+        this.sql.query('SELECT * FROM tbl_crops LIMIT 1', []).then( (data) => {
+            if (data.res.rows.length < 1) {
+                this.http.get("assets/json/crops.json").map((res:Response) => res.json()).subscribe((data) => {
+                    let cropStr = "";
+                    for (let row of data) {
+                        cropStr += "("+row.crop_id+",'"+row.crop_name+"'),";
+                    }
+                    cropStr = cropStr.substring(0,cropStr.length-1);
+                    this.sql.query('INSERT into tbl_crops(id, name) values '+ cropStr).then();
+                });
+            }
+        }, (error) =>{
+            console.log(error);
+        });
 
+        // load varieties
+        this.sql.query('SELECT * FROM tbl_varieties LIMIT 1', []).then( (data) => {
+            if (data.res.rows.length < 1) {
+                this.http.get("assets/json/crop_varieties.json").map((res:Response) => res.json()).subscribe((data) => {
+                    let varietiesStr = "";
+                    for (let row of data) {
+                        varietiesStr += "("+row.variety_id+","+row.crop_id+",'"+row.variety_name+"'),";
+                    }
+                    varietiesStr = varietiesStr.substring(0,varietiesStr.length-1);
+                    this.sql.query('INSERT into tbl_varieties(id, crop_id, name) values '+ varietiesStr).then();
+                });
+            }
+        }, (error) =>{
+            console.log(error);
+        });
 	}
 
 	goHome(){

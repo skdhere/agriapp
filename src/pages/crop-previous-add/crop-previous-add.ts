@@ -22,6 +22,8 @@ export class CropPreviousAddPage {
   	fm_id: any;
     local_id: any;
     exist: boolean = false;
+    crops: any[];
+    varieties: any[];
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams,
@@ -39,6 +41,19 @@ export class CropPreviousAddPage {
 			// 'f11_damaged_prev_crop' : ['', Validators.required],
 			// 'f11_what_was_the_reason1' : ['', Validators.required],
 		});
+
+		// load crops
+        this.sql.query('SELECT * FROM tbl_crops', []).then( (data) => {
+            if (data.res.rows.length > 0) {
+            	let sta = [];
+                for(let i=0; i<data.res.rows.length; i++){
+                    sta.push(data.res.rows.item(i));
+                }
+                this.crops = sta;
+            }
+        }, (error) =>{
+            console.log(error);
+        });
 	}
 
 	ionViewDidEnter() {
@@ -100,7 +115,7 @@ export class CropPreviousAddPage {
             if (this.exist) {
                 this.sql.query('UPDATE tbl_yield_details SET f11_cultivating = ?, f11_achieved = ?, f11_income = ?, f11_diseases = ?, f11_fertilizers = ?, f11_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
-                    this.previous.value.f11_cultivating,
+                    this.previous.value.f11_cultivating.id,
                     this.previous.value.f11_achieved,
                     this.previous.value.f11_income,
                     this.previous.value.f11_diseases,
@@ -128,7 +143,7 @@ export class CropPreviousAddPage {
                 this.sql.query('INSERT INTO tbl_yield_details(fm_id, f11_cultivating, f11_achieved, f11_income, f11_diseases, f11_fertilizers, f11_created_date, f11_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
-                    this.previous.value.f11_cultivating,
+                    this.previous.value.f11_cultivating.id,
                     this.previous.value.f11_achieved,
                     this.previous.value.f11_income,
                     this.previous.value.f11_diseases,

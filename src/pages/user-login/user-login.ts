@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams, AlertController, LoadingController, Loading, } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, LoadingController, Loading, Events} from 'ionic-angular';
 import { Observable} from 'rxjs/Observable';
 import { AuthService} from '../../providers/providers';
 import { MenuController } from 'ionic-angular';
@@ -21,7 +21,8 @@ export class UserLogin {
 
     constructor(private nav: NavController, 
                 private menu: MenuController, 
-                private auth: AuthService, 
+                private auth: AuthService,
+                public events: Events, 
                 private alertCtrl: AlertController,
                 private loadingCtrl: LoadingController){
 
@@ -37,6 +38,7 @@ export class UserLogin {
         this.auth.login(this.registerCredentials).subscribe(allowed => {
             if (allowed == 'success') {        
                 this.nav.setRoot('HomePage');
+                this.events.publish('auth:onLogin');
             } else if(allowed == 'fail'){
                 this.showError("Access Denied");
             } else{

@@ -21,27 +21,14 @@
 		<ion-list>
 			<div>
 				<ion-item>
-				    <ion-label floating>Type Of Crop Cultivating Previous Year  <span>*</span></ion-label>
-				    <ion-select formControlName="f11_cultivating" interface="popover">
-				      <ion-option value="TOMATO">TOMATO</ion-option>
-				      <ion-option value="OKRA">OKRA</ion-option>
-				      <ion-option value="FRENCH BEANS">FRENCH BEANS</ion-option>
-				      <ion-option value="CLUSTER BEANS (GUARGUM)">CLUSTER BEANS (GUARGUM)</ion-option>
-				      <ion-option value="ONION">ONION</ion-option>
-				      <ion-option value="AMARANTHUS">AMARANTHUS</ion-option>
-				      <ion-option value="SPINACH">SPINACH</ion-option>
-				      <ion-option value="FENUGREEK">FENUGREEK</ion-option>
-				      <ion-option value="CORIANDER">CORIANDER</ion-option>
-				      <ion-option value="RIDGE GOURD">RIDGE GOURD</ion-option>
-				      <ion-option value="BOTTLE GOURD">BOTTLE GOURD</ion-option>
-				      <ion-option value="BRINJAL">BRINJAL</ion-option>
-				      <ion-option value="CARROT">CARROT</ion-option>
-				      <ion-option value="FIELD BEANS">FIELD BEANS</ion-option>
-				      <ion-option value="GROUNDNUT">GROUNDNUT</ion-option>
-				      <ion-option value="BENGAL GRAM">BENGAL GRAM</ion-option>
-				      <ion-option value="CHILLIES">CHILLIES</ion-option>
-				      <ion-option value="RICE">RICE</ion-option>
-				    </ion-select>
+				    <select-searchable
+				        title="Type Of Crop Cultivating Previous Year"
+				        formControlName="f11_cultivating"
+				        [items]="crops"
+				        itemValueField="id"
+				        itemTextField="name"
+				        [canSearch]="true">
+				    </select-searchable>
 				</ion-item>
 				<div *ngIf="previous.controls.f11_cultivating.invalid  && (previous.controls.f11_cultivating.dirty || submitAttempt)">
 		            <p *ngIf="previous.controls.f11_cultivating.errors.required">This field is required.</p>

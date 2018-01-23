@@ -26,6 +26,29 @@ export class Sql {
     // Initialize the DB with our required tables
     createTables() {
 
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_crops (
+            id INTEGER PRIMARY KEY,
+            name text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_crops', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_varieties (
+            id INTEGER PRIMARY KEY,
+            crop_id INTEGER,
+            name text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_varieties', err.tx, err.err);
+        });
+
+        this.query(`CREATE TABLE IF NOT EXISTS tbl_delete (
+            id INTEGER PRIMARY KEY,
+            server_id INTEGER,
+            tablename text
+        )`).catch(err => {
+            console.error('Storage: Unable to create tbl_error', err.tx, err.err);
+        });
+
         this.query(`CREATE TABLE IF NOT EXISTS tbl_errors (
             id INTEGER PRIMARY KEY,
             local_id INTEGER,
@@ -364,6 +387,7 @@ export class Sql {
             f10_land TEXT,
             f10_cultivating TEXT,
             f10_crop_variety TEXT,
+            f10_other_variety TEXT,
             f10_stage TEXT,
             f10_expected INTEGER,
             f10_expectedprice TEXT,
@@ -566,6 +590,22 @@ export class Sql {
         },
         err => {
             console.log(err);
+        });
+    }
+
+    addToDelete(tablename, server_id){
+        this.query('SELECT * FROM tbl_delete WHERE server_id = ? and tablename = ?', [server_id, tablename]).then(data => {
+            if(data.res.rows.length < 1){
+                this.query('INSERT INTO tbl_delete(server_id, tablename) VALUES(?, ?)', [
+                    server_id,
+                    tablename
+                ]).then(data => {
+                    this.events.publish('farmer:deletedLocal');
+                },
+                err => {
+                    console.log(err);
+                });
+            }
         });
     }
 

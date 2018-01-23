@@ -87,12 +87,20 @@ export class CropPreviousPage {
                 text: 'Yes',
                 cssClass: 'danger',
                 handler: () => {
+
+
 					this.sql.query("Delete from tbl_yield_details where local_id = ?" , [crop.local_id]).then(data => {
 						if(data.res.rowsAffected > 0){
 
 							let index = this.crops.indexOf(crop);
+							let server_id = crop.server_id != undefined ? crop.server_id : '';
+
 							if(index !== -1){
 								this.crops.splice(index, 1);
+			                	//if its sent to server then add server_id to delete queu
+			                	if (server_id != '' && server_id !== null) {
+			                		this.sql.addToDelete("tbl_yield_details", server_id);
+			                	}
 							}
 						}
 					});
