@@ -75,7 +75,7 @@ export class CropPreviousAddPage {
 	                let sqlData = data.res.rows.item(0);
 	                let formData = [];
 
-					formData['f11_cultivating'] = sqlData.f11_cultivating;
+					formData['f11_cultivating'] = { id : sqlData.f11_cultivating };
 					formData['f11_achieved']    = sqlData.f11_achieved;
 					formData['f11_income']      = sqlData.f11_income;
 					formData['f11_diseases']    = sqlData.f11_diseases;

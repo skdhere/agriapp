@@ -13,8 +13,8 @@ import { Events } from 'ionic-angular';
  */
 @Injectable()
 export class Api {
-    // url: string = 'http://acrefin.com/api/v1';
-    url: string = 'http://localhost/app/Github/agribridge-api/v1';
+    url: string = 'http://acrefin.com/api/v1';
+    // url: string = 'http://localhost/app/Github/agribridge-api/v1';
     // url: string = 'http://sqoreyard.com/sqyardpanel/rest/v1';
     options: RequestOptions;
     activeCalls: number = 0;
@@ -55,8 +55,16 @@ export class Api {
         this.setHeaders();
         let params = new URLSearchParams();
         for(let key in body){
-            params.set(key, body[key]) 
+            if(Array.isArray(body[key])){
+                for (var i = 0; i < body[key].length; i++) {
+                    params.set(key + '[]', body[key][i]); 
+                }
+            }
+            else{
+                params.set(key, body[key]);
+            }
         }
+        // console.log(params);
         this.httpCallRequested();
         return this.http.post(this.url + '/' + endpoint, params, this.options)
         .finally(() => {
@@ -68,7 +76,14 @@ export class Api {
         this.setHeaders();
         let params = new URLSearchParams();
         for(let key in body){
-            params.set(key, body[key]) 
+            if(Array.isArray(body[key])){
+                for (var i = 0; i < body[key].length; i++) {
+                    params.set(key + '[]', body[key][i]); 
+                }
+            }
+            else{
+                params.set(key, body[key]);
+            }
         }
         this.httpCallRequested();
         return this.http.put(this.url + '/' + endpoint, params, this.options)

@@ -22,6 +22,7 @@ export class FarmersPage {
 	infinit_complete: boolean = false;
 	errors:any = [];
 	ca_id: any = "";
+	load:any;
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
@@ -131,7 +132,7 @@ export class FarmersPage {
                     this.sql.query("SELECT name FROM sqlite_master WHERE type='table'").then( (data) => {
                         // console.log(data);
                         if (data.res.rows.length > 0) {
-                            for (var i = 0; i < data.res.rows.length; i++) {
+                            for (let i = 0; i < data.res.rows.length; i++) {
                                 let table = data.res.rows.item(i);
                                 if(table.name == 'tbl_personal_detail'
 									|| table.name == 'tbl_residence_details'
@@ -307,9 +308,9 @@ export class FarmersPage {
 			// console.log('Updateeee', d);
 			if(d.res.rows.length > 0){
 				let updated = true;
-				for (var j = 0; j < d.res.rows.length; j++) {
+				for (let j = 0; j < d.res.rows.length; j++) {
 					let row = d.res.rows.item(j);
-					for (var i = 0; i < 16; i++) {
+					for (let i = 0; i < 16; i++) {
 						if(row['table'+ i] == 0){
 							updated = false;
 						}
@@ -334,7 +335,7 @@ export class FarmersPage {
 			if(d.res.rows.length > 0){
 				this.items[len].hasErrors = true;
 				this.errors[item.local_id] = [];
-				for (var i = 0; i < d.res.rows.length; i++) {
+				for (let i = 0; i < d.res.rows.length; i++) {
 					this.errors[item.local_id].push(d.res.rows.item(i));
 				}
 			}else{
@@ -345,17 +346,142 @@ export class FarmersPage {
 
 
 	// loadOnlineFarmers(){
-	// 	//send request
-	// 	//on success
-	// 	//go through each table
-	// 	let tablename = 'tbl_farmers';
+
+	// 	this.load = this.loadingCtrl.create();
+	// 	this.load.present();
+
+	// 	this.sql.query('select fm_id from tbl_farmers where fm_id != \'\'').then(local_data => {
+	// 		let fm_ids = [];
+	// 		if(local_data.res.rows.length > 0){
+	// 			for (let i = 0; i < local_data.res.rows.length; i++) {
+	// 				let item = local_data.res.rows.item(i);
+	// 				if(item.fm_id != ''){
+	// 					fm_ids.push(item.fm_id);
+	// 				}
+	// 			}
+	// 		}
+	// 		console.log(fm_ids);
+	// 		let data = { fm_ids : fm_ids, total: ''};
+
+	// 		this.api.post('fm_data', data)
+	//         .map((res) => res.json())
+	//         .subscribe(success => {
+	//         	console.log(success);
+	//         	if(success.success){
+	//         		for (let j = 0; j < success.data.length; j++) {
+	//         			let farmer = success.data[j];
+	//         			console.log('1', farmer);
+	//         			for (let k = 0; k < farmer.values.length; k++) {
+	//         				console.log('2', farmer.values[k]);
+
+	//         				if(k == farmer.values.length -1){
+	// 	        				this.cloneData(farmer.fm_id, farmer.values[k], true);
+	//         				}else{
+	// 	        				this.cloneData(farmer.fm_id, farmer.values[k]);
+	//         				}
+	//         			}
+	//         		}
+	//         	}
+	//         	else{
+	//         		this.load.dismiss();
+	//         	}
+	//         }, err => {
+	//         	console.log(err);
+	//         	this.load.dismiss();
+	//         });
+	// 	});
+	// }
+
+	// async cloneData(fm_id, val, isLast?){
+
+	// 	console.log('3', val);
+	// 	let tablename = val['tablename'];
 
 	// 	if(tablename != ''){
-	// 		this.sql.query("SELECT sql FROM sqlite_master WHERE tbl_name = 'tbl_farmers' AND type = 'table'").then(data => {
-	// 			var columnNames = data.res.rows.item(0).sql.replace(/^[^\(]+\(([^\)]+)\)/g, '$1').replace(/ [^,]+/g, '').split(',');
-	// 		    console.log(columnNames);
+	// 		console.log('tablename', tablename);
+
+	// 		await this.sql.query("SELECT sql FROM sqlite_master WHERE tbl_name = ? AND type = 'table'", [tablename]).then(data => {
+	// 			console.log('under query', tablename);
+
+	// 			let columns = this.getColArray(data.res.rows.item(0).sql);
+	// 		    let query = 'Insert into ' + tablename;
+	// 		    query += '(' + columns.toString() + ') values(';
+	// 		    for (let i = 0; i < columns.length; i++) {
+	// 		    	query += '?,';
+	// 		    }
+	// 		    query = query.substring(0,query.length - 1);
+	// 		    query += ')';
+
+	// 			console.log('rows', val.rows);
+
+	// 		    for (let m = 0; m < val.rows.length; m++) {
+	// 				console.log('4', val.rows[m]);
+
+	// 			    let serverRow = val.rows[m];
+	// 			    let final_data:any = {};
+	// 			    for (let i = 0; i < columns.length; i++) {
+	// 			    	final_data[columns[i]] = serverRow[columns[i]] || '';
+	// 			    }
+
+	// 			    if(tablename != 'tbl_farmers'){
+	// 			    	console.log('4.5', tablename);
+	// 				    this.sql.query('Select local_id from tbl_farmers where fm_id = ? ', [fm_id]).then(d => {
+	// 			    		console.log('4.7', fm_id);
+
+	// 				    	if(d.res.rows.length > 0){
+	// 				    		let item = d.res.rows.item(0);
+	// 					    	final_data['fm_id'] = item['local_id'];
+	// 					    	delete final_data['id'];
+
+	// 					    	let dumFinal = [];
+	// 					    	for (let key in final_data) {
+	// 					    		dumFinal.push(final_data[key]);
+	// 					    	}
+
+	// 					    	console.log('5', dumFinal, query);
+	// 						    this.sql.query(query, dumFinal).then(dat => {}, err => {console.log(err)});
+	// 				    	}
+
+	// 				    }, err => {
+	// 				    	console.log(err);
+	// 				    });
+				    	
+	// 			    }else{
+	// 			    	delete final_data['id'];
+
+	// 			    	let dumFinal = [];
+	// 			    	for (let key in final_data) {
+	// 			    		dumFinal.push(final_data[key]);
+	// 			    	}
+				    	
+	// 			    	console.log('5', dumFinal, query);
+	// 				    this.sql.query(query, dumFinal).then(dat => { console.log('success inserted farmer',dat) }, err => {console.log(err)});
+	// 			    }
+
+	// 			    if(isLast){
+	// 			    	if(this.load){
+	// 			    		this.load.dismiss()
+	// 			    	}
+	// 			    }
+
+	// 		    }
+
 	// 		});
 	// 	}
+	// }
 
+	// getColArray(sql){
+	//     sql = sql + '';
+	//  	let columns = sql.split('(');
+	//  	columns = columns[1].split(')')[0];
+	//  	columns = columns.split(',');
+
+	//  	let colarray = [];
+	//  	for (let i = 0; i < columns.length; i++) {
+	//  		let a = columns[i].trim().split(' ');
+
+	//  		colarray.push(a[0]);
+	//  	}
+	//     return colarray;		
 	// }
 }

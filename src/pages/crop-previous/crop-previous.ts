@@ -18,7 +18,7 @@ export class CropPreviousPage {
 
 	fm_id : any;
 	crops : Array<any> = [];
-
+	alert : any;
 	constructor(public navCtrl: NavController, 
                 public sql: Sql,
 				public alertCtrl: AlertController,
@@ -137,5 +137,16 @@ export class CropPreviousPage {
 			callback(true);
 		}
 	}
+
+	// getName(id){
+	// 	this.sql.query('SELECT name FROM tbl_varieties WHERE crop_id = ?', [id]).then( (data) => {
+ //            let name = "None";
+ //            if (data.res.rows.length > 0) {
+ //                name = data.res.rows.item(0).name;
+ //            }
+ //        }, (error) =>{
+ //            console.log(error);
+ //        });
+	// }
 
 }

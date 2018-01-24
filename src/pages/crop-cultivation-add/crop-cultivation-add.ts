@@ -116,8 +116,10 @@ export class CropCultivationAddPage {
 	                let formData = [];
 
 					formData['f10_land']          = sqlData.f10_land;
-					formData['f10_cultivating']   = sqlData.f10_cultivating;
-					formData['f10_crop_variety']  = sqlData.f10_crop_variety;
+					formData['f10_cultivating']   = { id : sqlData.f10_cultivating };
+					this.cropChange('p',{value : formData['f10_cultivating'] });
+
+					formData['f10_crop_variety']  = { id : sqlData.f10_crop_variety};
 					formData['f10_other_variety'] = sqlData.f10_other_variety;
 					formData['f10_stage']         = sqlData.f10_stage;
 					formData['f10_expected']      = sqlData.f10_expected;
@@ -160,12 +162,12 @@ export class CropCultivationAddPage {
             let dateNow = date.getTime()/1000|0;
 
 			if (this.exist) {
-                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_id = ?', [
+                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_other_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
                     this.cultivation.value.f10_land,
                     this.cultivation.value.f10_cultivating.id,
                     this.cultivation.value.f10_crop_variety.id,
-                    this.cultivation.value.f10_other_variety,
+                    this.cultivation.value.f10_other_variety || '',
                     this.cultivation.value.f10_stage,
                     this.cultivation.value.f10_expected,
                     this.cultivation.value.f10_expectedprice,
@@ -192,13 +194,13 @@ export class CropCultivationAddPage {
                 });               
             }
             else{
-                this.sql.query('INSERT INTO tbl_cultivation_data(fm_id, f10_land, f10_cultivating, f10_crop_variety, f10_stage, f10_expected, f10_expectedprice, f10_diseases, f10_pest, f10_created_date, f10_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                this.sql.query('INSERT INTO tbl_cultivation_data(fm_id, f10_land, f10_cultivating, f10_crop_variety, f10_other_variety, f10_stage, f10_expected, f10_expectedprice, f10_diseases, f10_pest, f10_created_date, f10_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
                     this.cultivation.value.f10_land,
                     this.cultivation.value.f10_cultivating.id,
                     this.cultivation.value.f10_crop_variety.id,
-                    this.cultivation.value.f10_other_variety,
+                    this.cultivation.value.f10_other_variety || '',
                     this.cultivation.value.f10_stage,
                     this.cultivation.value.f10_expected,
                     this.cultivation.value.f10_expectedprice,
@@ -233,7 +235,7 @@ export class CropCultivationAddPage {
 
 
 	cropChange( type, event?: any) {
-        this.sql.query('SELECT * FROM tbl_varieties WHERE crop_id=(SELECT id FROM tbl_crops WHERE name=? LIMIT 1)', [event.value.name]).then( (data) => {
+        this.sql.query('SELECT * FROM tbl_varieties WHERE crop_id=(SELECT id FROM tbl_crops WHERE name=? LIMIT 1) OR crop_id = ?', [event.value.name || '', event.value.id]).then( (data) => {
             this.varieties = [{id: 0, name: 'Other'}];
             if (data.res.rows.length > 0) {
                 for(let i=0; i<data.res.rows.length; i++){

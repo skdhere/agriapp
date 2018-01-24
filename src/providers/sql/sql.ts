@@ -385,8 +385,8 @@ export class Sql {
             fm_id INTEGER,
             
             f10_land TEXT,
-            f10_cultivating TEXT,
-            f10_crop_variety TEXT,
+            f10_cultivating INTEGER,
+            f10_crop_variety INTEGER,
             f10_other_variety TEXT,
             f10_stage TEXT,
             f10_expected INTEGER,
@@ -410,7 +410,7 @@ export class Sql {
             fm_caid INTEGER,
             fm_id INTEGER,
             
-            f11_cultivating TEXT,
+            f11_cultivating INTEGER,
             f11_achieved TEXT,
             f11_income TEXT,
             f11_diseases TEXT,

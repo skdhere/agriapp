@@ -21,6 +21,7 @@ import { Api } from '../providers/providers';
 import { AuthService } from '../providers/providers';
 import { UserProvider } from '../providers/user/user';
 import { Sql } from '../providers/sql/sql';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 import { SelectSearchableModule } from '../components/select-searchable/select-searchable-module';
 
@@ -53,6 +54,7 @@ import { SelectSearchableModule } from '../components/select-searchable/select-s
         MyApp,
     ],
     providers: [
+        InAppBrowser,
         Network,
         SQLite,
         SQLitePorter,

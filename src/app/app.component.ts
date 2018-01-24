@@ -7,6 +7,7 @@ import { AuthService } from '../providers/providers';
 import { UserProvider } from '../providers/user/user';
 import { Sql } from '../providers/sql/sql';
 import { Api } from '../providers/api/api';
+import { InAppBrowser } from '@ionic-native/in-app-browser';
 
 
 import { HttpClientModule } from '@angular/common/http';
@@ -18,17 +19,18 @@ import 'rxjs/add/operator/map';
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    version: string = "test 0.0.7";
+    version: string = "1.0.0";
     rootPage: any = 'PreloadPage';
     // rootPage: any = 'LoginPage';
     alert: any;
     pages: Array<{title: string, component: any, icon:string}>;
     online: boolean = false;
     httpSubscriptions: any = [];
-
+    MyAlert: any;
     constructor(private auth: AuthService,
                 private ionicApp: IonicApp,
                 private network: Network,
+                private iab: InAppBrowser,
                 private sql: Sql,
                 private api: Api,
                 platform: Platform, 
@@ -49,8 +51,36 @@ export class MyApp {
             statusBar.overlaysWebView(true);
             statusBar.backgroundColorByHexString("#33000000");
             // statusBar.styleBlackOpaque();
-
             splashScreen.hide();
+
+            if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
+                console.log('Alert');
+                this.api.post("app_version", {version: this.version})
+                .map((res) => res.json())
+                .subscribe(success =>{
+
+                    if(success.success){
+
+                        let url = success.data.url;
+                        let message = success.data.desc;
+
+                        this.MyAlert = this.alertCtrl.create({
+                            title: 'App Update',
+                            subTitle: message,
+                            buttons: [{
+                                text: 'Ok',
+                                handler: () => {
+                                    let browse = this.iab.create(url, '_system');
+                                    return false;
+                                }
+                            }],
+                            enableBackdropDismiss: false
+                        });
+                        this.MyAlert.present();
+                    }
+
+                }, err => {console.log(err)});
+            }
 
             this.auth.isAuthenticated().subscribe(success => {
                 if(success){
@@ -121,57 +151,58 @@ export class MyApp {
             platform.registerBackButtonAction(() => {
 
                 let currentView = this.nav.getActive();
-
-                if(menu.isOpen()){
-                    menu.close();
-                }
-                else{
-
-                    if(currentView.component.name == 'HomePage' || currentView.component.name == 'UserLogin' ){
-                        if(this.alert == null){
-                            this.alert = this.alertCtrl.create({
-                                title: 'Agribridge',
-                                message: 'Press Exit to exit.',
-                                buttons: [
-                                {
-                                    text: 'Cancel',
-                                    role: 'cancel',
-                                    handler: () => {
-                                        console.log('Cancel clicked');
-                                        this.alert = null;
-                                    }
-                                },
-                                {
-                                    text: 'Exit',
-                                    handler: () => {
-                                        platform.exitApp();
-                                    }
-                                }
-                                ]
-                            });
-
-                            this.alert.present();
-                            // console.log(1212122);
-                        }
-                        else{
-                            this.alert.dismiss();
-                            this.alert = null;
-                        }
-
-                    }
-                    else if(currentView.component.name == 'FarmersPage'){
-                        this.nav.setRoot('HomePage');
+                if(this.MyAlert == null){
+                    if(menu.isOpen()){
+                        menu.close();
                     }
                     else{
 
-                        let activePopover = this.ionicApp._modalPortal.getActive() ||
-                                            this.ionicApp._toastPortal.getActive() ||
-                                            this.ionicApp._overlayPortal.getActive();
-                        if(activePopover){
-                            activePopover.dismiss();
+                        if(currentView.component.name == 'HomePage' || currentView.component.name == 'UserLogin' ){
+                            if(this.alert == null){
+                                this.alert = this.alertCtrl.create({
+                                    title: 'Agribridge',
+                                    message: 'Press Exit to exit.',
+                                    buttons: [
+                                    {
+                                        text: 'Cancel',
+                                        role: 'cancel',
+                                        handler: () => {
+                                            console.log('Cancel clicked');
+                                            this.alert = null;
+                                        }
+                                    },
+                                    {
+                                        text: 'Exit',
+                                        handler: () => {
+                                            platform.exitApp();
+                                        }
+                                    }
+                                    ]
+                                });
+
+                                this.alert.present();
+                                // console.log(1212122);
+                            }
+                            else{
+                                this.alert.dismiss();
+                                this.alert = null;
+                            }
+
+                        }
+                        else if(currentView.component.name == 'FarmersPage'){
+                            this.nav.setRoot('HomePage');
                         }
                         else{
-                            this.nav.pop();
+
+                            let activePopover = this.ionicApp._modalPortal.getActive() ||
+                                                this.ionicApp._toastPortal.getActive() ||
+                                                this.ionicApp._overlayPortal.getActive();
+                            if(activePopover){
+                                activePopover.dismiss();
+                            }
+                            else{
+                                this.nav.pop();
+                            }
                         }
                     }
                 }
@@ -182,9 +213,9 @@ export class MyApp {
         this.pages = [
             { title: 'Home',       component: 'HomePage',      icon: 'home'},
             { title: 'My Farmers', component: 'FarmersPage',   icon: 'people'},
-            { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
-            { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
         ];
+            // { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
+            // { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
 
     }
 
