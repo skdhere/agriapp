@@ -1,4 +1,5 @@
 import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/finally';
 
 import { Injectable } from '@angular/core';
 import { Http, RequestOptions, URLSearchParams, Headers } from '@angular/http';

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 
@@ -25,6 +25,7 @@ export class LoanFinancialPage {
 	constructor(public navCtrl: NavController, 
                 public navParams: NavParams, 
                 public sql: Sql,
+                public alertCtrl: AlertController,
                 public formBuilder: FormBuilder) {
 
 		this.loan = formBuilder.group({
@@ -206,73 +207,112 @@ export class LoanFinancialPage {
         if (!this.loan.valid) {
             console.log("Validation error!")
         } else {
-            console.log("success!")
-            console.log(this.loan.value);
 
-            let date = new Date();
-            let dateNow = date.getTime()/1000 | 0;
+    		if(this.loan.value.f8_loan_taken == 'no'){
+	        	this.sql.has_rows('tbl_loan_details', this.fm_id).then(data => {
+	        		if(data.res.rows.length > 0){
+		    			let alert = this.alertCtrl.create({
+		    				enableBackdropDismiss: false,
+						    title: 'Warning',
+						    message: 'This will delete all Loans for this farmer.',
+						    buttons: [
+						      {
+						        text: 'Cancel',
+						        role: 'cancel',
+						        handler: () => {
+						        	return true;
+						        }
+						      },
+						      {
+						        text: 'Ok, delete!',
+						        handler: () => {
+					        		this.sql.delete_rows('tbl_loan_details', this.fm_id);
+						        	this._save();
+						        }
+						      }
+						    ]
+						});
+						alert.present();
+	        		}else{
+	        			this._save();
+	        		}
+	        	});
+        	}
+        	else{
+        		this._save();
+        	}
+        	
+        	
+        }
+    }
 
-            if (this.exist) {
-                this.sql.query('UPDATE tbl_financial_details SET loan_want = ?, loan_amount = ?, fx_monthly_income = ?, f8_loan_taken = ?, f8_private_lenders = ?, f8_borrowed_amount_date = ?, f8_borrowed_amount = ?, f8_borrowed_loan_per = ?, f8_borrowed_loan_month = ?, f8_borrowed_total_amount = ?, f8_borrowed_total_int = ?, f8_borrowed_amount_emi = ?, f8_borrowed_emi_paid = ?, f8_borrowed_outstanding_amount = ?, f8_borrowed_outstanding_principal = ?, f8_borrowed_amount_emi_rem = ?, f8_modified_date = ? WHERE fm_id = ?', [
+    _save(){
+    	console.log("success!")
+        console.log(this.loan.value);
 
-                    this.loan.value.loan_want,
-                    this.loan.value.loan_amount,
-                    this.loan.value.fx_monthly_income,
-                    this.loan.value.f8_loan_taken,
-                    this.loan.value.f8_private_lenders,
-                    this.loan.value.f8_borrowed_amount_date,
-                    this.loan.value.f8_borrowed_amount, 
-                    this.loan.value.f8_borrowed_loan_per, 
-                    this.loan.value.f8_borrowed_loan_month, 
-                    this.loan.value.f8_borrowed_total_amount, 
-                    this.loan.value.f8_borrowed_total_int, 
-                    this.loan.value.f8_borrowed_amount_emi,
-                    this.loan.value.f8_borrowed_emi_paid,
-                    this.loan.value.f8_borrowed_outstanding_amount,
-                    this.loan.value.f8_borrowed_outstanding_principal,
-                    this.loan.value.f8_borrowed_amount_emi_rem,
+        let date = new Date();
+        let dateNow = date.getTime()/1000 | 0;
 
-                    dateNow,
-                    this.fm_id
-                ]).then(data => {
-                	this.sql.updateUploadStatus('tbl_financial_details', this.fm_id, '0');
-                    this.navCtrl.pop();
-                },
-                err => {
-                    console.log(err);
-                });               
-            }
-            else{
-                this.sql.query('INSERT INTO tbl_financial_details(fm_id, loan_want, loan_amount, fx_monthly_income, f8_loan_taken, f8_private_lenders, f8_borrowed_amount_date, f8_borrowed_amount, f8_borrowed_loan_per, f8_borrowed_loan_month, f8_borrowed_total_amount, f8_borrowed_total_int, f8_borrowed_amount_emi, f8_borrowed_emi_paid, f8_borrowed_outstanding_amount, f8_borrowed_outstanding_principal, f8_borrowed_amount_emi_rem, f8_created_date, f8_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+        if (this.exist) {
+            this.sql.query('UPDATE tbl_financial_details SET loan_want = ?, loan_amount = ?, fx_monthly_income = ?, f8_loan_taken = ?, f8_private_lenders = ?, f8_borrowed_amount_date = ?, f8_borrowed_amount = ?, f8_borrowed_loan_per = ?, f8_borrowed_loan_month = ?, f8_borrowed_total_amount = ?, f8_borrowed_total_int = ?, f8_borrowed_amount_emi = ?, f8_borrowed_emi_paid = ?, f8_borrowed_outstanding_amount = ?, f8_borrowed_outstanding_principal = ?, f8_borrowed_amount_emi_rem = ?, f8_modified_date = ? WHERE fm_id = ?', [
 
-                    this.fm_id,
-                    this.loan.value.loan_want,
-                    this.loan.value.loan_amount,
-                    this.loan.value.fx_monthly_income,
-                    this.loan.value.f8_loan_taken,
-                    this.loan.value.f8_private_lenders,
-                    this.loan.value.f8_borrowed_amount_date,
-                    this.loan.value.f8_borrowed_amount, 
-                    this.loan.value.f8_borrowed_loan_per, 
-                    this.loan.value.f8_borrowed_loan_month, 
-                    this.loan.value.f8_borrowed_total_amount, 
-                    this.loan.value.f8_borrowed_total_int, 
-                    this.loan.value.f8_borrowed_amount_emi,
-                    this.loan.value.f8_borrowed_emi_paid,
-                    this.loan.value.f8_borrowed_outstanding_amount,
-                    this.loan.value.f8_borrowed_outstanding_principal,
-                    this.loan.value.f8_borrowed_amount_emi_rem,
-                    dateNow,
-                    dateNow
-                ]).then(data => {
-                	this.sql.updateUploadStatus('tbl_financial_details', this.fm_id, '0');
-                    this.navCtrl.pop();
-                },
-                err => {
-                    console.log(err);
-                });
-            }
+                this.loan.value.loan_want,
+                this.loan.value.loan_amount,
+                this.loan.value.fx_monthly_income,
+                this.loan.value.f8_loan_taken,
+                this.loan.value.f8_private_lenders,
+                this.loan.value.f8_borrowed_amount_date,
+                this.loan.value.f8_borrowed_amount, 
+                this.loan.value.f8_borrowed_loan_per, 
+                this.loan.value.f8_borrowed_loan_month, 
+                this.loan.value.f8_borrowed_total_amount, 
+                this.loan.value.f8_borrowed_total_int, 
+                this.loan.value.f8_borrowed_amount_emi,
+                this.loan.value.f8_borrowed_emi_paid,
+                this.loan.value.f8_borrowed_outstanding_amount,
+                this.loan.value.f8_borrowed_outstanding_principal,
+                this.loan.value.f8_borrowed_amount_emi_rem,
 
+                dateNow,
+                this.fm_id
+            ]).then(data => {
+
+            	this.sql.updateUploadStatus('tbl_financial_details', this.fm_id, '0');
+                this.navCtrl.pop();
+            },
+            err => {
+                console.log(err);
+            });               
+        }
+        else{
+            this.sql.query('INSERT INTO tbl_financial_details(fm_id, loan_want, loan_amount, fx_monthly_income, f8_loan_taken, f8_private_lenders, f8_borrowed_amount_date, f8_borrowed_amount, f8_borrowed_loan_per, f8_borrowed_loan_month, f8_borrowed_total_amount, f8_borrowed_total_int, f8_borrowed_amount_emi, f8_borrowed_emi_paid, f8_borrowed_outstanding_amount, f8_borrowed_outstanding_principal, f8_borrowed_amount_emi_rem, f8_created_date, f8_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+
+                this.fm_id,
+                this.loan.value.loan_want,
+                this.loan.value.loan_amount,
+                this.loan.value.fx_monthly_income,
+                this.loan.value.f8_loan_taken,
+                this.loan.value.f8_private_lenders,
+                this.loan.value.f8_borrowed_amount_date,
+                this.loan.value.f8_borrowed_amount, 
+                this.loan.value.f8_borrowed_loan_per, 
+                this.loan.value.f8_borrowed_loan_month, 
+                this.loan.value.f8_borrowed_total_amount, 
+                this.loan.value.f8_borrowed_total_int, 
+                this.loan.value.f8_borrowed_amount_emi,
+                this.loan.value.f8_borrowed_emi_paid,
+                this.loan.value.f8_borrowed_outstanding_amount,
+                this.loan.value.f8_borrowed_outstanding_principal,
+                this.loan.value.f8_borrowed_amount_emi_rem,
+                dateNow,
+                dateNow
+            ]).then(data => {
+            	this.sql.updateUploadStatus('tbl_financial_details', this.fm_id, '0');
+                this.navCtrl.pop();
+            },
+            err => {
+                console.log(err);
+            });
         }
     }
 

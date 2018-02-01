@@ -90,12 +90,12 @@
 		        </div>
 
 				<ion-item>
-		            <ion-label floating>Total Yield Expected [In Tonnes] <span>*</span></ion-label>
+		            <ion-label floating>Total Yield Expected [In Quintal Per Acre] <span>*</span></ion-label>
 		            <ion-input formControlName="f10_expected" type="number"></ion-input>
 		        </ion-item>
 		        <div *ngIf="cultivation.controls.f10_expected.invalid  && (cultivation.controls.f10_expected.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_expected.errors.required">This field is required.</p>
-		            <p *ngIf="cultivation.controls.f10_expected.errors.maxlength">Lenght should be smaller than or equal to 8.</p>
+		            <p *ngIf="cultivation.controls.f10_expected.errors.maxlength">Length should be smaller than or equal to 8.</p>
 		            <p *ngIf="cultivation.controls.f10_expected.errors.pattern">Please enter a valid number.</p>
 		        </div>
 				

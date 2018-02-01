@@ -623,6 +623,8 @@ export class MyApp {
                                     && table.name != "tbl_village" 
                                     && table.name != "tbl_farmers" 
                                     && table.name != "tbl_delete" 
+                                    && table.name != "tbl_crops" 
+                                    && table.name != "tbl_varieties" 
                                 ){
                                     //clear all existing errors for this device
                                     // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [single['local_id'], table.name]).then();

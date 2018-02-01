@@ -609,4 +609,11 @@ export class Sql {
         });
     }
 
+    delete_rows(tablename, local_id){
+        this.query('DELETE FROM '+ tablename +' WHERE fm_id = ?', [local_id]).catch(err=>{console.log(err);});
+    }
+
+    has_rows(tablename, local_id){
+        return this.query('SELECT * FROM '+ tablename +' WHERE fm_id = ?', [local_id]);
+    }
 }

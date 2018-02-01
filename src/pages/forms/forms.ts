@@ -68,19 +68,7 @@ export class Forms {
 			'item5' : '50',
 		};
 
-		if(this.form_name == 'kyc'){
-			this.forms = [
-				{ title: 'Applicant\'s Personal Details',   isUpdated:false, tableName: 'tbl_personal_detail', pageName: 'PersonalDetailsPage', point: '0', icon : 'person'},
-				{ title: 'Residence Status & Details',      isUpdated:false, tableName: 'tbl_residence_details', pageName: 'ResidenceDetailsPage', point: '0', icon : 'locate'},
-				{ title: 'Applicant\'s Knowledge',     		isUpdated:false, tableName: 'tbl_applicant_knowledge', pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
-				{ title: 'Applicant\'s Phone Details', 		isUpdated:false, tableName: 'tbl_applicant_phone', pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
-				{ title: 'Spouse Details',             		isUpdated:false, tableName: 'tbl_spouse_details', pageName: 'KycSpousePage', point: '0', icon : 'woman'},
-				{ title: 'Spouse\'s Knowledge',             isUpdated:false, tableName: 'tbl_spouse_knowledge', pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'},
-				{ title: 'Family Details',             		isUpdated:false, tableName: 'tbl_family_details', pageName: 'KycFamilyPage', point: '0', icon : 'people'},
-				{ title: 'Appliances Motors',          		isUpdated:false, tableName: 'tbl_appliances_details', pageName: 'KycAppliancesPage', point: '0', icon : 'cog'},
-			];
-		}
-		else if(this.form_name == 'land details'){
+		if(this.form_name == 'land details'){
 			this.forms = [
 				{ title: 'Farm Land Details',  isUpdated:false, tableName: 'tbl_land_details', pageName: 'LandFarmPage', point: '0', icon : 'locate'},
 			];
@@ -114,7 +102,41 @@ export class Forms {
 	ionViewDidEnter(){
 		this.getErrors(this.current_farmer.local_id);
 		
-		if(this.form_name === 'loan and liability'){
+		if(this.form_name == 'kyc'){
+			this.forms = [
+				{ title: 'Applicant\'s Personal Details',   isUpdated:false, tableName: 'tbl_personal_detail', pageName: 'PersonalDetailsPage', point: '0', icon : 'person'},
+				{ title: 'Residence Status & Details',      isUpdated:false, tableName: 'tbl_residence_details', pageName: 'ResidenceDetailsPage', point: '0', icon : 'locate'},
+				{ title: 'Applicant\'s Knowledge',     		isUpdated:false, tableName: 'tbl_applicant_knowledge', pageName: 'KycKnowledgePage', point: '0', icon : 'book'},
+				{ title: 'Applicant\'s Phone Details', 		isUpdated:false, tableName: 'tbl_applicant_phone', pageName: 'KycPhonePage', point: '0', icon : 'phone-portrait'},
+				{ title: 'Spouse Details',             		isUpdated:false, tableName: 'tbl_spouse_details', pageName: 'KycSpousePage', point: '0', icon : 'woman'}
+			];
+
+			let that = this;
+			this.sql.query("SELECT * FROM tbl_spouse_details WHERE f3_married_status = ? and fm_id = ? limit 1" , ['yes', this.current_farmer.local_id]).then( (data) => {
+	            if (data.res.rows.length > 0) {
+
+					that.forms.push({ title: 'Spouse\'s Knowledge',             isUpdated:false, tableName: 'tbl_spouse_knowledge', pageName: 'SpouseKnowledgePage', point: '0', icon : 'book'});
+	            	that.forms.push({ title: 'Family Details',             		isUpdated:false, tableName: 'tbl_family_details', pageName: 'KycFamilyPage', point: '0', icon : 'people'});
+	            	that.forms.push({ title: 'Appliances Motors',          		isUpdated:false, tableName: 'tbl_appliances_details', pageName: 'KycAppliancesPage', point: '0', icon : 'cog'});
+
+	            }else{
+	            	that.forms.push({ title: 'Family Details',             		isUpdated:false, tableName: 'tbl_family_details', pageName: 'KycFamilyPage', point: '0', icon : 'people'});
+	            	that.forms.push({ title: 'Appliances Motors',          		isUpdated:false, tableName: 'tbl_appliances_details', pageName: 'KycAppliancesPage', point: '0', icon : 'cog'});
+	            }
+
+	            //check if its updated in local database
+				for (var i = 0; i < this.forms.length; i++) {
+					if(this.forms[i].tableName){
+						// console.log(this.forms[i].tableName);
+						this.updateStatus(i);
+					}
+				}
+
+	        }, err => {
+	            console.log(err);
+	        });
+		}
+		else if(this.form_name === 'loan and liability'){
 
 			this.forms = [
 				{ title: 'Financial Details',     isUpdated:false, tableName: 'tbl_financial_details', pageName: 'LoanFinancialPage', point: '0', icon : 'cash'},
@@ -122,7 +144,6 @@ export class Forms {
 
 			let that = this;
 			this.sql.query("SELECT * FROM tbl_financial_details WHERE f8_loan_taken = ? and fm_id = ? limit 1" , ['yes', this.current_farmer.local_id]).then( (data) => {
-				console.log('thissssss ',data);
 	            if (data.res.rows.length > 0) {
 					that.forms.push({ title: 'Loan Details',isUpdated:false, tableName: 'tbl_loan_details', pageName: 'LoanDetailsPage', point: '0', icon : 'cash'});
 

@@ -164,9 +164,12 @@ export class FarmersPage {
 		                            this.sql.query( "Delete from tbl_farmers where local_id = ?;", [local_id])
 									.then(data => {
 										
-			                            let index = this.items.indexOf(farmer);
-			                            
-										console.log(final_farmer);
+										//clear all existing errors for this device
+						                this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [local_id, 'tbl_farmers']).catch(err => {
+						                    console.log("SQL : errors while removing errors from table", err);
+						                });
+
+			                            let index = this.items.indexOf(farmer);	
 										let server_id = final_farmer.fm_id;
 										if(index !== -1){
 											this.items.splice(index, 1);
@@ -257,30 +260,37 @@ export class FarmersPage {
 
 	async isUpdated(len){
 		let item = this.items[len];
-		await this.sql.query(`SELECT t0.fm_id
-			FROM tbl_personal_detail AS t0 JOIN tbl_residence_details AS t1
-				 ON t0.fm_id = t1.fm_id JOIN tbl_applicant_knowledge AS t2
-				 ON t0.fm_id = t2.fm_id JOIN tbl_spouse_knowledge AS t3 
-				 ON t0.fm_id = t3.fm_id JOIN tbl_applicant_phone AS t4 
-				 ON t0.fm_id = t4.fm_id JOIN tbl_family_details AS t5 
-				 ON t0.fm_id = t5.fm_id JOIN tbl_appliances_details AS t6 
-				 ON t0.fm_id = t6.fm_id JOIN tbl_spouse_details AS t7 
-				 ON t0.fm_id = t7.fm_id JOIN tbl_asset_details AS t8 
-				 ON t0.fm_id = t8.fm_id JOIN tbl_livestock_details AS t9 
-				 ON t0.fm_id = t9.fm_id JOIN tbl_financial_details AS t10
-				 ON t0.fm_id = t10.fm_id JOIN tbl_land_details AS t11
-				 ON t0.fm_id = t11.fm_id JOIN tbl_cultivation_data AS t12
-				 ON t0.fm_id = t12.fm_id JOIN tbl_yield_details AS t13
-				 ON t0.fm_id = t13.fm_id JOIN tbl_loan_details AS t14
-				 ON t0.fm_id = t14.fm_id 
-			WHERE t0.fm_id = ?`, [item.local_id])
-		.then(d => {
-			if(d.res.rows.length > 0){
-				this.items[len].update = true;
-			}else{
-				this.items[len].update = false;
-			}
-		});
+		let query_str = 'SELECT t0.fm_id FROM tbl_personal_detail AS t0 JOIN tbl_residence_details AS t1 ON t0.fm_id = t1.fm_id JOIN tbl_applicant_knowledge AS t2 ON t0.fm_id = t2.fm_id JOIN tbl_applicant_phone AS t4 ON t0.fm_id = t4.fm_id JOIN tbl_family_details AS t5 ON t0.fm_id = t5.fm_id JOIN tbl_appliances_details AS t6 ON t0.fm_id = t6.fm_id JOIN tbl_spouse_details AS t7 ON t0.fm_id = t7.fm_id JOIN tbl_asset_details AS t8 ON t0.fm_id = t8.fm_id JOIN tbl_livestock_details AS t9 ON t0.fm_id = t9.fm_id JOIN tbl_financial_details AS t10 ON t0.fm_id = t10.fm_id JOIN tbl_land_details AS t11 ON t0.fm_id = t11.fm_id JOIN tbl_cultivation_data AS t12 ON t0.fm_id = t12.fm_id JOIN tbl_yield_details AS t13 ON t0.fm_id = t13.fm_id ';
+
+		//check if loan has taken or not, if not then dont include loan table
+		await this.sql.query("SELECT * FROM tbl_financial_details WHERE f8_loan_taken = ? and fm_id = ? limit 1" , ['yes', item.local_id]).then( (data) => {
+            if (data.res.rows.length > 0) {
+            	query_str += ' JOIN tbl_loan_details AS t14 ON t0.fm_id = t14.fm_id ';
+            }
+
+			//check if married or not, if not then dont include spouse nowledge table
+            this.sql.query("SELECT * FROM tbl_spouse_details WHERE f3_married_status = ? and fm_id = ? limit 1" , ['yes', item.local_id]).then( (data) => {
+	            if (data.res.rows.length > 0) {
+            		query_str += ' JOIN tbl_spouse_knowledge AS t3 ON t0.fm_id = t3.fm_id ';
+	            }
+
+				query_str += ' WHERE t0.fm_id = ?';
+				this.sql.query(query_str, [item.local_id])
+				.then(d => {
+					if(d.res.rows.length > 0){
+						this.items[len].update = true;
+					}else{
+						this.items[len].update = false;
+					}
+				});
+
+	        }, err => {
+	            console.log(err);
+	        });
+        }, err => {
+            console.log(err);
+        });
+
 	}
 
 	async isUploaded(len){

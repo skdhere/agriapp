@@ -35,7 +35,9 @@ export class CropPreviousPage {
             	this.crops = [];
 
                 for (var i = 0; i < data.res.rows.length; i++) {
-                	this.crops.push(data.res.rows.item(i));
+                	let item = data.res.rows.item(i);
+                	item.crop_name = this.getCropName(item.f11_cultivating);
+                	this.crops.push(item);
                 }
 
 				console.log(this.crops);
@@ -138,15 +140,14 @@ export class CropPreviousPage {
 		}
 	}
 
-	// getName(id){
-	// 	this.sql.query('SELECT name FROM tbl_varieties WHERE crop_id = ?', [id]).then( (data) => {
- //            let name = "None";
- //            if (data.res.rows.length > 0) {
- //                name = data.res.rows.item(0).name;
- //            }
- //        }, (error) =>{
- //            console.log(error);
- //        });
-	// }
+	async getCropName(id){
+		return await this.sql.query('select * from tbl_crops where id = ?',[id]).then(data => {
+			if(data.res.rows.length > 0){
+				return data.res.rows.item(0).name;
+			}else{
+				return 'None';
+			}
+		});
+	}
 
 }

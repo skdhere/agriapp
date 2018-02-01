@@ -96,6 +96,9 @@ export class KycSpousePage {
 
                 this.spouse.setValue(formData);
                 this.exist = true;
+                if(this.spouse.value.f3_married_status == 'no'){
+            		this.sql.delete_rows('tbl_spouse_knowledge', this.fm_id);
+            	}
             }
 
         }, err => {

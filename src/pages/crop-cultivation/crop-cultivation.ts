@@ -35,7 +35,10 @@ export class CropCultivationPage {
             	this.crops = [];
 
                 for (var i = 0; i < data.res.rows.length; i++) {
-                	this.crops.push(data.res.rows.item(i));
+                	let item = data.res.rows.item(i);
+                	item.crop_name = this.getCropName(item.f10_cultivating);
+                	item.variety_name = this.getVarietyName(item.f10_crop_variety);
+                	this.crops.push(item);
                 }
 
 				console.log(this.crops);
@@ -124,6 +127,26 @@ export class CropCultivationPage {
 		this.navCtrl.push('CropCultivationAddPage', {
 			farmer_id : this.fm_id,
 			callback: myCallbackFunction
+		});
+	}
+
+	async getCropName(id){
+		return await this.sql.query('select * from tbl_crops where id = ?',[id]).then(data => {
+			if(data.res.rows.length > 0){
+				return data.res.rows.item(0).name;
+			}else{
+				return 'None';
+			}
+		});
+	}
+
+	async getVarietyName(id){
+		return await this.sql.query('select * from tbl_varieties where id = ?',[id]).then(data => {
+			if(data.res.rows.length > 0){
+				return data.res.rows.item(0).name;
+			}else{
+				return 'None';
+			}
 		});
 	}
 

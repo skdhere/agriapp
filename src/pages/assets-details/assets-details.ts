@@ -70,10 +70,10 @@ export class AssetsDetailsPage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-				formData['f12_vehicle']   = sqlData.f12_vehicle;
-				formData['f12_machinery']     = sqlData.f12_machinery;
+				formData['f12_vehicle']              = sqlData.f12_vehicle;
+				formData['f12_machinery']            = sqlData.f12_machinery;
 				formData['f12_any_other_assets']     = sqlData.f12_any_other_assets;
-				formData['f12_name_of_other_assets']     = sqlData.f12_name_of_other_assets;
+				formData['f12_name_of_other_assets'] = sqlData.f12_name_of_other_assets.split(',');
 				
 
                 this.assets.setValue(formData);

@@ -19,8 +19,8 @@
                     <ion-avatar item-start>
                         <ion-icon name="leaf"></ion-icon>
                     </ion-avatar>
-                    <h2 color="app">{{crop.f10_cultivating}}</h2>
-                    <p>({{crop.f10_crop_variety}})</p>
+                    <h2 color="app">{{crop.crop_name | async}}</h2>
+                    <p>({{crop.variety_name | async}})</p>
 
                     <!-- <ion-icon *ngIf="!local_upload" name="time" color="danger" item-end></ion-icon> -->
                     <!-- <ion-icon *ngIf="!local_upload" color="secondary" name="cloud-done" item-end></ion-icon> -->

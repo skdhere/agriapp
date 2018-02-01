@@ -36,8 +36,8 @@
 
 
 				<ion-item>
-		            <ion-label floating>Yield Achieved Last Year In Tonnes <span>*</span></ion-label>
-		            <ion-input formControlName="f11_achieved" type="text"></ion-input>
+		            <ion-label floating>Yield Achieved Last Year In Quintal (Per Acre) <span>*</span></ion-label>
+		            <ion-input formControlName="f11_achieved" type="number"></ion-input>
 		        </ion-item>
 		        <div *ngIf="previous.controls.f11_achieved.invalid  && (previous.controls.f11_achieved.dirty || submitAttempt)">
 		            <p *ngIf="previous.controls.f11_achieved.errors.required">This field is required.</p>
@@ -48,7 +48,7 @@
 
 		        <ion-item>
 		            <ion-label floating>Income Achieved Last Year In Rs. <span>*</span></ion-label>
-		            <ion-input formControlName="f11_income" type="text"></ion-input>
+		            <ion-input formControlName="f11_income" type="number"></ion-input>
 		        </ion-item>
 		        <div *ngIf="previous.controls.f11_income.invalid  && (previous.controls.f11_income.dirty || submitAttempt)">
 		            <p *ngIf="previous.controls.f11_income.errors.required">This field is required.</p>
