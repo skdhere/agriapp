@@ -20,9 +20,7 @@
 				<ion-item>
 					<ion-label floating>Residence Status <span>*</span></ion-label>
 					<ion-select formControlName="f7_resistatus" interface="popover">
-						<ion-option value="Rented">Rented</ion-option>
-						<ion-option value="Owned">Owned</ion-option>
-						<ion-option value="Ancestral">Ancestral</ion-option>
+						<ion-option *ngFor="let opt of list_f7_resistatus" value="{{opt.id}}" >{{opt.name}}</ion-option>
 					</ion-select>
 				</ion-item>
 				<div *ngIf="!personal.controls.f7_resistatus.valid  && (personal.controls.f7_resistatus.dirty || submitAttempt)">

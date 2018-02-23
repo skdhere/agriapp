@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 import { SelectSearchable } from '../../components/select-searchable/select-searchable';
 
+import { Helper } from '../../validators/ExtraValidator';
 
 @IonicPage()
 @Component({
@@ -145,6 +146,12 @@ export class ResidenceDetailsPage {
         });
     }
 
+    list_f7_resistatus: any = [
+        {id: "Rented", name: "Rented"},
+        {id: "Owned", name: "Owned"},
+        {id: "Ancestral", name: "Ancestral"}
+    ];
+
 	ionViewDidEnter() {
         this.exist = false;
         this.fm_id = this.navParams.get('farmer_id');
@@ -156,7 +163,7 @@ export class ResidenceDetailsPage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-                formData['f7_resistatus'] = sqlData.f7_resistatus;
+                formData['f7_resistatus'] = Helper.checkInList(this.list_f7_resistatus, "id", sqlData.f7_resistatus);
                 formData['f7_phouse']     = sqlData.f7_phouse;
                 formData['f7_pstreet']    = sqlData.f7_pstreet;
                 formData['f7_parea']      = sqlData.f7_parea;

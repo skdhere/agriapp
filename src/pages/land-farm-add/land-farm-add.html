@@ -44,11 +44,7 @@
 				<ion-item>
 				    <ion-label floating>Ownership? <span>*</span></ion-label>
 				    <ion-select formControlName="f9_owner" interface="popover">
-						<ion-option value="Owned">Owned</ion-option>
-						<ion-option value="Ancestral">Ancestral</ion-option>
-						<!-- <ion-option value="Rented">Rented</ion-option> -->
-						<ion-option value="Leased">Leased</ion-option>
-						<ion-option value="Contracted">Contracted</ion-option>
+						<ion-option *ngFor="let opt of list_f9_owner" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="land.controls.f9_owner.invalid  && (land.controls.f9_owner.dirty || submitAttempt)">
@@ -174,22 +170,10 @@
 		            <p *ngIf="land.controls.f9_pincode.errors.pattern">Please enter a valid Pin Code.</p>
 		        </div>
 
-
-		        <!-- <ion-item>
-		            <ion-label floating>Latitude <span>*</span></ion-label>
-		            <ion-input formControlName="f9_lat" type="text"></ion-input>
-		        </ion-item>
-
-		        <ion-item>
-		            <ion-label floating>Longitude <span>*</span></ion-label>
-		            <ion-input formControlName="f9_long" type="text"></ion-input>
-		        </ion-item> -->
-
 		        <ion-item>
 				    <ion-label floating>Have You Had The Soil Tested In Your Land? <span>*</span></ion-label>
 				    <ion-select formControlName="f9_soil_tested" interface="popover"	>
-				      <ion-option value="yes">Yes</ion-option>
-				      <ion-option value="no">No</ion-option>
+						<ion-option *ngFor="let opt of list_f9_soil_tested" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="land.controls.f9_soil_tested.invalid  && (land.controls.f9_soil_tested.dirty || submitAttempt)">
@@ -199,52 +183,12 @@
 		        <ion-item>
 				    <ion-label floating>Type Of Soil <span>*</span></ion-label>
 				    <ion-select formControlName="f9_soil_type" interface="popover">
-				      <ion-option value="Alluvial Soil">Alluvial Soil</ion-option>
-				      <ion-option value="Black Soil">Black Soil</ion-option>
-				      <ion-option value="Red Soil">Red Soil</ion-option>
-				      <ion-option value="Mountain Soil">Mountain Soil</ion-option>
-				      <ion-option value="Peat">Peat</ion-option>
-				      <ion-option value="Laterite Soil">Laterite Soil</ion-option>
-				      <ion-option value="Desert Soil">Desert Soil</ion-option>
+						<ion-option *ngFor="let opt of list_f9_soil_type" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="land.controls.f9_soil_type.invalid  && (land.controls.f9_soil_type.dirty || submitAttempt)">
 		            <p *ngIf="land.controls.f9_soil_type.errors.required">This field is required.</p>
 		        </div>
-
-
-				<!-- <ion-item>
-		            <ion-label floating>Soil Depth <span>*</span></ion-label>
-		            <ion-input formControlName="f9_soil_depth" type="number"></ion-input>
-		        </ion-item>
-				<div *ngIf="land.controls.f9_soil_depth.invalid  && (land.controls.f9_soil_depth.dirty || submitAttempt)">
-		            <p *ngIf="land.controls.f9_soil_depth.errors.required">This field is required.</p>
-		            <p *ngIf="land.controls.f9_soil_depth.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
-		            <p *ngIf="land.controls.f9_soil_depth.errors.pattern">Please enter a valid number.</p>
-		        </div> -->
-
-
-		        <!-- <ion-item>
-				    <ion-label floating>Source Of Water <span>*</span></ion-label>
-				    <ion-select formControlName="f9_source_of_water">
-				      <ion-option value="Well Water">Well Water</ion-option>
-				      <ion-option value="Tube Water">Tube Water</ion-option>
-				      <ion-option value="Tank Water">Tank Water</ion-option>
-				      <ion-option value="Canals">Canals</ion-option>
-				      <ion-option value="Perennial Water">Perennial Water</ion-option>
-				      <ion-option value="Multipurpose River">Multipurpose River</ion-option>
-				      <ion-option value="Rain Fed">Rain Fed</ion-option>
-				      <ion-option value="Drip Irrigation">Drip Irrigation</ion-option>
-				      <ion-option value="Sprinkler">Sprinkler</ion-option>
-				      <ion-option value="Furrow">Furrow</ion-option>
-				      <ion-option value="Ditch">Ditch</ion-option>
-				      <ion-option value="Surge">Surge</ion-option>
-				      <ion-option value="Seepage">Seepage</ion-option>
-				    </ion-select>
-				</ion-item>
-				<div *ngIf="land.controls.f9_source_of_water.invalid  && (land.controls.f9_source_of_water.dirty || submitAttempt)">
-		            <p *ngIf="land.controls.f9_source_of_water.errors.required">This field is required.</p>
-		        </div> -->
 
 
 			</div>

@@ -23,8 +23,7 @@
 		    <ion-item>
 			    <ion-label floating>Are you marrired?  <span>*</span></ion-label>
 			    <ion-select formControlName="f3_married_status" interface="popover" >
-			      <ion-option value="yes">Yes</ion-option>
-			      <ion-option value="no">No</ion-option>
+					<ion-option *ngFor="let opt of list_f3_married_status" value="{{opt.id}}" >{{opt.name}}</ion-option>
 			    </ion-select>
 			</ion-item>
             <div *ngIf="!spouse.controls.f3_married_status.valid  && (spouse.controls.f3_married_status.dirty || submitAttempt)">
@@ -101,8 +100,7 @@
 				<ion-item>
 				    <ion-label floating>Is Your Spouse A Part Of Any SHG? <span>*</span></ion-label>
 				    <ion-select formControlName="f3_spouse_shg" interface="popover" >
-				      <ion-option value="yes">Yes</ion-option>
-				      <ion-option value="no">No</ion-option>
+						<ion-option *ngFor="let opt of list_f3_spouse_shg" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="!spouse.controls.f3_spouse_shg.valid  && (spouse.controls.f3_spouse_shg.dirty || submitAttempt)">
@@ -124,9 +122,7 @@
 				<ion-item>
 				    <ion-label floating>Occupation <span>*</span></ion-label>
 				    <ion-select formControlName="f3_spouse_occp" interface="popover" >
-				      <ion-option value="housewife">House wife</ion-option>
-				      <ion-option value="farmer">Farmer</ion-option>
-				      <ion-option value="other">Other</ion-option>
+						<ion-option *ngFor="let opt of list_f3_spouse_occp" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="!spouse.controls.f3_spouse_occp.valid  && (spouse.controls.f3_spouse_occp.dirty || submitAttempt)">
@@ -147,8 +143,7 @@
 				<ion-item>
 				    <ion-label floating>Any Micro Finance Help Taken By Spouse? <span>*</span></ion-label>
 				    <ion-select formControlName="f3_spouse_mfi" interface="popover" >
-				      <ion-option value="yes">Yes</ion-option>
-				      <ion-option value="no">No</ion-option>
+						<ion-option *ngFor="let opt of list_f3_spouse_mfi" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 
@@ -160,8 +155,7 @@
 					<ion-item>
 					    <ion-label floating>Purpose For Which The Loan Was Taken? <span>*</span></ion-label>
 					    <ion-select formControlName="f3_loan_purpose" interface="popover" >
-					      <ion-option value="agriculture">Agriculture</ion-option>
-					      <ion-option value="vendor">Small Vendor</ion-option>
+							<ion-option *ngFor="let opt of list_f3_loan_purpose" value="{{opt.id}}" >{{opt.name}}</ion-option>
 					    </ion-select>
 				    </ion-item>
 

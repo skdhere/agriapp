@@ -6,6 +6,21 @@ farmers-page{
 		}
 	}
 
+	.active_cls{
+		-webkit-animation: target-fade 4s 1;
+	}
+
+
+	@-webkit-keyframes target-fade {
+	  0% { background-color: rgba(1, 1, 1, .1); }
+	  100% { background-color: rgba(1, 1, 1, 0); }
+	}
+
+	@-moz-keyframes target-fade {
+	  0% { background-color: rgba(1, 1, 1, .1); }
+	  100% { background-color: rgba(1, 1, 1, 0); }
+	}
+
 	.no-farmers{
 		text-align: center;
 		img{

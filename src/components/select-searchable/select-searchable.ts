@@ -42,13 +42,16 @@ export class SelectSearchable implements ControlValueAccessor, OnDestroy, OnChan
     @Input() canSearch = false;
     @Input() canReset = false;
     @Input() title: string;
-    @Input() searchPlaceholder: string = 'Enter 3 or more characters';
+    @Input() searchPlaceholder: string = 'Search here';
+    @Input() searchColor: string;
     @Output() onChange: EventEmitter<any> = new EventEmitter();
     @Output() onSearch: EventEmitter<any> = new EventEmitter();
     @Input() itemTemplate: Function;
     @Input() multiple: boolean;
 
-    constructor(public modalCtrl: ModalController, private navController: NavController, private ionForm: Form, private platform: Platform, @Optional() private ionItem: Item) { }
+    constructor(public modalCtrl: ModalController, private navController: NavController, private ionForm: Form, private platform: Platform, @Optional() private ionItem: Item) {
+        this.searchColor = 'mdpink';
+    }
 
     isNullOrWhiteSpace(value: any): boolean {
         if (value === null || value === undefined) {

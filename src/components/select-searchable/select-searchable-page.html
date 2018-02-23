@@ -1,5 +1,5 @@
 <ion-header>
-    <ion-navbar color="dark">
+    <ion-navbar color="{{selectComponent.searchColor || 'mdpink'}}">
         <ion-title>{{selectComponent.title}}</ion-title>
         <ion-buttons start>
             <button ion-button (click)="close()">
@@ -8,7 +8,7 @@
             </button>
         </ion-buttons>
     </ion-navbar>
-    <ion-toolbar *ngIf="selectComponent.canSearch" color="dark">
+    <ion-toolbar *ngIf="selectComponent.canSearch" color="{{selectComponent.searchColor || 'mdpink'}}">
         <ion-searchbar
             #searchbarComponent
             [(ngModel)]="selectComponent.filterText"
@@ -26,7 +26,7 @@
         <button ion-item detail-none *ngFor="let item of filteredItems" (click)="select(item)">
             <ion-icon
                 [name]="isItemSelected(item) ? 'checkmark-circle' : 'radio-button-off'"
-                [color]="isItemSelected(item) ? 'primary' : 'daek'"
+                [color]="isItemSelected(item) ? selectComponent.searchColor : 'daek'"
                 item-left>
             </ion-icon>
             <h2>{{selectComponent.formatItem(item)}}</h2>

@@ -2,13 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
+import { Helper } from '../../validators/ExtraValidator';
 
-/**
- * Generated class for the KycFamilyPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
 
 @IonicPage()
 @Component({
@@ -29,8 +24,6 @@ export class KycFamilyPage {
 				public formBuilder: FormBuilder) {
 
 		this.family = formBuilder.group({
-			'f6_points' : ['0'],
-
 			'f6_jointfamily' : ['', Validators.required],
 			'f6_members' : ['', Validators.required],
 			'f6_children' : ['', Validators.required],
@@ -39,6 +32,46 @@ export class KycFamilyPage {
 
 		this.family.controls['f6_children'].valueChanges.subscribe(() => {this.setValidation();});
 	}
+
+	list_f6_jointfamily = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+
+	list_f6_members = [
+		{id: '0', name: '0'},
+		{id: '1', name: '1'},
+		{id: '2', name: '2'},
+		{id: '3', name: '3'},
+		{id: '4', name: '4'},
+		{id: '5', name: '5'},
+		{id: '6', name: '6'},
+		{id: '7', name: '7'},
+		{id: '8', name: '8'},
+		{id: '9', name: '9'},
+		{id: '10+', name: '10 / 10+'},
+	];
+
+	list_f6_children = [
+		{id: '0', name: '0'},
+		{id: '1', name: '1'},
+		{id: '2', name: '2'},
+		{id: '3', name: '3'},
+		{id: '4', name: '4'},
+		{id: '5', name: '5'},
+		{id: '6', name: '6'},
+		{id: '7', name: '7'},
+		{id: '8', name: '8'},
+		{id: '9', name: '9'},
+		{id: '10+', name: '10 / 10+'},
+	];
+
+	list_f6_smartuse = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+
+
 
 	ionViewDidEnter() {
 		//update validation here
@@ -54,11 +87,10 @@ export class KycFamilyPage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-				formData['f6_points']      = sqlData.f6_points;
-				formData['f6_jointfamily'] = sqlData.f6_jointfamily;
-				formData['f6_members']     = sqlData.f6_members;
-				formData['f6_children']    = sqlData.f6_children;
-				formData['f6_smartuse']    = sqlData.f6_smartuse;
+				formData['f6_jointfamily'] = Helper.checkInList(this.list_f6_jointfamily, 'id', sqlData.f6_jointfamily);
+				formData['f6_members']     = Helper.checkInList(this.list_f6_members, 'id', sqlData.f6_members);
+				formData['f6_children']    = Helper.checkInList(this.list_f6_children, 'id', sqlData.f6_children);
+				formData['f6_smartuse']    = Helper.checkInList(this.list_f6_smartuse, 'id', sqlData.f6_smartuse);
 
                 this.family.setValue(formData);
                 this.exist = true;

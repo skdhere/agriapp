@@ -5,31 +5,31 @@
         </button>
         <ion-title>Farmers</ion-title>
 
-        <!-- <ion-buttons end> 
+        <ion-buttons end> 
             <button ion-button (click)="loadOnlineFarmers()" style="background-color: #00b507">
                 <ion-icon name="cloud-download"> Load Farmers</ion-icon>
             </button>
-        </ion-buttons> -->
+        </ion-buttons>
     </ion-navbar>
     <ion-toolbar color="app">
         <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
     </ion-toolbar>
 </ion-header>
 <ion-content class="list-avatar-page">
-    <ion-list *ngIf="!retryButton">
+    <ion-list [virtualScroll]="items" [approxItemHeight]="'70px'">
         <ion-list-header>Your Farmers</ion-list-header>
-        <ion-item-sliding *ngFor="let farmer of items">
-            <ion-item (click)="itemTapped($event, farmer)">
+        <ion-item-sliding *virtualItem="let farmer; let i = index">
+            <ion-item (click)="itemTapped($event, farmer, i)" [ngClass]="tapped_len === i ? 'active_cls' : ''">
                 
                 <ion-avatar item-start>
-                    <img src="assets/images/user.png" onerror="this.onerror=null; this.src='assets/images/user.png';">
+                    <img src="assets/images/user.png">
                     <!-- <ion-icon name="information-circle" color="danger" style="font-size: 38px;"></ion-icon> -->
                 </ion-avatar>
                 <h2 color="app">{{farmer.fm_name}}</h2>
                 <p>{{farmer.fm_mobileno}}</p>
 
                 <ion-icon *ngIf="!farmer.hasErrors" name="checkmark-circle" color="{{ farmer.update ? 'secondary' : 'light'}}" item-end></ion-icon>
-                <ion-icon *ngIf="!farmer.hasErrors" name="cloud-done" color="{{ farmer.local_upload ? 'secondary' : 'light'}}" item-end></ion-icon>
+                <ion-icon *ngIf="!farmer.hasErrors" name="cloud-done" color="{{ farmer.local_upload === true ? 'secondary' : 'light'}}" item-end></ion-icon>
                 <ion-icon *ngIf="farmer.hasErrors" name="information-circle" color="danger" item-end></ion-icon>
 
             </ion-item>
@@ -55,7 +55,7 @@
         </div>
     </div>
     <!-- ionic infinite loading -->
-    <ion-infinite-scroll threshold="1%" (ionInfinite)="doInfinite($event)">
+    <ion-infinite-scroll threshold="150%" (ionInfinite)="doInfinite($event)">
         <ion-infinite-scroll-content loadingSpinner="none">
         </ion-infinite-scroll-content>
     </ion-infinite-scroll>

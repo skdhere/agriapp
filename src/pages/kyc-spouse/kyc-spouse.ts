@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms'
 import { Sql } from '../../providers/sql/sql';
 import { ExtraValidator } from '../../validators/ExtraValidator';
 
+import { Helper } from '../../validators/ExtraValidator';
 /**
  * Generated class for the KycSpousePage page.
  *
@@ -34,13 +35,13 @@ export class KycSpousePage {
 
 		//creating form via formbuilder 
 		this.spouse = formBuilder.group({
-            'f3_married_status' : ['',Validators.required],
+            'f3_married_status' : ['', Validators.required],
             'f3_spouse_fname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_mname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*')])],
 			'f3_spouse_lname' : ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z ]*'), Validators.required])],
 			'f3_spouse_age' : ['', Validators.compose([Validators.required, Validators.maxLength(2), Validators.pattern('^[0-9]+$')])],
-			'f3_spouse_mobno' : ['', Validators.compose([Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')]), (control) => this.checkMobileSpouse(control, this.fm_id)],
-			'f3_spouse_adhno' : ['', Validators.compose([Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')]), (control) => this.checkAadharSpouse(control, this.fm_id)],
+			'f3_spouse_mobno' : ['', Validators.compose([Validators.minLength(10) ,Validators.maxLength(10), Validators.pattern('^[0-9]+$')])],
+			'f3_spouse_adhno' : ['', Validators.compose([Validators.minLength(12) ,Validators.maxLength(12), Validators.pattern('^[0-9]+$')])],
 			'f3_loan_interest' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(3), Validators.pattern('^[0-9.]+$')])],
 			'f3_loan_tenure' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(3), Validators.pattern('^[0-9.]+$')])],
 			'f3_loan_emi' : ['', Validators.compose([Validators.required, Validators.minLength(1) ,Validators.maxLength(3), Validators.pattern('^[0-9.]+$')])],
@@ -61,6 +62,33 @@ export class KycSpousePage {
 		this.spouse.controls['f3_spouse_mfi'].valueChanges.subscribe(() => {this.setValidation();});
 	}
 
+	list_f3_married_status = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+	
+	list_f3_spouse_shg = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+	
+	list_f3_spouse_occp = [
+		{id: "housewife", name: "House wife"},
+		{id: "farmer", name: "Farmer"},
+		{id: "other", name: "Other"},
+	];
+	
+	list_f3_spouse_mfi = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+	
+	list_f3_loan_purpose = [
+		{id: "agriculture", name: "Agriculture"},
+		{id: "vendor", name: "Small Vendor"},
+	];
+
+
 	ionViewDidEnter() {
 		//update validation here
 		this.setValidation();
@@ -75,19 +103,19 @@ export class KycSpousePage {
 
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
-				formData['f3_married_status']   = sqlData.f3_married_status;
+				formData['f3_married_status']   = Helper.checkInList(this.list_f3_married_status, 'id', sqlData.f3_married_status);
 				formData['f3_spouse_fname']     = sqlData.f3_spouse_fname;
 				formData['f3_spouse_mname']     = sqlData.f3_spouse_mname;
 				formData['f3_spouse_lname']     = sqlData.f3_spouse_lname;
 				formData['f3_spouse_age']       = sqlData.f3_spouse_age;
 				formData['f3_spouse_mobno']     = sqlData.f3_spouse_mobno;
 				formData['f3_spouse_adhno']     = sqlData.f3_spouse_adhno;
-				formData['f3_spouse_shg']       = sqlData.f3_spouse_shg;
+				formData['f3_spouse_shg']       = Helper.checkInList(this.list_f3_spouse_shg, 'id', sqlData.f3_spouse_shg);
 				formData['f3_spouse_income']    = sqlData.f3_spouse_income;
 				formData['f3_spouse_shgname']   = sqlData.f3_spouse_shgname;
-				formData['f3_spouse_occp']      = sqlData.f3_spouse_occp;
-				formData['f3_spouse_mfi']       = sqlData.f3_spouse_mfi;
-				formData['f3_loan_purpose']     = sqlData.f3_loan_purpose;
+				formData['f3_spouse_occp']      = Helper.checkInList(this.list_f3_spouse_occp, 'id', sqlData.f3_spouse_occp);
+				formData['f3_spouse_mfi']       = Helper.checkInList(this.list_f3_spouse_mfi, 'id', sqlData.f3_spouse_mfi);
+				formData['f3_loan_purpose']     = Helper.checkInList(this.list_f3_loan_purpose, 'id', sqlData.f3_loan_purpose);
 				formData['f3_spouse_mfiname']   = sqlData.f3_spouse_mfiname;
 				formData['f3_spouse_mfiamount'] = sqlData.f3_spouse_mfiamount;
 				formData['f3_loan_interest']    = sqlData.f3_loan_interest;
@@ -309,79 +337,5 @@ export class KycSpousePage {
         if(callback){
             callback(true);
         }
-    }
-
-    checkMobileSpouse(control: FormControl, _fm_id): any {
-        
-        return new Promise(resolve => {
-
-        	if (control.value) {
-	            setTimeout(() => {
-	                let sql = new Sql;
-	                sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
-
-	                    if (data.res.rows.length > 0) {
-	                        resolve({
-	                            "taken": true
-	                        });
-	                    }
-	                    else{
-
-	                        sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ?", [control.value]).then((data) => {
-
-	                            if (data.res.rows.length > 0) {
-	                                resolve({
-	                                    "taken": true
-	                                });
-	                            }
-	                            else{
-	                                resolve(null);
-	                            }
-	                        });
-	                    }
-	                });
-	            }, 100);
-        	}else{
-        		resolve(null);
-        	}
-
-        });
-    }
-
-    checkAadharSpouse(control: FormControl, _fm_id): any {
-        
-        return new Promise(resolve => {
-
-        	if (control.value) {
-	            setTimeout(() => {
-	                let sql = new Sql;
-	                sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ? and fm_id != ?", [control.value, _fm_id]).then((data) => {
-
-	                    if (data.res.rows.length > 0) {
-	                        resolve({
-	                            "taken": true
-	                        });
-	                    }
-	                    else{
-
-	                        sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ?", [control.value]).then((data) => {
-
-	                            if (data.res.rows.length > 0) {
-	                                resolve({
-	                                    "taken": true
-	                                });
-	                            }
-	                            else{
-	                                resolve(null);
-	                            }
-	                        });
-	                    }
-	                });
-	            }, 100);
-	        }else{
-	        	resolve(null);
-	        }
-
-        });
     }
 }

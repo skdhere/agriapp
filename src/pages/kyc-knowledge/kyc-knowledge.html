@@ -23,11 +23,7 @@
 					<ion-item>
 					    <ion-label floating>Educational Qualification Details <span>*</span></ion-label>
 					    <ion-select formControlName="f2_edudetail" interface="popover" (change)="getTotal()">
-							<ion-option value="illiterate"> Illiterate </ion-option> 
-							<ion-option value="primary education"> Education </ion-option> 
-							<ion-option value="matriculate"> Matriculate </ion-option> 
-							<ion-option value="graduate"> Graduate </ion-option> 
-							<ion-option value="post graduate"> Post Graduate </ion-option> 
+							<ion-option *ngFor="let opt of list_f2_edudetail" value="{{opt.id}}" >{{opt.name}}</ion-option> 
 					    </ion-select>
 					</ion-item>
 					<div *ngIf="!knowledge.controls.f2_edudetail.valid  && (knowledge.controls.f2_edudetail.dirty || submitAttempt)">
@@ -39,12 +35,7 @@
 					<ion-item>
 					    <ion-label floating>What Is Your Proficiency In English?<span>*</span></ion-label>
 					    <ion-select formControlName="f2_proficiency" interface="popover">
-					      <ion-option value="fluent">Fluent</ion-option>
-					      <ion-option value="read only">Read Only</ion-option>
-					      <ion-option value="write only">Write Only</ion-option>
-					      <ion-option value="speak only">Speak Only</ion-option>
-					      <ion-option value="understand only">Understand Only</ion-option>
-					      <ion-option value="Don't Know">Don't Know</ion-option>
+					      <ion-option *ngFor="let opt of list_f2_proficiency" value="{{opt.id}}" >{{opt.name}}</ion-option>
 					    </ion-select>
 					</ion-item>
 					<div *ngIf="!knowledge.controls.f2_proficiency.valid  && (knowledge.controls.f2_proficiency.dirty || submitAttempt)">
@@ -57,8 +48,7 @@
 					<ion-item>
 					    <ion-label floating>Participation In Farming Programs</ion-label>
 					    <ion-select formControlName="f2_participation" interface="popover" (ionChange)="setValidation()">
-					      <ion-option value="yes">Yes</ion-option>
-					      <ion-option value="no">No</ion-option>
+					      <ion-option *ngFor="let opt of list_f2_participation" value="{{opt.id}}" >{{opt.name}}</ion-option>
 					    </ion-select>
 					</ion-item>
 				</div>
@@ -68,12 +58,7 @@
 				<ion-item>
 				    <ion-label floating>Type Of The Training Programs <span>*</span></ion-label>
 				    <ion-select formControlName="f2_typeprog" interface="popover">
-						<ion-option value="organic farming training">Organic Farming Training</ion-option>
-						<ion-option value="equipment training">Equipment Training</ion-option>
-						<ion-option value="technology training">Technology Training</ion-option>
-						<ion-option value="pesticide fertilizer training">Pesticide/Fertilizer Training</ion-option>
-						<ion-option value="other farming training">Other Farming Training</ion-option>
-						<ion-option value="others">Others</ion-option>
+						<ion-option *ngFor="let opt of list_f2_typeprog" value="{{opt.id}}" >{{opt.name}}</ion-option>
 				    </ion-select>
 				</ion-item>
 				<div *ngIf="!knowledge.controls.f2_typeprog.valid  && (knowledge.controls.f2_typeprog.dirty || submitAttempt)">

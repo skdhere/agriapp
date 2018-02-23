@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
+import { Helper } from '../../validators/ExtraValidator';
 /**
  * Generated class for the KycPhonePage page.
  *
@@ -51,6 +52,52 @@ export class KycPhonePage {
 
 	}
 
+	list_f5_phonetype = [
+		{id: "smartphone", name: "Smartphone"},
+		{id: "featurephone", name: "Featurephone"},
+	];
+
+	list_f5_servpro = [
+		{id: "aircel", name: "Aircel"},
+		{id: "airtel", name: "Airtel"},
+		{id: "bsnl", name: "BSNL"},
+		{id: "jio", name: "Jio"},
+		{id: "relience", name: "Relience"},
+		{id: "tata docomo", name: "Tata Docomo"},
+		{id: "tata", name: "Tata"},
+		{id: "uninor", name: "Uninor"},
+		{id: "vodafone", name: "Vodafone"},
+		{id: "idea", name: "Idea"},
+		{id: "Other", name: "Other"},
+	];
+
+	list_f5_network = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+
+	list_f5_datapack = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+
+	list_f5_datapackname = [
+		{id: "2g", name: "2G"},
+		{id: "3g", name: "3G"},
+		{id: "4g", name: "4G"},
+	];
+
+	list_f5_appuse = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+
+	list_f5_farmapp = [
+		{id: "yes", name: "Yes"},
+		{id: "no", name: "No"},
+	];
+
+
 	ionViewDidEnter() {
 		console.log('ionViewDidLoad KycPhonePage');
 
@@ -67,13 +114,13 @@ export class KycPhonePage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-				formData['f5_phonetype']    = sqlData.f5_phonetype;
-				formData['f5_servpro']      = sqlData.f5_servpro;
-				formData['f5_network']      = sqlData.f5_network;
-				formData['f5_datapack']     = sqlData.f5_datapack;
-				formData['f5_datapackname'] = sqlData.f5_datapackname;
-				formData['f5_appuse']       = sqlData.f5_appuse;
-				formData['f5_farmapp']      = sqlData.f5_farmapp;
+				formData['f5_phonetype']    = Helper.checkInList(this.list_f5_phonetype, 'id', sqlData.f5_phonetype);
+				formData['f5_servpro']      = Helper.checkInList(this.list_f5_servpro, 'id', sqlData.f5_servpro);
+				formData['f5_network']      = Helper.checkInList(this.list_f5_network, 'id', sqlData.f5_network);
+				formData['f5_datapack']     = Helper.checkInList(this.list_f5_datapack, 'id', sqlData.f5_datapack);
+				formData['f5_datapackname'] = Helper.checkInList(this.list_f5_datapackname, 'id', sqlData.f5_datapackname);
+				formData['f5_appuse']       = Helper.checkInList(this.list_f5_appuse, 'id', sqlData.f5_appuse);
+				formData['f5_farmapp']      = Helper.checkInList(this.list_f5_farmapp, 'id', sqlData.f5_farmapp);
 
                 this.phone.setValue(formData);
                 this.exist = true;

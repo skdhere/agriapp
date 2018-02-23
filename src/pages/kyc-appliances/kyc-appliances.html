@@ -23,7 +23,7 @@
 				<ion-item>
 		            <ion-label floating>Television  <span>*</span></ion-label>
 		            <ion-select formControlName="f7_television" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_television.invalid  && (appliances.controls.f7_television.dirty || submitAttempt)">
@@ -34,7 +34,7 @@
 		        <ion-item>
 		            <ion-label floating>Refrigerator <span>*</span></ion-label>
 		            <ion-select formControlName="f7_refrigerator" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_refrigerator.invalid  && (appliances.controls.f7_refrigerator.dirty || submitAttempt)">
@@ -45,7 +45,7 @@
 		        <ion-item>
 		            <ion-label floating>Washing Machine <span>*</span></ion-label>
 		            <ion-select formControlName="f7_wmachine" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_wmachine.invalid  && (appliances.controls.f7_wmachine.dirty || submitAttempt)">
@@ -56,7 +56,7 @@
 		        <ion-item>
 		            <ion-label floating>Mixer <span>*</span></ion-label>
 		            <ion-select formControlName="f7_mixer" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_mixer.invalid  && (appliances.controls.f7_mixer.dirty || submitAttempt)">
@@ -67,7 +67,7 @@
 		        <ion-item>
 		            <ion-label floating>Gas Stove <span>*</span></ion-label>
 		            <ion-select formControlName="f7_stove" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_stove.invalid  && (appliances.controls.f7_stove.dirty || submitAttempt)">
@@ -78,7 +78,7 @@
 		        <ion-item>
 		            <ion-label floating>Bicycle <span>*</span></ion-label>
 		            <ion-select formControlName="f7_bicycle" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_bicycle.invalid  && (appliances.controls.f7_bicycle.dirty || submitAttempt)">
@@ -89,7 +89,7 @@
 		        <ion-item>
 		            <ion-label floating>Cooking Cylinder <span>*</span></ion-label>
 		            <ion-select formControlName="f7_ccylinder" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_ccylinder.invalid  && (appliances.controls.f7_ccylinder.dirty || submitAttempt)">
@@ -100,7 +100,7 @@
 		        <ion-item>
 		            <ion-label floating>Lights & Fans <span>*</span></ion-label>
 		            <ion-select formControlName="f7_fans" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_fans.invalid  && (appliances.controls.f7_fans.dirty || submitAttempt)">
@@ -111,7 +111,7 @@
 		        <ion-item>
 		            <ion-label floating>Motorcycle <span>*</span></ion-label>
 		            <ion-select formControlName="f7_motorcycle" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_motorcycle.invalid  && (appliances.controls.f7_motorcycle.dirty || submitAttempt)">
@@ -122,7 +122,7 @@
 		        <ion-item>
 		            <ion-label floating>Car <span>*</span></ion-label>
 		            <ion-select formControlName="f7_car" interface="popover">
-		            	<ion-option *ngFor="let n of numbers" [value]="n">{{n}}</ion-option>
+		            	<ion-option *ngFor="let n of list_numbers" [value]="n.id">{{n.id}}</ion-option>
 		            </ion-select>
 		        </ion-item>
 		        <div *ngIf="appliances.controls.f7_car.invalid  && (appliances.controls.f7_car.dirty || submitAttempt)">

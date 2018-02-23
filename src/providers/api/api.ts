@@ -52,7 +52,7 @@ export class Api {
         });
     }
 
-    post(endpoint: string, body: any) {
+    post(endpoint: string, body: any, ex_options?: any) {
         this.setHeaders();
         let params = new URLSearchParams();
         for(let key in body){
@@ -65,6 +65,13 @@ export class Api {
                 params.set(key, body[key]);
             }
         }
+
+        if(ex_options){
+            for(let key in ex_options){
+                this.options[key] = ex_options[key];
+            }
+        }
+
         // console.log(params);
         this.httpCallRequested();
         return this.http.post(this.url + '/' + endpoint, params, this.options)

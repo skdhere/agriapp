@@ -3,6 +3,7 @@ import { ErrorHandler, NgModule } from '@angular/core';
 import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
 import { IonicStorageModule } from '@ionic/storage';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 
 import { MyApp } from './app.component';
 
@@ -32,6 +33,7 @@ import { SelectSearchableModule } from '../components/select-searchable/select-s
     imports: [
         BrowserModule,
         HttpModule,
+        HttpClientModule,
         IonicModule.forRoot(MyApp, {
           platforms: {
             ios: {

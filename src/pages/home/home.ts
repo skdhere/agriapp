@@ -79,16 +79,6 @@ import 'rxjs/add/operator/map';
  		err => {
  			console.log(err);
  		});
-
- 		this.sql.query('SELECT count(*) as total FROM tbl_farmers WHERE local_upload = 1').then(data => {
- 			console.log(data);
- 			if(data.res.rows.length > 0){
- 				this.totalUploaded = data.res.rows.item(0).total;
- 			}
- 		},
- 		err => {
- 			console.log(err);
- 		});
  	}
 
  	goto(page){

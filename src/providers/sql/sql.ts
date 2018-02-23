@@ -485,6 +485,42 @@ export class Sql {
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_loan_details tables', err.tx, err.err);
         });
+
+
+        this.query(`CREATE TABLE IF NOT EXISTS db_versions(
+            id INTEGER PRIMARY KEY,
+            version text
+        )`).then(data => {
+            let tx = data.tx;
+
+            //Database version 1.0.1
+            tx.executeSql('SELECT * FROM db_versions WHERE version = ?', ['1.0.1'], (txx, d) => {
+                if(d.rows.length < 1){
+                    this._db.transaction((tx:any) => {
+
+                        //Creating tbl_queue
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
+
+                        //Alter tbl_errors table add column extra_id
+                        tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
+
+                        //All done now update version 1.0.1
+                        tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
+                        console.log('Database version 1.0.1 created successfully!');
+                    }, err => {
+                        console.log(err);
+                    });    
+                }
+                else{
+                    console.log('Database version 1.0.1');
+                }
+
+            },(txx, e) => {
+                console.log(e);
+            });
+        },err => {
+            console.log(err);
+        });
     }
 
     /**
@@ -515,42 +551,88 @@ export class Sql {
         return this._db;
     }
 
-    async updateUploadStatus(tablename, farmerId, status){
-        if(tablename === 'tbl_farmers'){
-            await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE local_id = ?', [status, farmerId])
-            .then(success => {
-                console.log('STATUS UPDATE', tablename, status);
-                // if(status == 0){
-                //     this.events.publish('table:updated', tablename, farmerId);
-                // }
-                //clear all existing errors for this device
-                this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, tablename]).catch(err => {
-                    console.log("SQL : errors while removing errors from table", err);
-                });
-            },
-            err => {
-                console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
-            });
-        }else{
-            await this.query('UPDATE '+ tablename +' SET local_upload = ? WHERE fm_id = ?', [status, farmerId])
-            .then(success => {
-                console.log('STATUS UPDATE', tablename, status);
-                if(status == 0){
-                    this.events.publish('table:updated', tablename, farmerId);
-                }
-                //clear all existing errors for this device
-                this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [farmerId, tablename]).catch(err => {
-                    console.log("SQL : errors while removing errors from table", err);
-                    this.events.publish('farmer:updateToServer');
-                });
-            },
-            err => {
-                console.error('SQL: Unable to update local_upload status of '+ tablename +' table', err.tx, err.err);
-            });
-        }
-        this.events.publish('farmer:updateToServer');
-    }
+    updateUploadStatus(tablename, farmerId, status){
+        //if status = 0
+        if(status == 0){
+            let query_ = 'SELECT * FROM tbl_queue WHERE local_id = ? AND tablename = ?'; 
+            let value_ = [farmerId, tablename];
+            //1 - check farmer id is array or string
+            //farmerId[0] = lfm_id;
+            //farmerId[1] = extra_id;
+            if(Array.isArray(farmerId)){
+                query_ = 'SELECT * FROM tbl_queue WHERE local_id = ? AND extra_id = ? AND tablename = ?';
+                value_ = [farmerId[0], farmerId[1] , tablename];
+            }
 
+            //1.1 - check if not already in queue
+            this.query(query_, value_).then(data => {
+                if(data.res.rows.length < 1){ 
+
+                    let _value_ = [farmerId, 0, tablename];
+                    //1 - check farmer id is array or string
+                    if(Array.isArray(farmerId)){
+                        _value_ = [farmerId[0], farmerId[1], tablename];
+                    }
+
+                    //if true then its not available now insert
+                    data.tx.executeSql('INSERT INTO tbl_queue(local_id, extra_id, tablename) VALUES(?, ?, ?)', _value_, (txx, d) => {
+                        
+                        if(Array.isArray(farmerId)){
+                            this.events.publish('table:updated', tablename, farmerId[0], farmerId[1]);
+                            this.events.publish('farmer:updateToServer');
+                        }else{
+                            this.events.publish('table:updated', tablename, farmerId);
+                            this.events.publish('farmer:updateToServer');
+                        }
+
+                        let err_local_id = farmerId;
+                        let err_extra_id = '';
+                        if(Array.isArray(farmerId)){
+                            err_local_id = farmerId[0];
+                            err_extra_id = farmerId[1];
+                        }
+                        console.log('deleting from errors', farmerId);
+                        //clear all existing errors for this device
+                        data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], (txr, d) => {
+                            console.log('Deleted from errors', d);
+                        }, err => {
+                            console.log("SQL : errors while removing errors from table", err);
+                        });
+
+                    }, (txx, e) => {console.log(e);});
+                }
+            }, error => {
+                console.log(error);
+            });
+
+        }else{
+            
+            let query_ = 'DELETE FROM tbl_queue WHERE local_id = ? AND tablename = ?'; 
+            let value_ = [farmerId, tablename];
+            //1 - check farmer id is array or string
+            if(Array.isArray(farmerId)){
+                query_ = 'DELETE FROM tbl_queue WHERE local_id = ? AND extra_id = ? AND tablename = ?'
+                value_ = [farmerId[0], farmerId[1] , tablename];
+            }
+
+            this.query(query_, value_).then(data => {
+
+                this.events.publish('farmer:updateToServer');
+                let err_local_id = farmerId;
+                let err_extra_id = '';
+                if(Array.isArray(farmerId)){
+                    err_local_id = farmerId[0];
+                    err_extra_id = farmerId[1];
+                }
+
+                //clear all existing errors for this device
+                data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], d => {}, err => {
+                    console.log("SQL : errors while removing errors from table", err);
+                });
+
+            },err => { console.log(err); });
+        }
+    }
 
     getFarmerByLocalId(local_id){
         return this.query('SELECT * FROM tbl_farmers WHERE local_id = ?', [local_id]);
@@ -577,6 +659,41 @@ export class Sql {
                 err => {
                     console.log(err);
                 });
+            }
+        });
+    }
+
+    addErrorTx(tablename, local_id, code, msg, tx): Promise<any>{
+        return new Promise((resolve, reject) => {
+            try {
+
+                let ext_id = '';
+                let loc_id = local_id;
+                if(Array.isArray(local_id)){
+                    loc_id = local_id[0];
+                    ext_id = local_id[1];
+                }
+
+                tx.executeSql('SELECT * FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ? and error_code = ?', [loc_id, ext_id, tablename, code], (txx, data) => {
+                    if(data.rows.length < 1){
+                        tx.executeSql('INSERT INTO tbl_errors(local_id, extra_id, tablename, error_code, error_message) VALUES(?, ?, ?, ?, ?)', [
+                            loc_id,
+                            ext_id,
+                            tablename,
+                            code,
+                            msg
+                        ], (txx, data) => {
+                            resolve({res: 'true'});
+                        },
+                        (txx, err) => {
+                            reject({ err: err });
+                        });
+                    }
+                }, (txx, err) => {
+                    reject({ err: err });
+                });
+            } catch (err) {
+                reject({ err: err });
             }
         });
     }

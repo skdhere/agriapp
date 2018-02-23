@@ -6,12 +6,6 @@ import { Sql } from '../../providers/sql/sql';
 import {Http, Response} from '@angular/http';
 import 'rxjs/Rx';
 
-/**
-* Generated class for the PreloadPage page.
-*
-* See https://ionicframework.com/docs/components/#navigation for more info on
-* Ionic pages and navigation.
-*/
 
 @IonicPage()
 @Component({
@@ -97,19 +91,15 @@ export class PreloadPage {
         			}
         			villageStr = villageStr.substring(0,villageStr.length-1);
     				this.sql.query('INSERT into tbl_village(id, taluka_id, name) values '+ villageStr).then((dtat)=>{
-						this.goHome();
+						
     				}, (error) => {
     					console.log(error);
     				});
     				
         		});
             }
-            else{
-				this.goHome();
-            }
         }, (error) =>{
         	console.log(error);
-			this.goHome();
         });
 
         // load crops
@@ -137,12 +127,33 @@ export class PreloadPage {
                         varietiesStr += "("+row.variety_id+","+row.crop_id+",'"+row.variety_name+"'),";
                     }
                     varietiesStr = varietiesStr.substring(0,varietiesStr.length-1);
-                    this.sql.query('INSERT into tbl_varieties(id, crop_id, name) values '+ varietiesStr).then();
+                    this.sql.query('INSERT into tbl_varieties(id, crop_id, name) values '+ varietiesStr).then(dat => {
+                        this.goHome();
+                    }, errr => {
+                        console.log(errr);
+                        this.goHome();
+                    });
                 });
+            }else{
+                this.goHome();
             }
         }, (error) =>{
             console.log(error);
+            this.goHome();
         });
+
+
+
+
+        // db.transaction((tx) => {        
+        //     tx.executeSql('SELECT * from db_versions', [], (txx, d) => {
+        //         console.log('Last transaction', txx,d);
+        //         // this.go.Home();
+        //     }, (txx, e) => {
+        //         console.log('Last transaction', txx,e);
+        //         // this.goHome();
+        //     });
+        // });
 	}
 
 	goHome(){
@@ -155,7 +166,7 @@ export class PreloadPage {
                     this.navCtrl.setRoot('UserLogin');
                 }
             });
-        }, 500);
+        }, 100);
 	}
 
 }

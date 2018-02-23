@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
+import { Helper } from '../../validators/ExtraValidator';
 
 /**
  * Generated class for the KycAppliancesPage page.
@@ -18,32 +19,37 @@ import { Sql } from '../../providers/sql/sql';
 export class KycAppliancesPage {
 
     appliances: FormGroup;
-    numbers: Array<number> = Array(11).fill(0).map((x,i)=>i); 
+    numbers: Array<any> = Array(10).fill(0).map((x,i)=>i); 
 	submitAttempt: boolean = false;
 	fm_id: any;
     exist: boolean = false;
 
-	constructor(public navCtrl: NavController,
-				public navParams: NavParams, 
+    list_numbers = this.numbers.map((n) => {
+        return {id: n};
+    });
+    constructor(public navCtrl: NavController,
+                public navParams: NavParams, 
                 public sql: Sql,
-				public toastCtrl: ToastController,
-				public formBuilder: FormBuilder) {
-		this.appliances = formBuilder.group({
+                public toastCtrl: ToastController,
+                public formBuilder: FormBuilder) {
+        this.appliances = formBuilder.group({
 
-			'f7_television' : ['', Validators.required],
-			'f7_refrigerator' : ['', Validators.required],
-			'f7_wmachine' : ['', Validators.required],
-			'f7_mixer' : ['', Validators.required],
-			'f7_stove' : ['', Validators.required],
-			'f7_bicycle' : ['', Validators.required],
-			'f7_ccylinder' : ['', Validators.required],
-			'f7_fans' : ['', Validators.required],
-			'f7_motorcycle' : ['', Validators.required],
-			'f7_car' : ['', Validators.required],
-		});
-	}
+            'f7_television' : ['', Validators.required],
+            'f7_refrigerator' : ['', Validators.required],
+            'f7_wmachine' : ['', Validators.required],
+            'f7_mixer' : ['', Validators.required],
+            'f7_stove' : ['', Validators.required],
+            'f7_bicycle' : ['', Validators.required],
+            'f7_ccylinder' : ['', Validators.required],
+            'f7_fans' : ['', Validators.required],
+            'f7_motorcycle' : ['', Validators.required],
+            'f7_car' : ['', Validators.required],
+        });
+        this.list_numbers.push({id: '10 / 10+'});
+    }
 
-	ionViewDidEnter() {
+
+    ionViewDidEnter() {
 		console.log('ionViewDidLoad KycAppliancesPage');
 
 		this.exist = false;
@@ -56,16 +62,16 @@ export class KycAppliancesPage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-				formData['f7_television']   = sqlData.f7_television;
-				formData['f7_refrigerator'] = sqlData.f7_refrigerator;
-				formData['f7_wmachine']     = sqlData.f7_wmachine;
-				formData['f7_mixer']        = sqlData.f7_mixer;
-				formData['f7_stove']        = sqlData.f7_stove;
-				formData['f7_bicycle']      = sqlData.f7_bicycle;
-				formData['f7_ccylinder']    = sqlData.f7_ccylinder;
-				formData['f7_fans']         = sqlData.f7_fans;
-				formData['f7_motorcycle']   = sqlData.f7_motorcycle;
-				formData['f7_car']          = sqlData.f7_car;
+				formData['f7_television']   = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_television);
+				formData['f7_refrigerator'] = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_refrigerator);
+				formData['f7_wmachine']     = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_wmachine);
+				formData['f7_mixer']        = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_mixer);
+				formData['f7_stove']        = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_stove);
+				formData['f7_bicycle']      = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_bicycle);
+				formData['f7_ccylinder']    = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_ccylinder);
+				formData['f7_fans']         = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_fans);
+				formData['f7_motorcycle']   = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_motorcycle);
+				formData['f7_car']          = Helper.checkInList(this.list_numbers, 'id', sqlData.f7_car);
 
                 this.appliances.setValue(formData);
                 this.exist = true;

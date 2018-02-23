@@ -19,11 +19,9 @@
                     <ion-avatar item-start>
                         <ion-icon name="locate"></ion-icon>
                     </ion-avatar>
-                    <h2 color="app">{{land.f9_name}}</h2>
-                    <p>({{land.f9_survey_number}})</p>
+                    <h2 color="app">{{land.f9_name || 'No name'}}</h2>
+                    <p>({{land.f9_survey_number || '-'}})</p>
 
-                    <!-- <ion-icon *ngIf="!local_upload" name="time" color="danger" item-end></ion-icon> -->
-                    <!-- <ion-icon *ngIf="!local_upload" color="secondary" name="cloud-done" item-end></ion-icon> -->
                 </ion-item>
                 <ion-item-options>
                     <button ion-button color="danger" icon-start (click)="deleteItem(land)">

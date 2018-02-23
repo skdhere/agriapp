@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
+import { Helper } from '../../validators/ExtraValidator';
 
 /**
  * Generated class for the SpouseKnowledgePage page.
@@ -53,7 +54,39 @@ export class SpouseKnowledgePage {
 		this.knowledge.controls['f4_edudetail'].valueChanges.subscribe(() => {this.setValidation();});
 		this.knowledge.controls['f4_proficiency'].valueChanges.subscribe(() => {this.setValidation();});
 		this.knowledge.controls['f4_participation'].valueChanges.subscribe(() => {this.setValidation();});
-  }
+  	}
+
+  	list_f4_edudetail = [
+  		{id: 'illiterate', name: 'Illiterate'},
+		{id: 'primary education', name: 'Primary Education'},
+		{id: 'matriculate', name: 'Matriculate'},
+		{id: 'graduate', name: 'Graduate'},
+		{id: 'post graduate', name: 'Post Graduate'}
+  	];
+
+	list_f4_proficiency = [
+  		{id: 'fluent', name: 'Fluent'},
+		{id: 'read only', name: 'Read Only'},
+		{id: 'write only', name: 'Write Only'},
+		{id: 'speak only', name: 'Speak Only'},
+		{id: 'understand only', name: 'Understand Only'},
+		{id: "Don't Know", name: "Don't Know"},
+	];
+
+	list_f4_participation = [
+		{id: 'yes', name: 'Yes'},
+		{id: 'no', name: 'No'}
+	];
+
+	list_f4_typeprog = [
+		{id: 'organic farming training', name: 'Organic Farming Training'},
+		{id: 'equipment training', name: 'Equipment Training'},
+		{id: 'technology training', name: 'Technology Training'},
+		{id: 'pesticide fertilizer training', name: 'Pesticide/Fertilizer Training'},
+		{id: 'other farming training', name: 'Other Farming Training'},
+		{id: 'others', name: 'Others'},
+	];
+
 
     ionViewDidEnter() {
 		this.retryButton = false;
@@ -71,10 +104,10 @@ export class SpouseKnowledgePage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-				formData['f4_edudetail']     = sqlData.f4_edudetail;
-				formData['f4_proficiency']   = sqlData.f4_proficiency;
-				formData['f4_participation'] = sqlData.f4_participation;
-				formData['f4_typeprog']      = sqlData.f4_typeprog;
+				formData['f4_edudetail']     = Helper.checkInList(this.list_f4_edudetail, 'id', sqlData.f4_edudetail);
+				formData['f4_proficiency']   = Helper.checkInList(this.list_f4_proficiency, 'id', sqlData.f4_proficiency);
+				formData['f4_participation'] = Helper.checkInList(this.list_f4_participation, 'id', sqlData.f4_participation);
+				formData['f4_typeprog']      = Helper.checkInList(this.list_f4_typeprog, 'id', sqlData.f4_typeprog);
 				formData['f4_date']          = sqlData.f4_date;
 				formData['f4_durprog']       = sqlData.f4_durprog;
 				formData['f4_condprog']      = sqlData.f4_condprog;

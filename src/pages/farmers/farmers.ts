@@ -1,9 +1,19 @@
-import { Component } from '@angular/core';
-import { NavController, NavParams, IonicPage, LoadingController, ToastController, Platform, AlertController, Events } from 'ionic-angular';
+import { Component, NgZone, ViewChild } from '@angular/core';
+import { NavController, NavParams, IonicPage, LoadingController, ToastController, Platform, AlertController, Events, Content } from 'ionic-angular';
 import 'rxjs/add/operator/map';
 import { Api } from '../../providers/api/api';
 import { Sql } from '../../providers/sql/sql';
 import { UserProvider } from '../../providers/user/user';
+
+import {
+  HttpClient,
+  HttpRequest,
+  HttpEvent,
+  HttpEventType,
+  HttpHeaders,
+  HttpParams
+} from '@angular/common/http';
+
 
 @IonicPage()
 @Component({
@@ -11,10 +21,13 @@ import { UserProvider } from '../../providers/user/user';
 		templateUrl: 'farmers.html'
 })
 export class FarmersPage {
+
+	@ViewChild(Content) content: Content;
+
 	selectedItem: any;
 	icons: string[];
 	items: Array<any> = [];
-	limit: number = 10;
+	limit: number = 20;
 	offset: number = 0;
 	retryButton: boolean = false;
 	loading: any;
@@ -23,7 +36,9 @@ export class FarmersPage {
 	errors:any = [];
 	ca_id: any = "";
 	load:any;
+	tapped_len:any = null;
 
+	debug:number = 0;
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams, 
 				private api: Api,
@@ -31,6 +46,8 @@ export class FarmersPage {
 				public platform: Platform,
 				private sql: Sql,
 				public events: Events,
+				private zone: NgZone,
+				public http: HttpClient,
 				public alertCtrl: AlertController,
 				private loadingCtrl: LoadingController,
 				public toastCtrl: ToastController) {
@@ -44,25 +61,31 @@ export class FarmersPage {
 	}
 
 	ionViewDidEnter(){
-		for (let i = 0; i < this.items.length; i++) {
-			this.isUpdated(i);
-			this.isUploaded(i);
-			this.hasAnyError(i);
+		console.log("last entered ", this.tapped_len);
+		if(this.tapped_len != null){
+			let db = this.sql.getDb();
+			db.transaction((tx: any) => {
+        		this.isUpdated(this.tapped_len, tx);
+            	this.isUploaded(this.tapped_len, tx);
+            	this.hasAnyError(this.tapped_len, tx);
+	        },
+	        (err: any) => console.error({ err: err }));
 		}
 	}
 
 	ionViewDidLoad() {
-		this.platform.ready().then(() => {
-        	this.initializeItems();
-        });
+    	this.initializeItems();
     }
 
 	initializeItems(){
+		console.log('called init.');
 		this.items = [];
-		this.limit = 10;
 		this.offset = 0;
+		this.infinit_complete = false;
 
+		this.tapped_len = null;
 		this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? ORDER BY fm_modifieddt DESC LIMIT ?,?';
+		
 		this.doInfinite();
 	}
 
@@ -71,29 +94,38 @@ export class FarmersPage {
 		this.sql.query(this.query, [this.ca_id, this.offset, this.limit]).then(data => {
 			console.log(data);
             if (data.res.rows.length > 0) {
+            	let idd = [];
                 for(let i=0; i<data.res.rows.length; i++){
-
                 	let item = data.res.rows.item(i);
                 	item.update = false;
-
-                	let idd = this.items.push(item) - 1;
-                	this.isUpdated(idd);
-                	setTimeout(() => {
-	                	this.isUploaded(idd);
-	                	this.hasAnyError(idd);
-                	}, 200);
+                	item.local_upload = false;
+                	idd.push(this.items.push(item) - 1);
+		            this.content.resize();
 				}
-				infiniteScroll ? infiniteScroll.complete() : {};
-				if(data.res.rows.length < 10){
+
+				let db = this.sql.getDb();
+				db.transaction((tx: any) => {
+					for (let i = 0; i < idd.length; i++) {
+						this.isUpdated(idd[i], tx);
+	                	this.isUploaded(idd[i], tx);
+	                	this.hasAnyError(idd[i], tx);
+					}
+		        },
+		        (err: any) => console.error({ err: err }));
+
+				infiniteScroll != undefined ? infiniteScroll.complete() : {};
+				if(data.res.rows.length < this.limit){
 					this.infinit_complete = true;
 				}
+		        
             }
             else{
             	if(infiniteScroll){
-	            	infiniteScroll.enable(false);
+	            	// infiniteScroll.enable(false);
 	            	this.infinit_complete = true;
             	} 
             }
+
             this.loading ? this.loading.dismiss() : {};
         },
         err => {
@@ -203,16 +235,19 @@ export class FarmersPage {
 	getItems(ev: any) {
 
 		this.items = [];
-		this.limit = 10;
 		this.offset = 0;
-
+		this.infinit_complete = false;
+		this.tapped_len = null;
+		
+		
 		// set val to the value of the searchbar
 		let val = ev.target.value;
 
 		// if the value is an empty string don't filter the items
 		// val = val.trim();
-		if (val && val.trim() != '') {
-			this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? and (fm_mobileno LIKE \'%'+ val +'%\' OR fm_name LIKE \'%'+ val +'%\')';
+		let val1 = val;
+		if (val && val1.trim() != '') {
+			this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? and (fm_mobileno LIKE \'%'+ val +'%\' OR (trim(fm_fname) || \' \' || trim(fm_mname) || \' \' || trim(fm_lname)) LIKE \'%'+ val +'%\' OR (trim(fm_fname) || \' \' || trim(fm_lname)) LIKE \'%'+ val +'%\')';
 			this.query +=' ORDER BY fm_modifieddt DESC LIMIT ?,?';
 			this.doInfinite();
 		}
@@ -233,8 +268,9 @@ export class FarmersPage {
 	    toast.present();
 	}
 
-	itemTapped(event, farmer) {
+	itemTapped(event, farmer, ind) {
 		console.log(farmer);
+		this.tapped_len = ind;
 		this.navCtrl.push('Farmerdetail', {
 				farmer: farmer
 		});
@@ -258,240 +294,509 @@ export class FarmersPage {
 		});
 	}
 
-	async isUpdated(len){
+	isUpdated(len, tx){
 		let item = this.items[len];
 		let query_str = 'SELECT t0.fm_id FROM tbl_personal_detail AS t0 JOIN tbl_residence_details AS t1 ON t0.fm_id = t1.fm_id JOIN tbl_applicant_knowledge AS t2 ON t0.fm_id = t2.fm_id JOIN tbl_applicant_phone AS t4 ON t0.fm_id = t4.fm_id JOIN tbl_family_details AS t5 ON t0.fm_id = t5.fm_id JOIN tbl_appliances_details AS t6 ON t0.fm_id = t6.fm_id JOIN tbl_spouse_details AS t7 ON t0.fm_id = t7.fm_id JOIN tbl_asset_details AS t8 ON t0.fm_id = t8.fm_id JOIN tbl_livestock_details AS t9 ON t0.fm_id = t9.fm_id JOIN tbl_financial_details AS t10 ON t0.fm_id = t10.fm_id JOIN tbl_land_details AS t11 ON t0.fm_id = t11.fm_id JOIN tbl_cultivation_data AS t12 ON t0.fm_id = t12.fm_id JOIN tbl_yield_details AS t13 ON t0.fm_id = t13.fm_id ';
 
 		//check if loan has taken or not, if not then dont include loan table
-		await this.sql.query("SELECT * FROM tbl_financial_details WHERE f8_loan_taken = ? and fm_id = ? limit 1" , ['yes', item.local_id]).then( (data) => {
-            if (data.res.rows.length > 0) {
+		tx.executeSql("SELECT * FROM tbl_financial_details WHERE f8_loan_taken = ? and fm_id = ? limit 1" , ['yes', item.local_id], (txx, data) => {
+            if (data.rows.length > 0) {
             	query_str += ' JOIN tbl_loan_details AS t14 ON t0.fm_id = t14.fm_id ';
             }
 
 			//check if married or not, if not then dont include spouse nowledge table
-            this.sql.query("SELECT * FROM tbl_spouse_details WHERE f3_married_status = ? and fm_id = ? limit 1" , ['yes', item.local_id]).then( (data) => {
-	            if (data.res.rows.length > 0) {
+            tx.executeSql("SELECT * FROM tbl_spouse_details WHERE f3_married_status = ? and fm_id = ? limit 1" , ['yes', item.local_id], (txx, data) => {
+	            if (data.rows.length > 0) {
             		query_str += ' JOIN tbl_spouse_knowledge AS t3 ON t0.fm_id = t3.fm_id ';
 	            }
 
 				query_str += ' WHERE t0.fm_id = ?';
-				this.sql.query(query_str, [item.local_id])
-				.then(d => {
-					if(d.res.rows.length > 0){
-						this.items[len].update = true;
-					}else{
-						this.items[len].update = false;
-					}
-				});
+				tx.executeSql(query_str, [item.local_id], (txx, d) => {
 
-	        }, err => {
+					this.zone.run(() => {
+						if(d.rows.length > 0){
+							this.items[len].update = true;
+						}else{
+							this.items[len].update = false;
+						}
+					});
+
+				}, (txx, err) => {
+		            console.log(err);
+		        });
+
+	        }, (txx, err) => {
 	            console.log(err);
 	        });
-        }, err => {
+        }, (txx, err) => {
             console.log(err);
         });
-
 	}
 
-	async isUploaded(len){
+	isUploaded(len, tx){
+		// console.log('isUploaded called');
 		let item = this.items[len];
-		await this.sql.query(`SELECT t0.local_upload AS table0, t1.local_upload AS table1, t2.local_upload AS table2, t3.local_upload AS table3, t4.local_upload AS table4, t5.local_upload AS table5, t6.local_upload AS table6, t7.local_upload AS table7, t8.local_upload AS table8, t9.local_upload AS table9, t10.local_upload AS table10, t11.local_upload AS table11, t12.local_upload AS table12, t13.local_upload AS table13, t14.local_upload AS table14, t15.local_upload AS table15
 
-			FROM tbl_farmers AS t0 LEFT JOIN tbl_residence_details AS t1
-				 ON t0.local_id = t1.fm_id LEFT JOIN tbl_applicant_knowledge AS t2
-				 ON t0.local_id = t2.fm_id LEFT JOIN tbl_spouse_knowledge AS t3 
-				 ON t0.local_id = t3.fm_id LEFT JOIN tbl_applicant_phone AS t4 
-				 ON t0.local_id = t4.fm_id LEFT JOIN tbl_family_details AS t5 
-				 ON t0.local_id = t5.fm_id LEFT JOIN tbl_appliances_details AS t6 
-				 ON t0.local_id = t6.fm_id LEFT JOIN tbl_spouse_details AS t7 
-				 ON t0.local_id = t7.fm_id LEFT JOIN tbl_asset_details AS t8 
-				 ON t0.local_id = t8.fm_id LEFT JOIN tbl_livestock_details AS t9 
-				 ON t0.local_id = t9.fm_id LEFT JOIN tbl_financial_details AS t10
-				 ON t0.local_id = t10.fm_id LEFT JOIN tbl_land_details AS t11
-				 ON t0.local_id = t11.fm_id LEFT JOIN tbl_cultivation_data AS t12
-				 ON t0.local_id = t12.fm_id LEFT JOIN tbl_yield_details AS t13
-				 ON t0.local_id = t13.fm_id LEFT JOIN tbl_loan_details AS t14
-				 ON t0.local_id = t14.fm_id LEFT JOIN tbl_personal_detail AS t15
-				 ON t0.local_id = t15.fm_id
-			WHERE t0.local_id = ` + item.local_id)
-		.then(d => {
-			// console.log('Updateeee', d);
-			if(d.res.rows.length > 0){
-				let updated = true;
-				for (let j = 0; j < d.res.rows.length; j++) {
-					let row = d.res.rows.item(j);
-					for (let i = 0; i < 16; i++) {
-						if(row['table'+ i] == 0){
-							updated = false;
-						}
-					}
+		tx.executeSql(`SELECT * from tbl_queue WHERE local_id = ?`, [item.local_id], (txx, d) => {
+			this.zone.run(() => {
+				if(d.rows.length < 1){
+					this.items[len].local_upload = true;
+				}else{
+					this.items[len].local_upload = false;
 				}
-
-				this.items[len].local_upload = updated;
-			}else{
-				this.items[len].local_upload = false;
-			}
+			});
 		},
-		err => {
+		(txx, err) => {
 			console.log(err);
 		});
 	}
 
-	async hasAnyError(len){
+	hasAnyError(len, tx){
 		let item = this.items[len];
-		await this.sql.query("SELECT * FROM tbl_errors WHERE local_id = ?", [item.local_id])
-		.then(d => {
+		tx.executeSql("SELECT * FROM tbl_errors WHERE local_id = ?", [item.local_id], (txx, d) => {
 			// console.log("errors", d);
-			if(d.res.rows.length > 0){
-				this.items[len].hasErrors = true;
-				this.errors[item.local_id] = [];
-				for (let i = 0; i < d.res.rows.length; i++) {
-					this.errors[item.local_id].push(d.res.rows.item(i));
+			this.zone.run(() => {
+				if(d.rows.length > 0){
+					this.items[len].hasErrors = true;
+					this.errors[item.local_id] = [];
+					for (let i = 0; i < d.rows.length; i++) {
+						this.errors[item.local_id].push(d.rows.item(i));
+					}
+				}else{
+					this.items[len].hasErrors = false;
 				}
-			}else{
-				this.items[len].hasErrors = false;
-			}
+			});
 		});
 	}
 
 
-	// loadOnlineFarmers(){
+	total_inserted: number = 0;
+	total_loaded: number = 0;
+	is_cancelable: boolean = true;
+	cutivation_data: Array<any> = [];
+	error_ids: any = [];
+	error_local_ids: any = [];
 
-	// 	this.load = this.loadingCtrl.create();
-	// 	this.load.present();
+	loadOnlineFarmers(){
+		let alt = this.alertCtrl.create({
+			subTitle: "Load Farmers",
+			message: "Loading farmers from the Server may take several minutes on slow internet connection. press <b>Continue</b> to proceed loading or <b>Cancel</b> to cancel.",
+			buttons: [
+				{ text: "Cancel", role: "cancel"},
+				{ text: "Continue", role: "ok", handler: () => { this.onProceedLoading(); } }
+			]
+		});
 
-	// 	this.sql.query('select fm_id from tbl_farmers where fm_id != \'\'').then(local_data => {
-	// 		let fm_ids = [];
-	// 		if(local_data.res.rows.length > 0){
-	// 			for (let i = 0; i < local_data.res.rows.length; i++) {
-	// 				let item = local_data.res.rows.item(i);
-	// 				if(item.fm_id != ''){
-	// 					fm_ids.push(item.fm_id);
-	// 				}
-	// 			}
-	// 		}
-	// 		console.log(fm_ids);
-	// 		let data = { fm_ids : fm_ids, total: ''};
+		alt.present();
+	}
 
-	// 		this.api.post('fm_data', data)
-	//         .map((res) => res.json())
-	//         .subscribe(success => {
-	//         	console.log(success);
-	//         	if(success.success){
-	//         		for (let j = 0; j < success.data.length; j++) {
-	//         			let farmer = success.data[j];
-	//         			console.log('1', farmer);
-	//         			for (let k = 0; k < farmer.values.length; k++) {
-	//         				console.log('2', farmer.values[k]);
+	onProceedLoading(){
 
-	//         				if(k == farmer.values.length -1){
-	// 	        				this.cloneData(farmer.fm_id, farmer.values[k], true);
-	//         				}else{
-	// 	        				this.cloneData(farmer.fm_id, farmer.values[k]);
-	//         				}
-	//         			}
-	//         		}
-	//         	}
-	//         	else{
-	//         		this.load.dismiss();
-	//         	}
-	//         }, err => {
-	//         	console.log(err);
-	//         	this.load.dismiss();
-	//         });
-	// 	});
-	// }
+		this.load = this.loadingCtrl.create({
+		    content: '<span>Please Wait</span>'
+		});
+		this.load.present();
+		
+		this.sql.query('select fm_id from tbl_farmers where fm_id != \'\'').then(local_data => {
+			let fm_ids = [];
 
-	// async cloneData(fm_id, val, isLast?){
+			if(local_data.res.rows.length > 0){
+				for (let i = 0; i < local_data.res.rows.length; i++) {
+					let item = local_data.res.rows.item(i);
+					if(item.fm_id != ''){
+						fm_ids.push(item.fm_id);
+					}
+				}
+			}
+			let data = { fm_ids : fm_ids.toString(), total: ''};
 
-	// 	console.log('3', val);
-	// 	let tablename = val['tablename'];
 
-	// 	if(tablename != ''){
-	// 		console.log('tablename', tablename);
+			let header = new HttpHeaders({'Content-Type':'application/x-www-form-urlencoded', 'Authorization': this.currentUser.token});
+			let param = new HttpParams()
+			.set("fm_ids", fm_ids.toString())
+			.set("total", '10').toString();
 
-	// 		await this.sql.query("SELECT sql FROM sqlite_master WHERE tbl_name = ? AND type = 'table'", [tablename]).then(data => {
-	// 			console.log('under query', tablename);
+			let req = new HttpRequest('POST', 'http://acrefin.com/api/v1/fm_data', { 
+				headers : header, 
+				reportProgress : true,
+				total : param
+			});
 
-	// 			let columns = this.getColArray(data.res.rows.item(0).sql);
-	// 		    let query = 'Insert into ' + tablename;
-	// 		    query += '(' + columns.toString() + ') values(';
-	// 		    for (let i = 0; i < columns.length; i++) {
-	// 		    	query += '?,';
-	// 		    }
-	// 		    query = query.substring(0,query.length - 1);
-	// 		    query += ')';
 
-	// 			console.log('rows', val.rows);
+			this.http.post('http://acrefin.com/api/v1/fm_data', param.toString(), {
+				headers : header,
+				reportProgress : true,
+				observe: 'events'
+			}).subscribe((event: HttpEvent<any>) => {
+				switch (event.type) {
+					case HttpEventType.Sent:
+						console.log('Request sent!');
+					break;
+					case HttpEventType.ResponseHeader:
+						console.log('Response header received!');
+					break;
+					case HttpEventType.DownloadProgress:
+						const mbloaded:any = (event.loaded / 1024 / 1024).toFixed(2);
+						if(mbloaded > 0.1){
+							this.load.data.content = "<strong>Downloading</strong><br><span> <strong>" + mbloaded + " MB </strong> loaded.</span>";
+						}
+					break;
+					case HttpEventType.Response:
+						console.log('Done!', event.body);
+						let body = event.body;
+						this.loadData(body);
+				}
+			},(err) => {
+				this.load.dismiss();
+				let alert = this.alertCtrl.create({
+					title: 'Failed!',
+					message: 'An error has occured while downloading data from the server, Make sure Internet/Data connection is on and try again.',
+					buttons: [
+						{text: 'OK', role: 'ok'}
+					]
+				});
+				alert.present();
+				console.log(err);
+			}
+			,() => {
+				console.log('done.....');
+			});
 
-	// 		    for (let m = 0; m < val.rows.length; m++) {
-	// 				console.log('4', val.rows[m]);
+		});
+	}
+	
+	loadData(body){
+		if(body.success){
+			if(body.error_ids != undefined){
+				this.error_ids = body.error_ids;
+			}
 
-	// 			    let serverRow = val.rows[m];
-	// 			    let final_data:any = {};
-	// 			    for (let i = 0; i < columns.length; i++) {
-	// 			    	final_data[columns[i]] = serverRow[columns[i]] || '';
-	// 			    }
+    		if(body.data.length > 0){
+        		let db = this.sql.getDb();
+        		db.transaction((tx: any) => {
+        			this.total_loaded = body.data.length;
 
-	// 			    if(tablename != 'tbl_farmers'){
-	// 			    	console.log('4.5', tablename);
-	// 				    this.sql.query('Select local_id from tbl_farmers where fm_id = ? ', [fm_id]).then(d => {
-	// 			    		console.log('4.7', fm_id);
+        			//loop through each farmer
+	        		for (let j = 0; j < body.data.length; j++) {
+	        			let farmer = body.data[j];
 
-	// 				    	if(d.res.rows.length > 0){
-	// 				    		let item = d.res.rows.item(0);
-	// 					    	final_data['fm_id'] = item['local_id'];
-	// 					    	delete final_data['id'];
+	        			//loop through each table value
+	        			for (let k = 0; k < farmer.values.length; k++) {
+	        				this.cloneData(farmer.fm_id, farmer.values[k], tx, (k === farmer.values.length -1 && j === body.data.length -1));
+	        				if((k === farmer.values.length -1 && j === body.data.length -1)){
+		        				console.log('j =', j, 'k =', k, '-----Last Entry Found-----');
+	        				}
+	        			}
+	        		}
+                },
+                (err: any) => console.log({ err: err }));
+    		}
+    		else{
+    			this.load.dismiss();
+    			let alert = this.alertCtrl.create({
+    				title: "Already loaded!",
+    				subTitle: "No more farmers available on the Server.",
+    				buttons:[{ text: "OK"}]
+    			});
 
-	// 					    	let dumFinal = [];
-	// 					    	for (let key in final_data) {
-	// 					    		dumFinal.push(final_data[key]);
-	// 					    	}
+    			alert.present();
+    		}
+    	}
+    	else{
+    		this.load.dismiss();
+    	}
+	}
 
-	// 					    	console.log('5', dumFinal, query);
-	// 						    this.sql.query(query, dumFinal).then(dat => {}, err => {console.log(err)});
-	// 				    	}
+	async cloneData(fm_id, val, tx, isLast?){
 
-	// 				    }, err => {
-	// 				    	console.log(err);
-	// 				    });
-				    	
-	// 			    }else{
-	// 			    	delete final_data['id'];
+		let tablename = val['tablename'];
 
-	// 			    	let dumFinal = [];
-	// 			    	for (let key in final_data) {
-	// 			    		dumFinal.push(final_data[key]);
-	// 			    	}
-				    	
-	// 			    	console.log('5', dumFinal, query);
-	// 				    this.sql.query(query, dumFinal).then(dat => { console.log('success inserted farmer',dat) }, err => {console.log(err)});
-	// 			    }
+		if(tablename != ''){
 
-	// 			    if(isLast){
-	// 			    	if(this.load){
-	// 			    		this.load.dismiss()
-	// 			    	}
-	// 			    }
+			await tx.executeSql("SELECT sql FROM sqlite_master WHERE tbl_name = ? AND type = 'table'", [tablename], (txx, data) => {
 
-	// 		    }
+				let columns = this.getColArray(data.rows.item(0).sql);
+			    let query = 'Insert into ' + tablename;
 
-	// 		});
-	// 	}
-	// }
+			    if(tablename == 'tbl_farmers'){
+			    	columns.pop(); //remove local_upload
+			    	columns.pop(); //remove local_id
+			    }
 
-	// getColArray(sql){
-	//     sql = sql + '';
-	//  	let columns = sql.split('(');
-	//  	columns = columns[1].split(')')[0];
-	//  	columns = columns.split(',');
+			    if(tablename === 'tbl_land_details' || tablename === 'tbl_cultivation_data' || tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
+			    	columns.pop(); //remove local_upload
+			    	columns.pop(); //remove server_id
+			    	columns.pop(); //remove local_id
+			    	columns.push('server_id');
+			    }
 
-	//  	let colarray = [];
-	//  	for (let i = 0; i < columns.length; i++) {
-	//  		let a = columns[i].trim().split(' ');
+			    query += '(' + columns.toString() + ') values(';
+			    for (let i = 0; i < columns.length; i++) {
+			    	query += '?,';
+			    }
+			    query = query.substring(0,query.length - 1);
+			    query += ')';
 
-	//  		colarray.push(a[0]);
-	//  	}
-	//     return colarray;		
-	// }
+			    if(val.rows.length > 0){
+				    for (let m = 0; m < val.rows.length; m++) {
+
+					    let serverRow = val.rows[m];
+					    let final_data:any = {};
+					    for (let i = 0; i < columns.length; i++) {
+					    	final_data[columns[i]] = serverRow[columns[i]] || '';
+					    }
+
+					    if(tablename != 'tbl_farmers'){
+						    tx.executeSql('Select local_id from tbl_farmers where fm_id = ? ', [fm_id], (txx, d) => {
+						    		
+						    	if(d.rows.length > 0){
+						    		let item = d.rows.item(0);
+							    	final_data['fm_id'] = item['local_id'];
+						    		
+						    		if(tablename === 'tbl_land_details' || tablename === 'tbl_cultivation_data' || tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
+
+								    	final_data['server_id'] = serverRow['id']+'';
+
+								    	if(tablename === 'tbl_cultivation_data'){
+											final_data['f10_cultivating']  = parseInt(final_data['f10_cultivating']);
+											final_data['f10_crop_variety'] = parseInt(final_data['f10_crop_variety']);
+											final_data['f10_expected']     = parseFloat(final_data['f10_expected']);
+											this.cutivation_data.push(final_data['f10_land']);
+										}
+							    	}
+
+						    		this.insertData(tablename, query, final_data, tx, isLast || false);
+						    	}
+
+						    }, (txx, err) => {
+						    	console.log(tablename, err);
+						    });
+					    	
+					    }else{
+
+					    	let now = Date.now();
+
+					    	let date1 = new Date('01/23/2018');
+					    	let date2 = new Date(final_data['fm_createddt']);
+					    	console.log(date1.getTime(), date2.getTime(), final_data['fm_createddt'], date1.getTime() > date2.getTime());
+					    	if(date1.getTime() > date2.getTime()){
+					    		this.error_ids.push(final_data['fm_id']);
+					    	}
+
+					    	final_data['fm_createddt'] = now;
+					    	final_data['fm_modifieddt'] = now;
+					    	this.insertData(tablename, query, final_data, tx, isLast || false);
+					    }
+				    }
+			    }
+			    else{
+			    	if(isLast){
+			    		// console.log(tablename);
+				    	this.insertData('LASTFLAG', '', [], tx, isLast);
+			    	}
+			    }
+			},
+			(txx, err) => console.log(err));
+		}
+	}
+
+	insertData(tablename, query, final_data, tx, isLast = false){
+		if(tablename === 'LASTFLAG'){
+			if(isLast){
+			    this.sql.query("SELECT * FROM tbl_farmers limit 0,1", []).then(data => {
+			    	console.log('LASTFLAG');
+			    	let db = this.sql.getDb();			    	
+					db.transaction((tx: any) => {
+				    	this.updateCultivation(tx);
+			        },
+			        (err: any) => console.error({ err: err }));
+
+			    },err => {
+			    	console.log('LASTFLAG Error', err);
+			    	let db = this.sql.getDb();			    	
+					db.transaction((tx: any) => {
+				    	this.updateCultivation(tx);
+			        },
+			        (err: any) => console.error({ err: err }))
+			    });
+			}
+		}
+		else{
+
+			delete final_data['id'];
+
+	    	let dumFinal = [];
+	    	for (let key in final_data) {
+	    		if(key.includes('_status') && key != 'f3_married_status'){
+	    			final_data[key] = 0;
+	    		}
+	    		dumFinal.push(final_data[key]);
+	    	}
+
+		    tx.executeSql(query, dumFinal, (txx, dat) => {
+		    	if(tablename === 'tbl_farmers'){
+			    	this.total_inserted++;
+			    	let found = this.error_ids.find(x => x == final_data['fm_id']);
+			    	if(found && dat.rowsAffected){
+			    		this.error_local_ids.push(dat.insertId);
+			    	}
+
+			    	this.zone.run(() => {
+						this.load.data.content = "<b>" + this.total_inserted + " / " + this.total_loaded + "</b> farmers loaded";
+					});
+		    	}
+		    	
+		    	if(isLast){
+			    	this.updateCultivation(tx);
+			    }
+		    }, (txx, err) => {
+		    	console.log(tablename, err);
+		    	if(isLast){
+			    	this.updateCultivation(tx);
+			    }
+		    });
+		}
+	}
+
+	updateCultivation(tx){
+
+		tx.executeSql('UPDATE tbl_cultivation_data SET f10_land = (SELECT local_id FROM tbl_land_details WHERE server_id = tbl_cultivation_data.f10_land)', [], (txx, dd) => {
+			console.log(dd);
+	    	this.updateErrors(txx);
+		}, (txx, err) => {
+			console.log(err);
+			this.updateErrors(txx);
+		});
+	}
+
+	updateErrors(tx){
+		let tables:any = [
+			{ name: 'tbl_personal_detail', form_name: 'Personal Details'},
+			{ name: 'tbl_residence_details', form_name: 'Residence Details'},
+			{ name: 'tbl_applicant_knowledge', form_name: 'Applicant Knowledge'},
+			{ name: 'tbl_spouse_knowledge', form_name: 'Spouse Knowledge'},
+			{ name: 'tbl_applicant_phone', form_name: 'Applicant Phone'},
+			{ name: 'tbl_family_details', form_name: 'Family Details'},
+			{ name: 'tbl_appliances_details', form_name: 'Appliances Details'},
+			{ name: 'tbl_spouse_details', form_name: 'Spouse Details'},
+			{ name: 'tbl_asset_details', form_name: 'Asset Details'},
+			{ name: 'tbl_livestock_details', form_name: 'Livestocke Details'},
+			{ name: 'tbl_financial_details', form_name: 'Financial Details'},
+			{ name: 'tbl_land_details', form_name: 'Land Details'},
+			{ name: 'tbl_cultivation_data', form_name: 'Crop Cultivation Details'},
+			{ name: 'tbl_yield_details', form_name: 'Previouse Crop Details'},
+			{ name: 'tbl_loan_details', form_name: 'Loan Details'}
+		];
+		let msg = '';
+		let name = '';
+		let isLast = false;
+		if(this.error_local_ids.length > 0){
+			for(let i=0; i < this.error_local_ids.length; i++){
+				for(let j=0; j < tables.length; j++){
+					msg = tables[j].form_name + ' is not valid.';
+					name = tables[j].name;
+
+					let _localId = this.error_local_ids[i];
+					if(name === 'tbl_land_details' || name === 'tbl_cultivation_data' || name === 'tbl_yield_details' || name === 'tbl_loan_details'){
+						
+						if(i === this.error_local_ids.length -1 && j === tables.length -1){
+							isLast = true;
+						}
+
+						this.generateErrForAll(name, _localId, msg, tx, isLast);
+
+					}else{
+						this.addErrors(name, _localId, msg, tx, false);
+					}
+				}
+			}
+		}else{
+	    	if(this.load){
+	    		this.load.dismiss();
+	    		this.load = null;
+		    	this.initializeItems();
+	    	}
+		}
+	}
+
+	generateErrForAll(name, _localId, msg, tx, isLast){
+		let extra_ids = [];
+		//SELECT * FROM tbl_land_details WHERE fm_id = ?
+		tx.executeSql('SELECT local_id FROM ' + name + ' WHERE fm_id = ?', [_localId], (txx, d) => {
+			if(d.rows.length > 0){
+				for(let n=0; n < d.rows.length; n++){
+					let ite = d.rows.item(n);
+					extra_ids.push(ite['local_id']);
+				}
+			}
+			this.addErrors(name, [extra_ids, _localId], msg, tx, isLast);
+
+		}, (txx, e) => {
+			console.log(e);
+			this.addErrors(name, extra_ids, msg, tx, isLast);
+		});
+	}
+
+	addErrors(name, lid, msg, tx, isLast){
+
+		//lid[0] = [local_id, local_ic];
+		//lid[1] = lfm_id;
+		if(Array.isArray(lid)){
+			console.log(name, 'Adding errors');
+			for(let i=0; i < lid[0].length; i++){
+				this.sql.addErrorTx(name, [ lid[1], lid[0][i]], '101', msg, tx).then(data => {
+					if(isLast && i === lid[0].length -1){
+				    	if(this.load){
+				    		this.load.dismiss();
+				    		this.load = null;
+					    	this.initializeItems();
+				    	}
+					}
+				},err => {
+					console.log(err);
+					if(isLast && i === lid[0].length -1){
+				    	if(this.load){
+				    		this.load.dismiss();
+				    		this.load = null;
+					    	this.initializeItems();
+				    	}
+					}
+				});
+			}
+		}else{
+			this.sql.addErrorTx(name, lid, '101', msg, tx).then(data => {
+				if(isLast){
+			    	if(this.load){
+			    		this.load.dismiss();
+			    		this.load = null;
+				    	this.initializeItems();
+			    	}
+				}
+			},err => {
+				console.log(err);
+				if(isLast){
+			    	if(this.load){
+			    		this.load.dismiss();
+			    		this.load = null;
+				    	this.initializeItems();
+			    	}
+				}
+			});
+		}
+	}
+
+	getColArray(sql){
+	    sql = sql + '';
+	 	let columns = sql.split('(');
+	 	columns = columns[1].split(')')[0];
+	 	columns = columns.split(',');
+
+	 	let colarray = [];
+	 	for (let i = 0; i < columns.length; i++) {
+	 		let a = columns[i].trim().split(' ');
+
+	 		colarray.push(a[0]);
+	 	}
+	    return colarray;		
+	}
 }

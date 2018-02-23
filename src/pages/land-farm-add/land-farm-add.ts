@@ -2,13 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController } from 'ionic-angular';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
-
-/**
- * Generated class for the LandFarmAddPage page.
- *
- * See https://ionicframework.com/docs/components/#navigation for more info on
- * Ionic pages and navigation.
- */
+import { Helper } from '../../validators/ExtraValidator';
 
 @IonicPage()
 @Component({
@@ -97,6 +91,28 @@ export class LandFarmAddPage {
 	}
 
 
+    list_f9_owner = [
+        {id: "Owned", name: "Owned"},
+        {id: "Ancestral", name: "Ancestral"},
+        {id: "Leased", name: "Leased"},
+        {id: "Contracted", name: "Contracted"},
+    ];
+
+    list_f9_soil_tested = [
+        {id: "yes", name: "Yes"},
+        {id: "no", name: "No"},
+    ];
+
+    list_f9_soil_type = [
+        {id: "Alluvial Soil", name: "Alluvial Soil"},
+        {id: "Black Soil", name: "Black Soil"},
+        {id: "Red Soil", name: "Red Soil"},
+        {id: "Mountain Soil", name: "Mountain Soil"},
+        {id: "Peat", name: "Peat"},
+        {id: "Laterite Soil", name: "Laterite Soil"},
+        {id: "Desert Soil", name: "Desert Soil"},
+    ];
+
 	ionViewDidEnter() {
 		console.log('ionViewDidLoad LandFarmAddPage');
 
@@ -122,7 +138,7 @@ export class LandFarmAddPage {
 
 					formData['f9_name']           = sqlData.f9_name;
 					formData['f9_land_size']      = sqlData.f9_land_size;
-					formData['f9_owner']          = sqlData.f9_owner;
+					formData['f9_owner']          = Helper.checkInList(this.list_f9_owner, 'id', sqlData.f9_owner);
 					formData['f9_lease_year']     = sqlData.f9_lease_year;
 					formData['f9_amount_on_rent'] = sqlData.f9_amount_on_rent;
 					formData['f9_contract_year']  = sqlData.f9_contract_year;
@@ -139,8 +155,8 @@ export class LandFarmAddPage {
 					formData['f9_vilage']         = { name : sqlData.f9_vilage };
 					formData['f9_survey_number']  = sqlData.f9_survey_number;
 					formData['f9_pincode']        = sqlData.f9_pincode;
-					formData['f9_soil_type']      = sqlData.f9_soil_type;
-					formData['f9_soil_tested']    = sqlData.f9_soil_tested;
+					formData['f9_soil_type']      = Helper.checkInList(this.list_f9_soil_type, 'id', sqlData.f9_soil_type);
+					formData['f9_soil_tested']    = Helper.checkInList(this.list_f9_soil_tested, 'id', sqlData.f9_soil_tested);
 
 	                this.land.setValue(formData);
 	                this.exist = true;
@@ -249,7 +265,7 @@ export class LandFarmAddPage {
                     this.fm_id,
                     this.local_id
                 ]).then(data => {
-                    this.sql.updateUploadStatus('tbl_land_details', this.fm_id, '0');
+                    this.sql.updateUploadStatus('tbl_land_details', [this.fm_id, this.local_id],'0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{
@@ -284,7 +300,11 @@ export class LandFarmAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
-                    this.sql.updateUploadStatus('tbl_land_details', this.fm_id, '0');
+                    console.log(data);
+                    if(data.res.insertId != undefined){
+                        this.sql.updateUploadStatus('tbl_land_details', [this.fm_id, data.res.insertId], '0');
+                    }
+
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

@@ -134,11 +134,9 @@ export class MyApp {
                     }, 5000);
                 }
             });
-            this.events.subscribe('table:updated', (tablename, fm_id) => { 
-                //clear all existing errors for this device
-                // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [fm_id, tablename]).then();
+            this.events.subscribe('table:updated', (tablename, fm_id, local_id = '') => { 
                 if(tablename == 'tbl_land_details' || tablename == 'tbl_cultivation_data' || tablename == 'tbl_yield_details' || tablename == 'tbl_loan_details'){
-                    this.eventExtraTableUpdated(tablename, fm_id, true);
+                    this.eventExtraTableUpdated(tablename, fm_id, local_id, true);
                 }else{
                     this.eventTableUpdated(tablename, fm_id);
                 }
@@ -189,9 +187,6 @@ export class MyApp {
                             }
 
                         }
-                        else if(currentView.component.name == 'FarmersPage'){
-                            this.nav.setRoot('HomePage');
-                        }
                         else{
 
                             let activePopover = this.ionicApp._modalPortal.getActive() ||
@@ -201,7 +196,11 @@ export class MyApp {
                                 activePopover.dismiss();
                             }
                             else{
-                                this.nav.pop();
+                                if(currentView.component.name == 'FarmersPage'){
+                                    this.nav.setRoot('HomePage');
+                                }else{
+                                    this.nav.pop();
+                                }
                             }
                         }
                     }
@@ -213,9 +212,9 @@ export class MyApp {
         this.pages = [
             { title: 'Home',       component: 'HomePage',      icon: 'home'},
             { title: 'My Farmers', component: 'FarmersPage',   icon: 'people'},
+            { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
         ];
             // { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
-            // { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
 
     }
 
@@ -223,10 +222,14 @@ export class MyApp {
         // Reset the content nav to have just this page
         // we wouldn't want the back button to show in this scenario
         if(page){
-            if (page.component == "SlidesPage") {
-                this.nav.push(page.component);
-            }else{
-                this.nav.setRoot(page.component);
+            let currentView = this.nav.getActive();
+
+            if(currentView.component.name != page.component){
+                if (page.component == "SlidesPage") {
+                    this.nav.push(page.component);
+                }else{
+                    this.nav.setRoot(page.component);
+                }
             }
         }
     }
@@ -266,7 +269,7 @@ export class MyApp {
                         if (farmerData.res.rows.length > 0) {
                             let fmdata = farmerData.res.rows.item(0);
                             if(fmdata['fm_id'] !== 'false' && fmdata['fm_id'] != '' && fmdata['fm_id'] != null){
-                                if(fmdata['local_upload'] == 0){
+                                // if(fmdata['local_upload'] == 0){
                                     let req = this.api.put("add_farmer", fmdata)
                                     .map((res) => res.json())
                                     .subscribe(success => {
@@ -284,7 +287,7 @@ export class MyApp {
                                         console.log(error);
                                     });
                                     this.httpSubscriptions.push(req);
-                                }
+                                // }
                             }
                         }
                     },err => {
@@ -297,7 +300,7 @@ export class MyApp {
                     for(var i = 0; i < sdata.res.rows.length; i++) {
 
                         let data = sdata.res.rows.item(i);
-                        if(data['local_upload'] == 0){
+                        // if(data['local_upload'] == 0){
 
                             delete data['fm_id'];
                             delete data['fm_caid'];
@@ -306,7 +309,7 @@ export class MyApp {
                             data['tablename'] = tablename;
 
                             this.updateServer(lfm_id, data);
-                        }
+                        // }
                     }
                 }
             }, err => {
@@ -411,51 +414,48 @@ export class MyApp {
     }
 
     //fired when extra table form udated
-    async eventExtraTableUpdated(tablename, lfm_id, cultivation = false){
+    async eventExtraTableUpdated(tablename, lfm_id, local_id, cultivation = false){
         // console.log(tablename,'event called', this.online);
         //look for internet
         if(this.online){
             //Get data from local sql
-            await this.sql.query("SELECT * FROM " + tablename + " WHERE fm_id = ?", [lfm_id]).then(sdata => {
+            await this.sql.query("SELECT * FROM " + tablename + " WHERE fm_id = ? AND local_id = ?", [lfm_id, local_id]).then(sdata => {
                 
                 if (sdata.res.rows.length > 0) {
                     //send one by one data to server
                     for(var i = 0; i < sdata.res.rows.length; i++) {
 
                         let data = sdata.res.rows.item(i);
-                        if(data['local_upload'] == 0){
 
-                            data['tablename'] = tablename;
-                            //check if table is crop_cultivation
-                            if(tablename == 'tbl_cultivation_data' && cultivation){
-                                this.sql.query("SELECT * FROM tbl_land_details WHERE local_id = ?", [data['f10_land']]).then(land => {
-                                    if (land.res.rows.length > 0) {
-                                        let item = land.res.rows.item(0);
-                                        console.log('Found Land ', item);
+                        data['tablename'] = tablename;
+                        //check if table is crop_cultivation
+                        if(tablename == 'tbl_cultivation_data' && cultivation){
+                            this.sql.query("SELECT * FROM tbl_land_details WHERE local_id = ?", [data['f10_land']]).then(land => {
+                                if (land.res.rows.length > 0) {
+                                    let item = land.res.rows.item(0);
+                                    console.log('Found Land ', item);
 
-                                        //if server_id is not null then only send data
-                                        if(item['server_id'] != undefined && item['server_id'] != '' && item['server_id'] != null){
-                                            data['f10_land'] = item['server_id'];
-                                            this.updateExtraServer(lfm_id, data);
-                                        }
+                                    //if server_id is not null then only send data
+                                    if(item['server_id'] != undefined && item['server_id'] != '' && item['server_id'] != null){
+                                        data['f10_land'] = item['server_id'];
+                                        this.updateExtraServer(lfm_id, local_id, data);
                                     }
-                                });
-                            }
-                            else if(tablename != 'tbl_cultivation_data'){
-                                this.updateExtraServer(lfm_id, data);
-                            }
+                                }
+                            });
+                        }
+                        else if(tablename != 'tbl_cultivation_data'){
+                            this.updateExtraServer(lfm_id, local_id, data);
                         }
                     }
                 }
             }, err => {
                 console.log(err);
             });
-            
         }
     }
 
     //the sub function called from eventExtraTableUpdated()
-    async updateExtraServer(lfm_id, data){
+    async updateExtraServer(lfm_id, local_id, data){
         //check whether this farmer has sent already
         //if tbl_farmer has fm_id of this local_id then its already sent
         await this.sql.getFarmerByLocalId(lfm_id).then(farmer_data => {
@@ -477,7 +477,7 @@ export class MyApp {
                     .subscribe(success => {
                         //on success change upload status to 1
                         if(success.success){
-                            this.sql.updateUploadStatus(data.tablename, lfm_id, '1');
+                            this.sql.updateUploadStatus(data.tablename, [lfm_id, local_id], '1');
 
                             //update upcomming insert id as server id
                             if(success.data.insert_id != undefined){
@@ -485,14 +485,15 @@ export class MyApp {
 
                                 //now send cultivation data
                                 if(data.tablename == 'tbl_land_details'){
-                                    this.eventExtraTableUpdated('tbl_cultivation_data', lfm_id, true);
+                                    this.eventExtraTableUpdated('tbl_cultivation_data', lfm_id, local_id, true);
                                 }
                             }
                         }
                         else{
                             //add error messages to error table
                             for(let j = 0; j < success.data.length; j++){
-                                this.sql.addError(data.tablename, lfm_id, success.data[j].error_code, success.data[j].error_message);
+                                let id = lfm_id + ',' + local_id;
+                                this.sql.addError(data.tablename, id, success.data[j].error_code, success.data[j].error_message);
                             }
                         }
                     }, error => {
@@ -507,12 +508,13 @@ export class MyApp {
                     .subscribe(success => {
                         //on success change upload status to 1
                         if(success.success){
-                            this.sql.updateUploadStatus(data.tablename, lfm_id, '1');
+                            this.sql.updateUploadStatus(data.tablename, [lfm_id, local_id], '1');
                         }
                         else{
                             //add error messages to error table
                             for(let j = 0; j < success.data.length; j++){
-                                this.sql.addError(data.tablename, lfm_id, success.data[j].error_code, success.data[j].error_message);
+                                let id = lfm_id + ',' + local_id;
+                                this.sql.addError(data.tablename, id, success.data[j].error_code, success.data[j].error_message);
                             }
                         }
                     }, error => {
@@ -528,7 +530,7 @@ export class MyApp {
 
     //fired when new farmer added to local database
     async serverAddFarmer(lfm_id){
-        
+        this.sql.updateUploadStatus('tbl_farmers', lfm_id, '0');
         if(this.online){
             //check whether this farmer has sent already
             //if tbl_farmer has fm_id of this local_id then its already sent
@@ -575,72 +577,59 @@ export class MyApp {
 
     //send local data to server 
     async sendAllData(){
-        //Fetch all available farmers from local database
-        await this.sql.query("SELECT * FROM tbl_farmers").then((farmers) => {
-            // console.log(farmers);
-            if (farmers.res.rows.length > 0) {
+        await this.sql.query("SELECT * FROM tbl_queue").then((queue) => {
+            if(queue.res.rows.length > 0) {
+                //Go through all queue
+                for (var j = 0; j < queue.res.rows.length; j++) {
+                    let que = queue.res.rows.item(j);
+                    if(que['tablename'] === 'tbl_farmers'){
+                        //get farmer row from tbl_farmers
+                        queue.tx.executeSql('SELECT * FROM tbl_farmers WHERE local_id = ?', [que['local_id']], (txx, data) => {
 
-                //Go through all farmers
-                for (var j = 0; j < farmers.res.rows.length; j++) {
-                    let single = farmers.res.rows.item(j);
+                            if(data.rows.length > 0){
+                                let single = data.rows.item(0);
 
+                                //update to server if required
+                                if(single.fm_id !== 'false' && single.fm_id != '' && single.fm_id != null){
+                                    single['tablename'] = 'tbl_farmers';
 
-                    //if farmer main details has some changes and it's already send to the server
-                    //then update his main data too
-                    if(single.local_upload == 0 && single.fm_id !== 'false' && single.fm_id != '' && single.fm_id != null){
-                        single['tablename'] = 'tbl_farmers';
-
-                        let req = this.api.put("add_farmer", single)
-                        .map((res) => res.json())
-                        .subscribe(success => {
-                            //on success change upload status to 1
-                            if(success.success){
-                                this.sql.updateUploadStatus(single.tablename, single['local_id'], '1');
-                            }
-                            else{
-                                //add error messages to error table
-                                for(let j = 0; j < success.data.length; j++){
-                                    this.sql.addError(single.tablename, single['local_id'], success.data[j].error_code, success.data[j].error_message);
+                                    let req = this.api.put("add_farmer", single)
+                                    .map((res) => res.json())
+                                    .subscribe(success => {
+                                        //on success change upload status to 1
+                                        if(success.success){
+                                            this.sql.updateUploadStatus(single.tablename, single['local_id'], '1');
+                                        }
+                                        else{
+                                            //add error messages to error table
+                                            for(let j = 0; j < success.data.length; j++){
+                                                this.sql.addError(single.tablename, single['local_id'], success.data[j].error_code, success.data[j].error_message);
+                                            }
+                                        }
+                                    }, error => {
+                                        console.log(error);
+                                    });
+                                    this.httpSubscriptions.push(req);
                                 }
                             }
-                        }, error => {
-                            console.log(error);
-                        });
-                        this.httpSubscriptions.push(req);
+
+                        }, (txx, err) => {console.log(err);});
                     }
+                    else{
+                        if( que['tablename'] == 'tbl_land_details' || 
+                            que['tablename'] == 'tbl_cultivation_data' || 
+                            que['tablename'] == 'tbl_yield_details' || 
+                            que['tablename'] == 'tbl_loan_details'){
 
-                    //crawl each table and send if local_upload is 0
-                    this.sql.query("SELECT name FROM sqlite_master WHERE type='table'").then( (data) => {
-                        // console.log(data);
-                        if (data.res.rows.length > 0) {
-                            for (var i = 0; i < data.res.rows.length; i++) {
-                                let table = data.res.rows.item(i);
-                                if(table.name != "__WebKitDatabaseInfoTable__" 
-                                    && table.name != "tbl_errors" 
-                                    && table.name != "tbl_state" 
-                                    && table.name != "tbl_district" 
-                                    && table.name != "tbl_taluka" 
-                                    && table.name != "tbl_village" 
-                                    && table.name != "tbl_farmers" 
-                                    && table.name != "tbl_delete" 
-                                    && table.name != "tbl_crops" 
-                                    && table.name != "tbl_varieties" 
-                                ){
-                                    //clear all existing errors for this device
-                                    // this.sql.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [single['local_id'], table.name]).then();
-                                    //the following function will upload the data 
-                                    //if upload failed for any reason it will store the data in error table
-                                    if(table.name == 'tbl_land_details' || table.name == 'tbl_cultivation_data' || table.name == 'tbl_yield_details' || table.name == 'tbl_loan_details'){
-                                        this.eventExtraTableUpdated(table.name, single['local_id'], true);
-                                    }else{
-                                        this.eventTableUpdated(table.name, single['local_id']);
-                                    }
-                                }
-                            }
+                            this.eventExtraTableUpdated(que['tablename'], que['local_id'], que['extra_id'], true);
+                        }else{
+                            this.eventTableUpdated(que['tablename'], que['local_id']);
                         }
-                    });
+                    }
                 }
             }
+        }, (err) => {
+            console.log(err);
         });
     }
 

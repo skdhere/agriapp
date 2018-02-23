@@ -3,6 +3,8 @@ import { IonicPage, NavController, NavParams, LoadingController, ToastController
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 
+import { Helper } from '../../validators/ExtraValidator';
+
 /**
  * Generated class for the KycKnowledgePage page.
  *
@@ -39,11 +41,11 @@ export class KycKnowledgePage {
 			'f2_proficiency' : ['', Validators.required], //drp
 			'f2_participation' : [''], //drp
 			'f2_typeprog' : ['', Validators.required], //drp
-			'f2_date' : ['', Validators.required], //drp
+			'f2_date' : ['', Validators.required],
 			'f2_durprog' : ['', Validators.compose([Validators.required, Validators.maxLength(3), Validators.pattern('^[0-9]+$')]) ],
 			'f2_condprog' : ['', Validators.compose([Validators.required, Validators.maxLength(100)]) ],
 			'f2_cropprog' : ['', Validators.compose([Validators.required, Validators.maxLength(100)]) ],
-			'f2_pname' : ['', Validators.required], //drp
+			'f2_pname' : ['', Validators.required],
 		});
 		
 		//Listen for form changes
@@ -51,6 +53,38 @@ export class KycKnowledgePage {
 		this.knowledge.controls['f2_proficiency'].valueChanges.subscribe(() => {this.setValidation();});
 		this.knowledge.controls['f2_participation'].valueChanges.subscribe(() => {this.setValidation();});
 	}
+
+
+	list_f2_edudetail: any = [
+		{id: 'illiterate', name: 'Illiterate'},
+		{id: 'primary education', name: 'Primary Education'},
+		{id: 'matriculate', name: 'Matriculate'},
+		{id: 'graduate', name: 'Graduate'},
+		{id: 'post graduate', name: 'Post Graduate'}
+	];
+
+	list_f2_proficiency: any = [
+		{id: 'fluent', name: 'Fluent'},
+		{id: 'read only', name: 'Read Only'},
+		{id: 'write only', name: 'Write Only'},
+		{id: 'speak only', name: 'Speak Only'},
+		{id: 'understand only', name: 'Understand Only'},
+		{id: "Don't Know", name: "Don't Know"},
+	];
+
+	list_f2_participation: any = [
+		{id: 'yes', name: 'Yes'},
+		{id: 'no', name: 'No'}
+	];
+
+	list_f2_typeprog: any = [
+		{id: 'organic farming training', name: 'Organic Farming Training'},
+		{id: 'equipment training', name: 'Equipment Training'},
+		{id: 'technology training', name: 'Technology Training'},
+		{id: 'pesticide fertilizer training', name: 'Pesticide/Fertilizer Training'},
+		{id: 'other farming training', name: 'Other Farming Training'},
+		{id: 'others', name: 'Others'},
+	];
 
 	ionViewDidEnter() {
 		this.retryButton = false;
@@ -69,10 +103,10 @@ export class KycKnowledgePage {
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
 
-				formData['f2_edudetail']     = sqlData.f2_edudetail;
-				formData['f2_proficiency']   = sqlData.f2_proficiency;
-				formData['f2_participation'] = sqlData.f2_participation;
-				formData['f2_typeprog']      = sqlData.f2_typeprog;
+				formData['f2_edudetail']     = Helper.checkInList( this.list_f2_edudetail, "id", sqlData.f2_edudetail);
+				formData['f2_proficiency']   = Helper.checkInList( this.list_f2_proficiency, "id", sqlData.f2_proficiency);
+				formData['f2_participation'] = Helper.checkInList( this.list_f2_participation, "id", sqlData.f2_participation);
+				formData['f2_typeprog']      = Helper.checkInList( this.list_f2_typeprog, "id", sqlData.f2_typeprog);
 				formData['f2_date']          = sqlData.f2_date;
 				formData['f2_durprog']       = sqlData.f2_durprog;
 				formData['f2_condprog']      = sqlData.f2_condprog;

@@ -205,73 +205,40 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
         
         return new Promise(resolve => {
             if (control.value) {
-                setTimeout(() => {
-                    let sql = new Sql;
-                    sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
-
-                        if (data.res.rows.length > 0) {
-                            resolve({
-                                "taken": true
-                            });
-                        }
-                        else{
-
-                            sql.query("SELECT f3_spouse_mobno FROM tbl_spouse_details WHERE f3_spouse_mobno = ?", [control.value]).then((data) => {
-
-                                if (data.res.rows.length > 0) {
-                                    resolve({
-                                        "taken": true
-                                    });
-                                }
-                                else{
-                                    resolve(null);
-                                }
-                            });
-                        }
-                    });
-                }, 100);
+                let sql = new Sql;
+                sql.query("SELECT fm_mobileno FROM tbl_farmers WHERE fm_mobileno = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
+                    if (data.res.rows.length > 0) {
+                        resolve({
+                            "taken": true
+                        });
+                    }else{
+                        resolve(null);
+                    }
+                });
             }else{
                 resolve(null);
             }
-
         });
     }
 
     checkAadharPersonal(control: FormControl, _fm_id): any {
-        
         return new Promise(resolve => {
-
             if (control.value) {
-                setTimeout(() => {
-                    let sql = new Sql;
-                    sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
+                let sql = new Sql;
+                sql.query("SELECT fm_aadhar FROM tbl_farmers WHERE fm_aadhar = ? and local_id != ?", [control.value, _fm_id]).then((data) => {
 
-                        if (data.res.rows.length > 0) {
-                            resolve({
-                                "taken": true
-                            });
-                        }
-                        else{
-
-                            sql.query("SELECT f3_spouse_adhno FROM tbl_spouse_details WHERE f3_spouse_adhno = ?", [control.value]).then((data) => {
-
-                                if (data.res.rows.length > 0) {
-                                    resolve({
-                                        "taken": true
-                                    });
-                                }
-                                else{
-                                    resolve(null);
-                                }
-                            });
-                        }
-                    });
-                }, 100);
+                    if (data.res.rows.length > 0) {
+                        resolve({
+                            "taken": true
+                        });
+                    }else{
+                        resolve(null);
+                    }
+                });
             }
             else{
                 resolve(null);
             }
-
         });
     }
 
