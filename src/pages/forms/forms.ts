@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, NgZone } from '@angular/core';
 import { IonicPage, NavController, NavParams, LoadingController} from 'ionic-angular';
 import { Camera, CameraOptions } from '@ionic-native/camera';
 import { File } from '@ionic-native/file';
@@ -35,6 +35,7 @@ export class Forms {
 				private sql: Sql,
 				private camera: Camera,
 				private file: File,
+				private zone: NgZone,
 				private filePath: FilePath,
 				public loadingCtrl: LoadingController){
 
@@ -50,8 +51,8 @@ export class Forms {
 	}
 
 	readFile(e, img){
-			console.log(e);
-			console.log(e.target.files[0].webkitRelativePath);
+		console.log(e);
+		console.log(e.target.files[0].webkitRelativePath);
 		let index = this.images.indexOf(img);
 		if(index !== -1){
 			this.images[index].uri = e.target.value;
@@ -162,12 +163,13 @@ export class Forms {
 		}
 
 		//check if its updated in local database
-		for (var i = 0; i < this.forms.length; i++) {
-			if(this.forms[i].tableName){
-				// console.log(this.forms[i].tableName);
-				this.updateStatus(i);
+		this.zone.run(() => {
+			for (var i = 0; i < this.forms.length; i++) {
+				if(this.forms[i].tableName){
+					this.updateStatus(i);
+				}
 			}
-		}
+		});
 
 	}
 

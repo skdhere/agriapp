@@ -84,7 +84,7 @@ export class FarmersPage {
 		this.infinit_complete = false;
 
 		this.tapped_len = null;
-		this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? ORDER BY fm_modifieddt DESC LIMIT ?,?';
+		this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? ORDER BY insert_type DESC, fm_modifieddt DESC LIMIT ?,?';
 		
 		this.doInfinite();
 	}
@@ -248,7 +248,7 @@ export class FarmersPage {
 		let val1 = val;
 		if (val && val1.trim() != '') {
 			this.query = 'SELECT *, (fm_fname || \' \' || fm_mname || \' \' || fm_lname) as fm_name FROM tbl_farmers WHERE fm_caid = ? and (fm_mobileno LIKE \'%'+ val +'%\' OR (trim(fm_fname) || \' \' || trim(fm_mname) || \' \' || trim(fm_lname)) LIKE \'%'+ val +'%\' OR (trim(fm_fname) || \' \' || trim(fm_lname)) LIKE \'%'+ val +'%\')';
-			this.query +=' ORDER BY fm_modifieddt DESC LIMIT ?,?';
+			this.query +=' ORDER BY insert_type DESC, fm_modifieddt DESC LIMIT ?,?';
 			this.doInfinite();
 		}
 		else{
@@ -519,8 +519,11 @@ export class FarmersPage {
 			    let query = 'Insert into ' + tablename;
 
 			    if(tablename == 'tbl_farmers'){
+			    	columns.pop(); //remove insert_type
 			    	columns.pop(); //remove local_upload
 			    	columns.pop(); //remove local_id
+
+			    	columns.push('insert_type');
 			    }
 
 			    if(tablename === 'tbl_land_details' || tablename === 'tbl_cultivation_data' || tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
@@ -543,7 +546,7 @@ export class FarmersPage {
 					    let serverRow = val.rows[m];
 					    let final_data:any = {};
 					    for (let i = 0; i < columns.length; i++) {
-					    	final_data[columns[i]] = serverRow[columns[i]] || '';
+					    	final_data[columns[i]] = serverRow[columns[i]];
 					    }
 
 					    if(tablename != 'tbl_farmers'){
@@ -576,15 +579,18 @@ export class FarmersPage {
 
 					    	let now = Date.now();
 
-					    	let date1 = new Date('01/23/2018');
-					    	let date2 = new Date(final_data['fm_createddt']);
-					    	console.log(date1.getTime(), date2.getTime(), final_data['fm_createddt'], date1.getTime() > date2.getTime());
-					    	if(date1.getTime() > date2.getTime()){
-					    		this.error_ids.push(final_data['fm_id']);
-					    	}
+					    	// let date1 = new Date('01/23/2018');
+					    	// console.log(date1.getTime(), date2.getTime(), final_data['fm_createddt'], date1.getTime() > date2.getTime());
+					    	// if(date1.getTime() > date2.getTime()){
+					    	// 	this.error_ids.push(final_data['fm_id']);
+					    	// }
 
-					    	final_data['fm_createddt'] = now;
-					    	final_data['fm_modifieddt'] = now;
+					    	final_data['insert_type'] = parseInt(final_data['insert_type']);
+					    	console.log('insert_type =', final_data['insert_type']);
+					    	let date2 = new Date(final_data['fm_createddt']);
+					    	let date3 = new Date(final_data['fm_modifieddt']);
+					    	final_data['fm_createddt'] = date2.getTime();
+					    	final_data['fm_modifieddt'] = date3.getTime();
 					    	this.insertData(tablename, query, final_data, tx, isLast || false);
 					    }
 				    }

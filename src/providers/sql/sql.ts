@@ -486,34 +486,38 @@ export class Sql {
             console.error('Storage: Unable to create tbl_loan_details tables', err.tx, err.err);
         });
 
-
+        console.warn('Prepare to db version 1.0.1');
         this.query(`CREATE TABLE IF NOT EXISTS db_versions(
             id INTEGER PRIMARY KEY,
             version text
         )`).then(data => {
             let tx = data.tx;
+            console.warn('Inside db_versions');
 
             //Database version 1.0.1
-            tx.executeSql('SELECT * FROM db_versions WHERE version = ?', ['1.0.1'], (txx, d) => {
-                if(d.rows.length < 1){
-                    this._db.transaction((tx:any) => {
+            this._db.transaction((tx:any) => {
+                tx.executeSql('SELECT * FROM db_versions WHERE version = ?', ['1.0.1'], (txx, d) => {
+                    if(d.rows.length < 1){
 
-                        //Creating tbl_queue
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
+                            //Creating tbl_queue
+                            tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
 
-                        //Alter tbl_errors table add column extra_id
-                        tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
+                            //Alter tbl_errors table add column extra_id
+                            tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
 
-                        //All done now update version 1.0.1
-                        tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
-                        console.log('Database version 1.0.1 created successfully!');
-                    }, err => {
-                        console.log(err);
-                    });    
-                }
-                else{
-                    console.log('Database version 1.0.1');
-                }
+                            //Alter tbl_errors table add column extra_id
+                            tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN insert_type INTEGER DEFAULT 0');
+
+                            //All done now update version 1.0.1
+                            tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
+                            console.log('Database version 1.0.1 created successfully!');
+                    }
+                    else{
+                        console.log('Database version 1.0.1');
+                    }
+                }, (txx, err) => {
+                    console.log(err);
+                });
 
             },(txx, e) => {
                 console.log(e);
@@ -595,7 +599,7 @@ export class Sql {
                         //clear all existing errors for this device
                         data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], (txr, d) => {
                             console.log('Deleted from errors', d);
-                        }, err => {
+                        }, (txx, err) => {
                             console.log("SQL : errors while removing errors from table", err);
                         });
 
@@ -626,12 +630,19 @@ export class Sql {
                 }
 
                 //clear all existing errors for this device
-                data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], d => {}, err => {
+                data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], 
+                    (txx, d) => {}, 
+                    (txx, err) => {
                     console.log("SQL : errors while removing errors from table", err);
                 });
 
             },err => { console.log(err); });
         }
+
+        this._db.transaction((tx: any) => {
+            this.updateInsertType(Array.isArray(farmerId) ? farmerId[0] : farmerId, tx);
+        },
+        (err: any) => console.log(err));
     }
 
     getFarmerByLocalId(local_id){
@@ -732,5 +743,38 @@ export class Sql {
 
     has_rows(tablename, local_id){
         return this.query('SELECT * FROM '+ tablename +' WHERE fm_id = ?', [local_id]);
+    }
+
+    updateInsertType(local_id, tx){
+        let query_str = 'SELECT t0.fm_id FROM tbl_personal_detail AS t0 JOIN tbl_residence_details AS t1 ON t0.fm_id = t1.fm_id JOIN tbl_applicant_knowledge AS t2 ON t0.fm_id = t2.fm_id JOIN tbl_applicant_phone AS t4 ON t0.fm_id = t4.fm_id JOIN tbl_family_details AS t5 ON t0.fm_id = t5.fm_id JOIN tbl_appliances_details AS t6 ON t0.fm_id = t6.fm_id JOIN tbl_spouse_details AS t7 ON t0.fm_id = t7.fm_id JOIN tbl_asset_details AS t8 ON t0.fm_id = t8.fm_id JOIN tbl_livestock_details AS t9 ON t0.fm_id = t9.fm_id JOIN tbl_financial_details AS t10 ON t0.fm_id = t10.fm_id JOIN tbl_land_details AS t11 ON t0.fm_id = t11.fm_id JOIN tbl_cultivation_data AS t12 ON t0.fm_id = t12.fm_id JOIN tbl_yield_details AS t13 ON t0.fm_id = t13.fm_id ';
+
+        //check if loan has taken or not, if not then dont include loan table
+        tx.executeSql("SELECT * FROM tbl_financial_details WHERE f8_loan_taken = ? and fm_id = ? limit 1" , ['yes', local_id], (txx, data) => {
+            if (data.rows.length > 0) {
+                query_str += ' JOIN tbl_loan_details AS t14 ON t0.fm_id = t14.fm_id ';
+            }
+
+            //check if married or not, if not then dont include spouse nowledge table
+            tx.executeSql("SELECT * FROM tbl_spouse_details WHERE f3_married_status = ? and fm_id = ? limit 1" , ['yes', local_id], (txx, data) => {
+                if (data.rows.length > 0) {
+                    query_str += ' JOIN tbl_spouse_knowledge AS t3 ON t0.fm_id = t3.fm_id ';
+                }
+
+                query_str += ' WHERE t0.fm_id = ?';
+                tx.executeSql(query_str, [local_id], (txx, d) => {
+                    if(d.rows.length > 0){
+                        // this.items[len].update = true;
+                        tx.executeSql('UPDATE tbl_farmers SET insert_type = 0 WHERE local_id = ?', [local_id], () => {}, () => {});
+                    }
+                }, (txx, err) => {
+                    console.log(err);
+                });
+
+            }, (txx, err) => {
+                console.log(err);
+            });
+        }, (txx, err) => {
+            console.log(err);
+        });
     }
 }
