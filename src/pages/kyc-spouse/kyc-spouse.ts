@@ -124,9 +124,6 @@ export class KycSpousePage {
 
                 this.spouse.setValue(formData);
                 this.exist = true;
-                if(this.spouse.value.f3_married_status == 'no'){
-            		this.sql.delete_rows('tbl_spouse_knowledge', this.fm_id);
-            	}
             }
 
         }, err => {
@@ -252,6 +249,9 @@ export class KycSpousePage {
 
 		this.submitAttempt = true;
 		if (this.spouse.valid) {
+			if(this.spouse.value.f3_married_status == 'no'){
+        		this.sql.delete_rows('tbl_spouse_knowledge', this.fm_id);
+        	}
 			console.log('is POST ', this.addNew);
 			
 			//Check if data already exists

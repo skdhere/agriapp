@@ -37,6 +37,7 @@ export class CropCultivationPage {
                 for (var i = 0; i < data.res.rows.length; i++) {
                 	let item = data.res.rows.item(i);
                 	item.crop_name = this.getCropName(item.f10_cultivating);
+                	item.land_name = this.getLandName(item.f10_land);
                 	item.variety_name = this.getVarietyName(item.f10_crop_variety);
                 	this.crops.push(item);
                 }
@@ -127,6 +128,17 @@ export class CropCultivationPage {
 		this.navCtrl.push('CropCultivationAddPage', {
 			farmer_id : this.fm_id,
 			callback: myCallbackFunction
+		});
+	}
+
+	async getLandName(id){
+		return await this.sql.query('SELECT * FROM tbl_land_details WHERE local_id = ?',[id]).then(data => {
+			if(data.res.rows.length > 0){
+				let unit = data.res.rows.item(0).f9_land_unit == 0 ? 'Acres' : (data.res.rows.item(0).f9_land_unit == 1 ? 'Gunthas' : 'Hectares');
+				return  unit + " - " + data.res.rows.item(0).f9_name;
+			}else{
+				return 'None';
+			}
 		});
 	}
 

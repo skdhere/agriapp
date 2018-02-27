@@ -499,18 +499,24 @@ export class Sql {
                 tx.executeSql('SELECT * FROM db_versions WHERE version = ?', ['1.0.1'], (txx, d) => {
                     if(d.rows.length < 1){
 
-                            //Creating tbl_queue
-                            tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
+                        //Creating tbl_queue
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
 
-                            //Alter tbl_errors table add column extra_id
-                            tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
+                        //Alter tbl_errors table add column extra_id
+                        tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
 
-                            //Alter tbl_errors table add column extra_id
-                            tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN insert_type INTEGER DEFAULT 0');
+                        //Alter tbl_errors table add column extra_id
+                        tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN insert_type INTEGER DEFAULT 0');
 
-                            //All done now update version 1.0.1
-                            tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
-                            console.log('Database version 1.0.1 created successfully!');
+                        //Alter tbl_land_details table add column f9_land_unit
+                        tx.executeSql("ALTER TABLE tbl_land_details ADD COLUMN f9_land_unit INTEGER DEFAULT 0");
+
+                        //Alter tbl_land_details table add column f9_land_unit
+                        tx.executeSql("ALTER TABLE tbl_cultivation_data ADD COLUMN f10_land_size TEXT DEFAULT 0");
+
+                        //All done now update version 1.0.1
+                        tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
+                        console.log('Database version 1.0.1 created successfully!');
                     }
                     else{
                         console.log('Database version 1.0.1');
@@ -738,7 +744,19 @@ export class Sql {
     }
 
     delete_rows(tablename, local_id){
-        this.query('DELETE FROM '+ tablename +' WHERE fm_id = ?', [local_id]).catch(err=>{console.log(err);});
+        this.query('DELETE FROM '+ tablename +' WHERE fm_id = ?', [local_id]).then(
+            data => {
+                //clear all existing errors for this device
+                data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [local_id, tablename], (txr, d) => {
+                    console.log('Deleted from errors', d);
+                }, (txx, err) => {
+                    console.log("SQL : errors while removing errors from table", err);
+                });
+            },
+            err => {
+                console.log(err);
+            }
+        );
     }
 
     has_rows(tablename, local_id){

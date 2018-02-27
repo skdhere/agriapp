@@ -30,6 +30,7 @@ export class LandFarmAddPage {
 
 			'f9_name' : ['', Validators.compose([ Validators.required, Validators.maxLength(50)]) ],
 			'f9_land_size' : ['', Validators.compose([ Validators.required, Validators.maxLength(6), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
+            'f9_land_unit' : ['', Validators.required],
 			'f9_owner' : ['', Validators.required],
 			'f9_lease_year' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
 			'f9_amount_on_rent' : ['', Validators.compose([ Validators.required, Validators.maxLength(10), Validators.pattern('^[+-]?([0-9]*[.])?[0-9]+$')]) ],
@@ -113,6 +114,12 @@ export class LandFarmAddPage {
         {id: "Desert Soil", name: "Desert Soil"},
     ];
 
+    list_f9_land_unit = [
+        {id: "0", name: "Acre"},
+        {id: "1", name: "Guntha"},
+        {id: "2", name: "Hectare"},
+    ];
+
 	ionViewDidEnter() {
 		console.log('ionViewDidLoad LandFarmAddPage');
 
@@ -137,7 +144,8 @@ export class LandFarmAddPage {
 	                let formData = [];
 
 					formData['f9_name']           = sqlData.f9_name;
-					formData['f9_land_size']      = sqlData.f9_land_size;
+                    formData['f9_land_size']      = sqlData.f9_land_size;
+					formData['f9_land_unit']      = Helper.checkInList(this.list_f9_land_unit, 'id', sqlData.f9_land_unit);
 					formData['f9_owner']          = Helper.checkInList(this.list_f9_owner, 'id', sqlData.f9_owner);
 					formData['f9_lease_year']     = sqlData.f9_lease_year;
 					formData['f9_amount_on_rent'] = sqlData.f9_amount_on_rent;
@@ -245,10 +253,11 @@ export class LandFarmAddPage {
             let dateNow = date.getTime()/1000|0;
 
             if (this.exist) {
-                this.sql.query('UPDATE tbl_land_details SET f9_name = ?, f9_land_size = ?, f9_owner = ?, f9_lease_year = ?, f9_amount_on_rent = ?, f9_contract_year = ?, f9_state = ?, f9_district = ?, f9_taluka = ?, f9_vilage = ?, f9_survey_number = ?, f9_pincode = ?, f9_soil_type = ?, f9_soil_tested = ?, f9_modified_date = ? WHERE fm_id = ? and local_id = ?', [
+                this.sql.query('UPDATE tbl_land_details SET f9_name = ?, f9_land_size = ?, f9_land_unit = ?, f9_owner = ?, f9_lease_year = ?, f9_amount_on_rent = ?, f9_contract_year = ?, f9_state = ?, f9_district = ?, f9_taluka = ?, f9_vilage = ?, f9_survey_number = ?, f9_pincode = ?, f9_soil_type = ?, f9_soil_tested = ?, f9_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
                     this.land.value.f9_name,
                     this.land.value.f9_land_size,
+                    this.land.value.f9_land_unit,
                     this.land.value.f9_owner,
                     this.land.value.f9_lease_year,
                     this.land.value.f9_amount_on_rent,
@@ -280,11 +289,12 @@ export class LandFarmAddPage {
                 });               
             }
             else{
-                this.sql.query('INSERT INTO tbl_land_details(fm_id, f9_name, f9_land_size, f9_owner, f9_lease_year, f9_amount_on_rent, f9_contract_year, f9_state, f9_district, f9_taluka, f9_vilage, f9_survey_number, f9_pincode, f9_soil_type, f9_soil_tested, f9_created_date, f9_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                this.sql.query('INSERT INTO tbl_land_details(fm_id, f9_name, f9_land_size, f9_land_unit, f9_owner, f9_lease_year, f9_amount_on_rent, f9_contract_year, f9_state, f9_district, f9_taluka, f9_vilage, f9_survey_number, f9_pincode, f9_soil_type, f9_soil_tested, f9_created_date, f9_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
                     this.land.value.f9_name,
                     this.land.value.f9_land_size,
+                    this.land.value.f9_land_unit,
                     this.land.value.f9_owner,
                     this.land.value.f9_lease_year,
                     this.land.value.f9_amount_on_rent,

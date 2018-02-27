@@ -28,6 +28,22 @@
 				</ion-item>
 				<div *ngIf="cultivation.controls.f10_land.invalid  && (cultivation.controls.f10_land.dirty || submitAttempt)">
 		            <p *ngIf="cultivation.controls.f10_land.errors.required">This field is required.</p>
+		        	<p *ngIf="cultivation.controls.f10_land.errors.noSize">Farm land size is full. please select another farm</p>
+		        </div>
+		        <div *ngIf="size_remaining.toFixed(1) <= 0 && cultivation.controls.f10_land.dirty">
+		        	<p>Farm land size is full. please select another farm</p>
+		        </div>
+
+		        <ion-item>
+		        	<ion-label stacked>Growing Area(in {{farm_unit == 0 ? 'Acre' : (farm_unit == 1 ? 'Guntha' : 'Hectare')}})</ion-label>
+				    <ion-range min="0" max="{{(size_remaining * 10)}}" step="1" formControlName="f10_land_size" color="app">
+						<ion-label range-left>{{cultivation.controls.f10_land_size.value / 10}}</ion-label>
+						<ion-label range-right>{{(size_remaining).toFixed(1)}}</ion-label>
+				    </ion-range>
+				</ion-item>
+				<div *ngIf="cultivation.controls.f10_land_size.invalid  && (cultivation.controls.f10_land_size.dirty || submitAttempt)">
+		            <p *ngIf="cultivation.controls.f10_land_size.errors.required">This field is required.</p>
+		            <p *ngIf="cultivation.controls.f10_land_size.errors.min">Growing Area should be greater than 0.</p>
 		        </div>
 
 				<ion-item>

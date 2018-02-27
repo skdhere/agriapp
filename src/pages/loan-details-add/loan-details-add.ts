@@ -179,7 +179,7 @@ export class LoanDetailsAddPage {
                     dateNow,
                     this.local_id
                 ]).then(data => {
-                	this.sql.updateUploadStatus('tbl_loan_details', this.fm_id, '0');
+                	this.sql.updateUploadStatus('tbl_loan_details', [this.fm_id, this.local_id], '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{
@@ -213,7 +213,7 @@ export class LoanDetailsAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
-                	this.sql.updateUploadStatus('tbl_loan_details', this.fm_id, '0');
+                	this.sql.updateUploadStatus('tbl_loan_details', [this.fm_id, data.res.insertId], '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{

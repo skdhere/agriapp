@@ -60,9 +60,11 @@ export class Helper {
             if(list.length > 0){
                 if(list[0][key] != undefined){
                     list.find((v) => {
-                        if(val.toLowerCase() === v[key].toLowerCase() ){
-                            value = val;
-                            return true;
+                        if(v[key] !== null && val !== null){
+                            if(val == v[key] ){
+                                value = val;
+                                return true;
+                            }
                         }
                     });
                 }else{

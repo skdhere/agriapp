@@ -312,6 +312,9 @@ export class MyApp {
                         // }
                     }
                 }
+                else{
+                    this.sql.updateUploadStatus(tablename, lfm_id, '1');
+                }
             }, err => {
                 console.log(err);
             });
@@ -447,6 +450,9 @@ export class MyApp {
                             this.updateExtraServer(lfm_id, local_id, data);
                         }
                     }
+                }
+                else{
+                    this.sql.updateUploadStatus(tablename, [lfm_id, local_id], '1');
                 }
             }, err => {
                 console.log(err);

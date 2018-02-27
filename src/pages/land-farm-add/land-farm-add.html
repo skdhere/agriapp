@@ -30,15 +30,31 @@
 		            <p *ngIf="land.controls.f9_name.errors.maxlength">Lenght should be smaller than or equal to 50.</p>
 		        </div>
 
-				<ion-item>
-		            <ion-label floating>Size In Acres <span>*</span></ion-label>
-		            <ion-input formControlName="f9_land_size" type="number"></ion-input>
-		        </ion-item>
-		        <div *ngIf="land.controls.f9_land_size.invalid  && (land.controls.f9_land_size.dirty || submitAttempt)">
-		            <p *ngIf="land.controls.f9_land_size.errors.required">This field is required.</p>
-		            <p *ngIf="land.controls.f9_land_size.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
-		            <p *ngIf="land.controls.f9_land_size.errors.pattern">Please enter a valid number.</p>
-		        </div>
+		        <ion-row>
+		        	<ion-col>
+		        		<ion-item>
+				            <ion-label floating>Land Size<span>*</span></ion-label>
+				            <ion-input formControlName="f9_land_size" type="number"></ion-input>
+				        </ion-item>
+				        <div *ngIf="land.controls.f9_land_size.invalid  && (land.controls.f9_land_size.dirty || submitAttempt)">
+				            <p *ngIf="land.controls.f9_land_size.errors.required">This field is required.</p>
+				            <p *ngIf="land.controls.f9_land_size.errors.maxlength">Lenght should be smaller than or equal to 6.</p>
+				            <p *ngIf="land.controls.f9_land_size.errors.pattern">Please enter a valid number.</p>
+				        </div>
+		        	</ion-col>
+		        	<ion-col>
+		        		<ion-item>
+						    <ion-label floating>Unit<span>*</span></ion-label>
+						    <ion-select formControlName="f9_land_unit" interface="popover">
+								<ion-option *ngFor="let opt of list_f9_land_unit" value="{{opt.id}}" >{{opt.name}}</ion-option>
+						    </ion-select>
+						</ion-item>
+						<div *ngIf="land.controls.f9_land_unit.invalid  && (land.controls.f9_land_unit.dirty || submitAttempt)">
+				            <p *ngIf="land.controls.f9_land_unit.errors.required">Required.</p>
+				        </div>
+		        	</ion-col>
+		        </ion-row>
+
 
 				
 				<ion-item>

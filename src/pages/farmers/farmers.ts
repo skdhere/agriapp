@@ -525,11 +525,29 @@ export class FarmersPage {
 
 			    	columns.push('insert_type');
 			    }
+			    else if(tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
 
-			    if(tablename === 'tbl_land_details' || tablename === 'tbl_cultivation_data' || tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
 			    	columns.pop(); //remove local_upload
 			    	columns.pop(); //remove server_id
 			    	columns.pop(); //remove local_id
+			    	columns.push('server_id');
+			    }
+			    else if(tablename === 'tbl_land_details'){
+
+			    	columns.pop(); //remove f9_land_unit
+			    	columns.pop(); //remove local_upload
+			    	columns.pop(); //remove server_id
+			    	columns.pop(); //remove local_id
+			    	columns.push('f9_land_unit');
+			    	columns.push('server_id');
+			    }
+			    else if(tablename === 'tbl_cultivation_data'){
+
+			    	columns.pop(); //remove f10_land_size
+			    	columns.pop(); //remove local_upload
+			    	columns.pop(); //remove server_id
+			    	columns.pop(); //remove local_id
+			    	columns.push('f10_land_size');
 			    	columns.push('server_id');
 			    }
 
@@ -565,6 +583,10 @@ export class FarmersPage {
 											final_data['f10_crop_variety'] = parseInt(final_data['f10_crop_variety']);
 											final_data['f10_expected']     = parseFloat(final_data['f10_expected']);
 											this.cutivation_data.push(final_data['f10_land']);
+										}
+
+										if(tablename === 'tbl_land_details'){
+											final_data['f9_land_unit']  = parseInt(final_data['f9_land_unit']) || 0;
 										}
 							    	}
 
@@ -749,25 +771,36 @@ export class FarmersPage {
 		//lid[1] = lfm_id;
 		if(Array.isArray(lid)){
 			console.log(name, 'Adding errors');
-			for(let i=0; i < lid[0].length; i++){
-				this.sql.addErrorTx(name, [ lid[1], lid[0][i]], '101', msg, tx).then(data => {
-					if(isLast && i === lid[0].length -1){
-				    	if(this.load){
-				    		this.load.dismiss();
-				    		this.load = null;
-					    	this.initializeItems();
-				    	}
-					}
-				},err => {
-					console.log(err);
-					if(isLast && i === lid[0].length -1){
-				    	if(this.load){
-				    		this.load.dismiss();
-				    		this.load = null;
-					    	this.initializeItems();
-				    	}
-					}
-				});
+			if(lid[0].length > 0){
+				for(let i=0; i < lid[0].length; i++){
+					this.sql.addErrorTx(name, [ lid[1], lid[0][i]], '101', msg, tx).then(data => {
+						if(isLast && i === lid[0].length -1){
+					    	if(this.load){
+					    		this.load.dismiss();
+					    		this.load = null;
+						    	this.initializeItems();
+					    	}
+						}
+					},err => {
+						console.log(err);
+						if(isLast && i === lid[0].length -1){
+					    	if(this.load){
+					    		this.load.dismiss();
+					    		this.load = null;
+						    	this.initializeItems();
+					    	}
+						}
+					});
+				}
+			}
+			else{
+				if(isLast){
+			    	if(this.load){
+			    		this.load.dismiss();
+			    		this.load = null;
+				    	this.initializeItems();
+			    	}
+				}
 			}
 		}else{
 			this.sql.addErrorTx(name, lid, '101', msg, tx).then(data => {

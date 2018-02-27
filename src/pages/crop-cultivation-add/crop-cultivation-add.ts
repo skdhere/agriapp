@@ -25,6 +25,8 @@ export class CropCultivationAddPage {
     farms: any = [];
     crops: any[];
     varieties: any[];
+    size_remaining: number = 0;
+    farm_unit: any = 'Acre';
 
 	constructor(public navCtrl: NavController, 
 				public navParams: NavParams,
@@ -34,6 +36,7 @@ export class CropCultivationAddPage {
 		this.cultivation = formBuilder.group({
 			
 			'f10_land' : ['', Validators.required],
+			'f10_land_size' : ['', Validators.compose([ Validators.required, Validators.min(0.1)]) ],
 			'f10_cultivating' : ['', Validators.required],
 			'f10_crop_variety' : ['', Validators.required],
 			'f10_other_variety' : ['', Validators.compose([ Validators.required, Validators.maxLength(50)]) ],
@@ -59,7 +62,21 @@ export class CropCultivationAddPage {
 
         //Listen for form changes
 		this.cultivation.controls['f10_crop_variety'].valueChanges.subscribe(() => {this.setValidation();});
+		this.cultivation.controls['f10_land'].valueChanges.subscribe(() => {this.farmRangeUpdate();});
 
+	}
+
+	ValidSize(size_remaining): any {
+		console.log('validity', size_remaining);
+		return new Promise(resolve => {
+			if(size_remaining > 0){
+				resolve(null);
+			}else{
+				resolve({
+	                "noSize": true
+				});
+			}
+		});
 	}
 
 	setValidation(){
@@ -88,7 +105,7 @@ export class CropCultivationAddPage {
 			this.local_id = this.navParams.get('local_id');
 		}
 
-		this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ? ORDER BY f9_modified_date DESC', [this.fm_id]).then( (data) => {
+		this.sql.query('SELECT * FROM tbl_land_details WHERE fm_id = ?', [this.fm_id]).then( (data) => {
 
             if (data.res.rows.length > 0) {
             	this.farms = [];
@@ -116,6 +133,7 @@ export class CropCultivationAddPage {
 	                let formData = [];
 
 					formData['f10_land']          = sqlData.f10_land;
+					formData['f10_land_size']     = sqlData.f10_land_size * 10;
 					formData['f10_cultivating']   = { id : sqlData.f10_cultivating };
 					this.cropChange('p',{value : formData['f10_cultivating'] });
 
@@ -128,6 +146,7 @@ export class CropCultivationAddPage {
 					formData['f10_pest']          = sqlData.f10_pest;
 
 	                this.cultivation.setValue(formData);
+	                this.farmRangeUpdate();
 	                this.exist = true;
 	            }
 
@@ -135,6 +154,39 @@ export class CropCultivationAddPage {
 	            console.log(err);
 	        });
 		}
+	}
+
+	farmRangeUpdate(){
+		//calculation land details
+		let land_id = this.cultivation.controls['f10_land'].value;
+		let farm_size: any = 0;
+		let used_size: any = 0;
+
+		let found_farm = this.farms.find(x => { 
+			if(x.local_id == land_id){
+				return x;
+			}
+		});
+
+		farm_size = found_farm['f9_land_size'];
+		this.farm_unit = found_farm['f9_land_unit'];
+
+		this.sql.query('SELECT * FROM tbl_cultivation_data WHERE fm_id = ? and f10_land = ?', [this.fm_id, land_id]).then( (data) => {
+
+            if (data.res.rows.length > 0) {
+            	for (var i = 0; i < data.res.rows.length; i++) {
+	                let crop = data.res.rows.item(i);
+	                if(crop['local_id'] !== this.local_id){
+		                used_size += parseFloat(crop['f10_land_size']);
+	                }
+            	}
+            }
+            this.size_remaining = (farm_size - used_size.toFixed(1)) || 0;
+            console.log('total_size:', farm_size, 'used_size:', used_size, 'remaining:', this.size_remaining);
+
+        }, err => {
+            console.log(err);
+        });
 	}
 
 	showMessage(message, style: string, dur?: number){
@@ -150,7 +202,6 @@ export class CropCultivationAddPage {
 	    toast.present();
 	}
 
-
 	save(){
 		this.submitAttempt = true;
 
@@ -162,9 +213,10 @@ export class CropCultivationAddPage {
             let dateNow = date.getTime()/1000|0;
 
 			if (this.exist) {
-                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_other_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_id = ?', [
+                this.sql.query('UPDATE tbl_cultivation_data SET f10_land = ?, f10_land_size = ?, f10_cultivating = ?, f10_crop_variety = ?, f10_other_variety = ?, f10_stage = ?, f10_expected = ?, f10_expectedprice = ?, f10_diseases = ?, f10_pest = ?,  f10_modified_date = ? WHERE fm_id = ? and local_id = ?', [
 
                     this.cultivation.value.f10_land,
+                    (this.cultivation.value.f10_land_size / 10).toFixed(1),
                     this.cultivation.value.f10_cultivating.id,
                     this.cultivation.value.f10_crop_variety.id,
                     this.cultivation.value.f10_other_variety || '',
@@ -179,7 +231,7 @@ export class CropCultivationAddPage {
                     this.local_id
 
                 ]).then(data => {
-                    this.sql.updateUploadStatus('tbl_cultivation_data', this.fm_id, '0');
+                    this.sql.updateUploadStatus('tbl_cultivation_data', [this.fm_id, this.local_id], '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{
@@ -194,10 +246,11 @@ export class CropCultivationAddPage {
                 });               
             }
             else{
-                this.sql.query('INSERT INTO tbl_cultivation_data(fm_id, f10_land, f10_cultivating, f10_crop_variety, f10_other_variety, f10_stage, f10_expected, f10_expectedprice, f10_diseases, f10_pest, f10_created_date, f10_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
+                this.sql.query('INSERT INTO tbl_cultivation_data(fm_id, f10_land, f10_land_size, f10_cultivating, f10_crop_variety, f10_other_variety, f10_stage, f10_expected, f10_expectedprice, f10_diseases, f10_pest, f10_created_date, f10_modified_date) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)', [
 
                     this.fm_id,
                     this.cultivation.value.f10_land,
+                    (this.cultivation.value.f10_land_size / 10).toFixed(1),
                     this.cultivation.value.f10_cultivating.id,
                     this.cultivation.value.f10_crop_variety.id,
                     this.cultivation.value.f10_other_variety || '',
@@ -209,7 +262,7 @@ export class CropCultivationAddPage {
                     dateNow,
                     dateNow
                 ]).then(data => {
-                    this.sql.updateUploadStatus('tbl_cultivation_data', this.fm_id, '0');
+                    this.sql.updateUploadStatus('tbl_cultivation_data', [this.fm_id, data.res.insertId], '0');
                     let callback = this.navParams.get("callback") || false;
 	                if(callback){
 	                    callback(true).then(()=>{
@@ -230,9 +283,7 @@ export class CropCultivationAddPage {
 			console.log('Validation error');
 			console.log('Validation error', this.cultivation.controls);
 		}
-
 	}
-
 
 	cropChange( type, event?: any) {
         this.sql.query('SELECT * FROM tbl_varieties WHERE crop_id=(SELECT id FROM tbl_crops WHERE name=? LIMIT 1) OR crop_id = ?', [event.value.name || '', event.value.id]).then( (data) => {
