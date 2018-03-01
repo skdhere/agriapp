@@ -177,7 +177,7 @@ export class CropCultivationAddPage {
             	for (var i = 0; i < data.res.rows.length; i++) {
 	                let crop = data.res.rows.item(i);
 	                if(crop['local_id'] !== this.local_id){
-		                used_size += parseFloat(crop['f10_land_size']);
+		                used_size += parseFloat(crop['f10_land_size']) || 0;
 	                }
             	}
             }

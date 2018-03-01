@@ -24,6 +24,7 @@ export class AddFarmerPage {
     submitAttempt: boolean = false;
     retryButton: boolean = false;
     ca_id: any = "";
+    fpos: any = [];
 
     private storage: Storage;
 
@@ -38,6 +39,7 @@ export class AddFarmerPage {
         this.ca_id = this.user.id;
         
         this.personal = formBuilder.group({
+            fm_fpo: ['', Validators.required],
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*')])],
             fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
@@ -45,6 +47,18 @@ export class AddFarmerPage {
             fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), ExtraValidator.checkAadhar],
         });
 
+        // load fpos
+        this.sql.query('SELECT * FROM tbl_fpos', []).then( (data) => {
+            if (data.res.rows.length > 0) {
+                let sta = [];
+                for(let i=0; i<data.res.rows.length; i++){
+                    sta.push(data.res.rows.item(i));
+                }
+                this.fpos = sta;
+            }
+        }, (error) =>{
+            console.log(error);
+        });
     }
 
     ionViewDidLoad() {
@@ -63,8 +77,9 @@ export class AddFarmerPage {
             let date = new Date();
             let dateNow = date.getTime() / 1000 | 0;
 
-            this.sql.query("INSERT INTO tbl_farmers (fm_caid, fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+            this.sql.query("INSERT INTO tbl_farmers (fm_fpo, fm_caid, fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
                 [
+                    this.personal.value.fm_fpo.id,
                     this.ca_id,
                     this.personal.value.fm_fname,
                     this.personal.value.fm_mname,

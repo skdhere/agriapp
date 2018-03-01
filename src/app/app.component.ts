@@ -103,6 +103,8 @@ export class MyApp {
                         this.online = true;
                         setTimeout(() => {
                             console.log("syncing server....");
+                            this.loadFpos();
+                            
                             this.deleteServer();
                             this.sendAllData();
                         }, 5000);
@@ -215,7 +217,49 @@ export class MyApp {
             { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
         ];
             // { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
+        // if(this.currentUser.userType == 'Admin'){
+        //     console.log(this.currentUser, "....");
+        //     this.pages.push({ title: 'FPO', component: 'FpoPage',    icon: 'person-add'});
+        // }
+    }
 
+    loadFpos(){
+        this.sql.query('select id from tbl_fpos').then(local_data => {
+            let fpo_ids = [];
+
+            if(local_data.res.rows.length > 0){
+                for (let i = 0; i < local_data.res.rows.length; i++) {
+                    let item = local_data.res.rows.item(i);
+                    if(item.id != ''){
+                        fpo_ids.push(item.id);
+                    }
+                }
+            }
+            let data = { fpo_ids : fpo_ids.toString()};
+
+            this.api.post("get_all_fpo", data)
+            .map((res) => res.json())
+            .subscribe(success =>{
+
+                if(success.success){
+
+                    let db = this.sql.getDb();
+                    db.transaction((tx: any) => {
+                        if(success.data.length > 0){
+                            let stateStr = "";
+                            for (let row of success.data) {
+                                stateStr += "("+row.id+",'"+row.fpo_name+"','"+row.fpo_state+"','"+row.fpo_district+"','"+row.fpo_taluka+"','"+row.fpo_village+"'),";
+                            }
+                            stateStr = stateStr.substring(0,stateStr.length-1);
+                            this.sql.query('INSERT into tbl_fpos(id, fpo_name, fpo_state, fpo_district, fpo_taluka, fpo_village) values '+ stateStr).then();
+                        }
+                    });
+                }
+
+            }, err => {
+                console.log(err);
+            });
+        }, err => console.log(err));
     }
 
     openPage(page) {

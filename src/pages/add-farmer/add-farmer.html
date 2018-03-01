@@ -13,7 +13,25 @@
 	<form [formGroup]="personal">
 		<ion-list>
 			<!-- <ion-item-divider color="light">Personal Information</ion-item-divider> -->
+
+
 			<div padding>
+
+				<ion-item padding>
+				    <select-searchable
+				        title="Select FPO"
+				        formControlName="fm_fpo"
+				        [items]="fpos"
+				        itemValueField="id"
+				        itemTextField="fpo_name"
+				        [canSearch]="true"
+				        searchColor="mdpurple">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_fpo.invalid  && (personal.controls.fm_fpo.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fm_fpo.errors.required">This field is required.</p>
+		        </div>
+
 				<ion-item>
 					<ion-label floating>First Name <span>*</span></ion-label>
 					<ion-input formControlName="fm_fname" type="text"></ion-input>

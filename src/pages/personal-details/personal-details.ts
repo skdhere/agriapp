@@ -23,7 +23,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
     retryButton: boolean = false;
     fm_id: any = null;
     exist: boolean = false;    
-
+    fpos: any = [];
  	constructor(public navCtrl: NavController, 
                 public navParams: NavParams, 
                 public sql: Sql,
@@ -36,6 +36,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
             fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required]), (control) => this.checkMobilePersonal(control, this.fm_id)],
             fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), (control) => this.checkAadharPersonal(control, this.fm_id)],
+            fm_fpo: ['', Validators.required],
             
             f1_mfname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             f1_mmname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
@@ -55,6 +56,20 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
         	let dob = this.personal.controls.f1_dob.value;
         	this.personal.controls.f1_age.setValue(this.getAge(dob));
         });
+
+        // load fpos
+        this.sql.query('SELECT * FROM tbl_fpos', []).then( (data) => {
+            if (data.res.rows.length > 0) {
+                let sta = [];
+                for(let i=0; i<data.res.rows.length; i++){
+                    sta.push(data.res.rows.item(i));
+                }
+                this.fpos = sta;
+            }
+        }, (error) =>{
+            console.log(error);
+        });
+        console.log('load farmers')
  	}
 
  	getAge(dateString) {
@@ -79,6 +94,8 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
 
                 let sqlData = data.res.rows.item(0);
                 let formData = [];
+                formData['fm_fpo']           = {id :sqlData.fm_fpo};
+                formData['fm_fname']         = sqlData.fm_fname;
                 formData['fm_fname']         = sqlData.fm_fname;
                 formData['fm_mname']         = sqlData.fm_mname;
                 formData['fm_lname']         = sqlData.fm_lname;
@@ -120,8 +137,9 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
 
             let date = new Date();
             let dateNow = date.getTime()/1000|0;
-            this.sql.query('UPDATE tbl_farmers SET fm_fname = ?, fm_mname = ?, fm_lname = ?, fm_mobileno = ?, fm_aadhar  = ?, fm_modifieddt = ? WHERE local_id = ?', [
+            this.sql.query('UPDATE tbl_farmers SET fm_fpo = ?, fm_fname = ?, fm_mname = ?, fm_lname = ?, fm_mobileno = ?, fm_aadhar  = ?, fm_modifieddt = ? WHERE local_id = ?', [
 
+                this.personal.value.fm_fpo.id,
                 this.personal.value.fm_fname,
                 this.personal.value.fm_mname,
                 this.personal.value.fm_lname,

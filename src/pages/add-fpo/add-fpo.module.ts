@@ -1,15 +1,15 @@
 import { NgModule } from '@angular/core';
 import { IonicPageModule } from 'ionic-angular';
-import { PersonalDetailsPage } from './personal-details';
+import { AddFpoPage } from './add-fpo';
 import { SelectSearchableModule } from '../../components/select-searchable/select-searchable-module';
 
 @NgModule({
   declarations: [
-    PersonalDetailsPage,
+    AddFpoPage,
   ],
   imports: [
-    IonicPageModule.forChild(PersonalDetailsPage),
+    IonicPageModule.forChild(AddFpoPage),
     SelectSearchableModule,
   ],
 })
-export class PersonalDetailsPageModule {}
+export class AddFpoPageModule {}

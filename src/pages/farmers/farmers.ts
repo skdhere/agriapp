@@ -519,10 +519,12 @@ export class FarmersPage {
 			    let query = 'Insert into ' + tablename;
 
 			    if(tablename == 'tbl_farmers'){
+			    	columns.pop(); //remove fm_fpo
 			    	columns.pop(); //remove insert_type
 			    	columns.pop(); //remove local_upload
 			    	columns.pop(); //remove local_id
 
+			    	columns.push('fm_fpo');
 			    	columns.push('insert_type');
 			    }
 			    else if(tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
@@ -607,12 +609,12 @@ export class FarmersPage {
 					    	// 	this.error_ids.push(final_data['fm_id']);
 					    	// }
 
-					    	final_data['insert_type'] = parseInt(final_data['insert_type']);
-					    	console.log('insert_type =', final_data['insert_type']);
-					    	let date2 = new Date(final_data['fm_createddt']);
-					    	let date3 = new Date(final_data['fm_modifieddt']);
-					    	final_data['fm_createddt'] = date2.getTime();
-					    	final_data['fm_modifieddt'] = date3.getTime();
+							final_data['insert_type']   = parseInt(final_data['insert_type']);
+							final_data['fm_fpo']        = parseInt(final_data['fm_fpo']);
+							let date2                   = new Date(final_data['fm_createddt']);
+							let date3                   = new Date(final_data['fm_modifieddt']);
+							final_data['fm_createddt']  = date2.getTime();
+							final_data['fm_modifieddt'] = date3.getTime();
 					    	this.insertData(tablename, query, final_data, tx, isLast || false);
 					    }
 				    }

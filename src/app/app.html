@@ -18,6 +18,10 @@
                     {{p.title}}
                 </button>
                 <hr>
+                <button *ngIf="currentUser.userType == 'Admin'" menuClose ion-item (click)="openPage({component: 'FpoPage'})">
+                    <ion-icon name="person-add" item-start></ion-icon>
+                    Fpo
+                </button>
                 <!-- <button menuClose ion-item (click)="logout()">
                     <ion-icon name="power" item-start></ion-icon>
                     Logout
