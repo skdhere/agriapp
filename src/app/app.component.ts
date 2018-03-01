@@ -19,7 +19,7 @@ import 'rxjs/add/operator/map';
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    version: string = "1.0.0";
+    version: string = "1.1.0";
     rootPage: any = 'PreloadPage';
     // rootPage: any = 'LoginPage';
     alert: any;
