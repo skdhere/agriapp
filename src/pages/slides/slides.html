@@ -7,25 +7,30 @@
 
 <ion-content>
 	<ion-slides pager>
-		<ion-slide *ngFor="let slide of slides" [ngStyle]="{'background-color': slide.color}">
-			<ion-toolbar color="transparent">
+		<ion-slide *ngFor="let slide of slides">
+			<!-- <ion-toolbar color="transparent">
 				<ion-buttons end>
-					<!-- <button ion-button color="white">Next</button> -->
+					<button ion-button color="white">Next</button>
 				</ion-buttons>
-			</ion-toolbar>
-			<img [src]="slide.image" class="slide-image" />
-			<h2 class="slide-title" [innerHTML]="slide.title"></h2>
-			<p [innerHTML]="slide.description"></p>
+			</ion-toolbar> -->
+			<img [src]="slide.image" class="slide-image"/>
+			<!-- <h2 class="slide-title" [innerHTML]="slide.title"></h2> -->
+			<!-- <p [innerHTML]="slide.description"></p> -->
 		</ion-slide>
-		<ion-slide style="background-color: #ff9800">
-			<ion-toolbar color="transparent">
-			</ion-toolbar>
-			<img src="assets/slides/4.png" class="slide-image" />
-			<h2 class="slide-title">Ready?</h2>
-			<button ion-button large clear icon-end color="white" (click)="continue()">
-				Continue
-				<ion-icon name="arrow-forward"></ion-icon>
-			</button>
+
+		<!--  -->
+		<ion-slide>
+			<!-- <img src="assets/slides/4.png" class="slide-image" /> -->
+
+			<ion-grid>
+		      <ion-row justify-content-center align-items-center>
+				<button ion-button large icon-end color="app" (click)="continue()">
+					Continue
+					<ion-icon name="arrow-forward"></ion-icon>
+				</button>
+		      </ion-row>
+		    </ion-grid>
+
 		</ion-slide>
 	</ion-slides>
 </ion-content>

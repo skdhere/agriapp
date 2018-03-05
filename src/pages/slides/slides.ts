@@ -19,24 +19,12 @@ export class SlidesPage {
 	constructor(public navCtrl: NavController, public navParams: NavParams) {
 
 		this.slides = [
-		    {
-		      title: "Welcome to the Docs!",
-		      description: "The <b>Ionic Component Documentation</b> showcases a number of useful components that are included out of the box with Ionic.",
-		      image: "assets/slides/1.png",
-		      color: "#e91e63"
-		    },
-		    {
-		      title: "What is Ionic?",
-		      description: "<b>Ionic Framework</b> is an open source SDK that enables developers to build high quality mobile apps with web technologies like HTML, CSS, and JavaScript.",
-		      image: "assets/slides/2.png",
-		      color: "#00bcd4"
-		    },
-		    {
-		      title: "What is Ionic Cloud?",
-		      description: "The <b>Ionic Cloud</b> is a cloud platform for managing and scaling Ionic apps with integrated services like push notifications, native builds, user auth, and live updating.",
-		      image: "assets/slides/3.png",
-		      color: "#9c27b0"
-		    }
+		    {image: "assets/slides/1.png"},
+		    {image: "assets/slides/2.png"},
+		    {image: "assets/slides/3.png"},
+		    {image: "assets/slides/4.png"},
+		    {image: "assets/slides/5.png"},
+		    {image: "assets/slides/6.png"}
 		];
 	}
 
