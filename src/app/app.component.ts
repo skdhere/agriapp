@@ -214,7 +214,7 @@ export class MyApp {
         this.pages = [
             { title: 'Home',       component: 'HomePage',      icon: 'home'},
             { title: 'My Farmers', component: 'FarmersPage',   icon: 'people'},
-            { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
+            // { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
         ];
             // { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
         // if(this.currentUser.userType == 'Admin'){
@@ -269,7 +269,7 @@ export class MyApp {
             let currentView = this.nav.getActive();
 
             if(currentView.component.name != page.component){
-                if (page.component == "SlidesPage") {
+                if (page.component == "SlidesPage" || page.component == "ReportsPage") {
                     this.nav.push(page.component);
                 }else{
                     this.nav.setRoot(page.component);

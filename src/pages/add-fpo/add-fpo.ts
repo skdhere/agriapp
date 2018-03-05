@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, ToastController, LoadingController } from 'ionic-angular';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { Sql } from '../../providers/sql/sql';
 import { UserProvider } from '../../providers/user/user';
 import { ExtraValidator } from '../../validators/ExtraValidator';
@@ -46,27 +46,30 @@ export class AddFpoPage {
         this.ca_id = this.user.id;
         
         this.personal = formBuilder.group({
-            fpo_name: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
-            fpo_state:['', Validators.required],
-            fpo_district: ['', Validators.required],
-            fpo_taluka: ['', Validators.required],
-            fpo_village: ['', Validators.required],
+            fpo_name: ['', Validators.compose([Validators.maxLength(50), Validators.required])],
+            fpo_email: ['', Validators.compose([Validators.maxLength(100), Validators.required, Validators.email]), (control) => ExtraValidator.FpoCheckEmail(control, this.api, this.exist)],
+            fpo_mobile: ['', Validators.compose([Validators.minLength(10), Validators.maxLength(10), Validators.pattern('[0-9]*'), Validators.required]), (control) => ExtraValidator.FpoCheckMobile(control, this.api, this.exist)],
+            fpo_password: ['', Validators.compose([Validators.maxLength(50), Validators.required])],
+            // fpo_state:['', Validators.required],
+            // fpo_district: ['', Validators.required],
+            // fpo_taluka: ['', Validators.required],
+            // fpo_village: ['', Validators.required],
         });
 
         // load states
-        this.sql.query('SELECT * FROM tbl_state', []).then( (data) => {
-            if (data.res.rows.length > 0) {
-            	let sta = [];
-                for(let i=0; i<data.res.rows.length; i++){
-                    sta.push(data.res.rows.item(i));
-                }
-                this.states = sta;
-                console.log(this.states);
+        // this.sql.query('SELECT * FROM tbl_state', []).then( (data) => {
+        //     if (data.res.rows.length > 0) {
+        //     	let sta = [];
+        //         for(let i=0; i<data.res.rows.length; i++){
+        //             sta.push(data.res.rows.item(i));
+        //         }
+        //         this.states = sta;
+        //         console.log(this.states);
 
-            }
-        }, (error) =>{
-            console.log(error);
-        });
+        //     }
+        // }, (error) =>{
+        //     console.log(error);
+        // });
 
         if(this.navParams.get('fpo'))
         {
@@ -82,16 +85,20 @@ export class AddFpoPage {
 
                   
             formData['fpo_name']     = _fpo.fpo_name;
-            formData['fpo_state']    = _fpo.fpo_state ? { name : _fpo.fpo_state } : '';
-            this.stateChange('p',{value : formData['fpo_state']});
+            formData['fpo_email']    = _fpo.fpo_email || '';
+            formData['fpo_mobile']   = _fpo.fpo_mobile || '';
+            formData['fpo_password'] = _fpo.fpo_password || '';
+
+            // formData['fpo_state']    = _fpo.fpo_state ? { name : _fpo.fpo_state } : '';
+            // this.stateChange('p',{value : formData['fpo_state']});
             
-            formData['fpo_district'] = _fpo.fpo_district ? { name : _fpo.fpo_district } : '';
-            this.districtChange('p',{value : formData['fpo_district']});
+            // formData['fpo_district'] = _fpo.fpo_district ? { name : _fpo.fpo_district } : '';
+            // this.districtChange('p',{value : formData['fpo_district']});
             
-            formData['fpo_taluka']   = _fpo.fpo_taluka ? { name : _fpo.fpo_taluka } : '';
-            this.talukaChange('p',{value : formData['fpo_taluka']});
+            // formData['fpo_taluka']   = _fpo.fpo_taluka ? { name : _fpo.fpo_taluka } : '';
+            // this.talukaChange('p',{value : formData['fpo_taluka']});
             
-            formData['fpo_village']  = _fpo.fpo_village ? { name : _fpo.fpo_village } : '';
+            // formData['fpo_village']  = _fpo.fpo_village ? { name : _fpo.fpo_village } : '';
 
             this.personal.setValue(formData);
             this.exist = true;
@@ -173,7 +180,6 @@ export class AddFpoPage {
         this.loading ? this.loading.dismiss() : {};
 	}
 
-
     save(){
 
         this.submitAttempt = true;
@@ -187,10 +193,13 @@ export class AddFpoPage {
 
             let final_data = {
                 fpo_name : this.personal.value.fpo_name,
-                fpo_state : this.personal.value.fpo_state.name,
-                fpo_district : this.personal.value.fpo_district.name,
-                fpo_taluka : this.personal.value.fpo_taluka.name,
-                fpo_village : this.personal.value.fpo_village.name
+                fpo_email : this.personal.value.fpo_email,
+                fpo_mobile : this.personal.value.fpo_mobile,
+                fpo_password : this.personal.value.fpo_password,
+                // fpo_state : this.personal.value.fpo_state.name,
+                // fpo_district : this.personal.value.fpo_district.name,
+                // fpo_taluka : this.personal.value.fpo_taluka.name,
+                // fpo_village : this.personal.value.fpo_village.name
             };
 
             if (this.exist) {
@@ -244,8 +253,5 @@ export class AddFpoPage {
 		}
 	}
 
-	
-
-	
 
 }

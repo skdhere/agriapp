@@ -18,10 +18,17 @@
                     {{p.title}}
                 </button>
                 <hr>
-                <button *ngIf="currentUser.userType == 'Admin'" menuClose ion-item (click)="openPage({component: 'FpoPage'})">
-                    <ion-icon name="person-add" item-start></ion-icon>
-                    Fpo
-                </button>
+                <div *ngIf="currentUser.userType == 'Admin'">
+                    <button menuClose ion-item (click)="openPage({component: 'FpoPage'})">
+                        <ion-icon name="person-add" item-start></ion-icon>
+                        Fpo
+                    </button>
+
+                    <button menuClose ion-item (click)="openPage({component: 'ReportsPage'})">
+                        <ion-icon name="pulse" item-start></ion-icon>
+                        Reports
+                    </button>
+                </div>
                 <!-- <button menuClose ion-item (click)="logout()">
                     <ion-icon name="power" item-start></ion-icon>
                     Logout

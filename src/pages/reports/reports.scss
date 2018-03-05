@@ -1,0 +1,17 @@
+page-reports {
+	.col-center{
+	    // color: #fff;
+	    text-align: center;
+	}
+
+	.col-bold{
+		font-weight: 600;
+	}
+
+	.my-col{
+		margin-bottom: 2px;
+	}
+
+	ion-row:nth-child(even) {background: #CCC}
+	ion-row:nth-child(odd) {background: #FFF}
+}

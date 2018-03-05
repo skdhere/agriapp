@@ -8,7 +8,7 @@
 		<ion-list>
 			<div padding>
 				<ion-item>
-					<ion-label floating>FPO Name <span>*</span></ion-label>
+					<ion-label floating>FPO Name (Organisation name) <span>*</span></ion-label>
 					<ion-input formControlName="fpo_name" type="text"></ion-input>
 				</ion-item>
 				<div *ngIf="!personal.controls.fpo_name.valid  && (personal.controls.fpo_name.dirty || submitAttempt)">
@@ -17,6 +17,41 @@
 				</div>
 
 				<ion-item>
+					<ion-label floating>FPO Email <span>*</span></ion-label>
+					<ion-input formControlName="fpo_email" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_email.pending">
+	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fpo_email.pending && !personal.controls.fpo_email.valid  && (personal.controls.fpo_email.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_email.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_email.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fpo_email.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>FPO Mobile <span>*</span></ion-label>
+					<ion-input formControlName="fpo_mobile" type="number"></ion-input>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_mobile.pending">
+	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fpo_mobile.pending && !personal.controls.fpo_mobile.valid  && (personal.controls.fpo_mobile.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_mobile.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_mobile.errors.taken">The Mobile no. is already assigned to another user.</p>
+					<p *ngIf="personal.controls.fpo_mobile.errors.maxlength || personal.controls.fpo_mobile.errors.minlength">Length shoud be 10</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>FPO Password <span>*</span></ion-label>
+					<ion-input formControlName="fpo_password" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fpo_password.valid  && (personal.controls.fpo_password.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_password.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_password.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fpo_password.errors.maxlength.requiredLength}}</p>
+				</div>
+
+
+				<!-- <ion-item>
 				    <select-searchable
 				        title="State"
 				        formControlName="fpo_state"
@@ -73,7 +108,7 @@
 				</ion-item>
 				<div *ngIf="personal.controls.fpo_village.invalid  && (personal.controls.fpo_village.dirty || submitAttempt)">
 		            <p *ngIf="personal.controls.fpo_village.errors.required">This field is required.</p>
-		        </div>
+		        </div> -->
 				
 			</div>
 		</ion-list>

@@ -1,5 +1,7 @@
 import { FormControl, FormGroup } from '@angular/forms';
 import { Sql } from '../providers/sql/sql';
+import { Api } from '../providers/api/api';
+import 'rxjs/add/operator/map';
 
 export class ExtraValidator {
 
@@ -48,6 +50,62 @@ export class ExtraValidator {
         });
     }
 
+
+    static FpoCheckMobile(control: FormControl, api: Api, isUpdate = false): any {
+       
+        return new Promise(resolve => {
+            if (control.value) {
+                api.post('checkFpoMobile', {contactno: control.value, isUpdate: isUpdate})
+                .map((res) => res.json())
+                .subscribe(data => {
+                    if(data.data){
+                        resolve({
+                            "taken": true
+                        });
+                    }
+                    else{
+                        resolve(null);
+                    }
+
+                }, err => {
+                    resolve({
+                        "taken": true
+                    });
+                });
+            }else{
+                resolve(null);
+            }
+
+        });
+    }
+
+    static FpoCheckEmail(control: FormControl, api: Api, isUpdate = false): any {
+       
+        return new Promise(resolve => {
+            if (control.value) {
+                api.post('checkFpoEmail', {emailId : control.value, isUpdate: isUpdate})
+                .map((res) => res.json())
+                .subscribe(data => {
+                    if(data.data){
+                        resolve({
+                            "taken": true
+                        });
+                    }
+                    else{
+                        resolve(null);
+                    }
+
+                }, err => {
+                    resolve({
+                        "taken": true
+                    });
+                });
+            }else{
+                resolve(null);
+            }
+
+        });
+    }
 }
 
 export class Helper {
