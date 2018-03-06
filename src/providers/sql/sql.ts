@@ -485,58 +485,6 @@ export class Sql {
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_loan_details tables', err.tx, err.err);
         });
-
-        // console.warn('Prepare to db version 1.0.1');
-        // this.query(`CREATE TABLE IF NOT EXISTS db_versions(
-        //     id INTEGER PRIMARY KEY,
-        //     version text
-        // )`).then(data => {
-        //     // let tx = data.tx;
-        //     console.warn('Inside db_versions');
-
-        //     //Database version 1.0.1
-        //     this._db.transaction((tx:any) => {
-        //         tx.executeSql('SELECT * FROM db_versions WHERE version = ?', ['1.0.1'], (txx, d) => {
-        //             if(d.rows.length < 1){
-
-        //                 //Creating tbl_queue
-        //                 tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
-                        
-        //                 //Creating tbl_fpo
-        //                 tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_fpos (id INTEGER, fpo_name text, fpo_state text, fpo_district text, fpo_taluka text, fpo_village text )');
-
-        //                 //Alter tbl_errors table add column extra_id
-        //                 tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
-
-        //                 //Alter tbl_farmers table add column insert_type
-        //                 tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN insert_type INTEGER DEFAULT 0');
-
-        //                 //Alter tbl_farmers table add column insert_type
-        //                 tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN fm_fpo INTEGER');
-
-        //                 //Alter tbl_land_details table add column f9_land_unit
-        //                 tx.executeSql("ALTER TABLE tbl_land_details ADD COLUMN f9_land_unit INTEGER DEFAULT 0");
-
-        //                 //Alter tbl_land_details table add column f9_land_unit
-        //                 tx.executeSql("ALTER TABLE tbl_cultivation_data ADD COLUMN f10_land_size TEXT");
-
-        //                 //All done now update version 1.0.1
-        //                 tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
-        //                 console.log('Database version 1.0.1 created successfully!');
-        //             }
-        //             else{
-        //                 console.log('Database version 1.0.1');
-        //             }
-        //         }, (txx, err) => {
-        //             console.log(err);
-        //         });
-
-        //     },(txx, e) => {
-        //         console.log(e);
-        //     });
-        // },err => {
-        //     console.log(err);
-        // });
     }
 
     /**
@@ -591,7 +539,7 @@ export class Sql {
                     }
 
                     //if true then its not available now insert
-                    data.tx.executeSql('INSERT INTO tbl_queue(local_id, extra_id, tablename) VALUES(?, ?, ?)', _value_, (txx, d) => {
+                    this.query('INSERT INTO tbl_queue(local_id, extra_id, tablename) VALUES(?, ?, ?)', _value_).then((d) => {
                         
                         if(Array.isArray(farmerId)){
                             this.events.publish('table:updated', tablename, farmerId[0], farmerId[1]);
@@ -609,13 +557,14 @@ export class Sql {
                         }
                         console.log('deleting from errors', farmerId);
                         //clear all existing errors for this device
-                        data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], (txr, d) => {
+                        this.query("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename]).then(d => {
                             console.log('Deleted from errors', d);
-                        }, (txx, err) => {
+                        }, err => {
                             console.log("SQL : errors while removing errors from table", err);
                         });
 
-                    }, (txx, e) => {console.log(e);});
+                    }, (e) => {console.log(e);});
+
                 }
             }, error => {
                 console.log(error);
@@ -642,9 +591,9 @@ export class Sql {
                 }
 
                 //clear all existing errors for this device
-                data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename], 
-                    (txx, d) => {}, 
-                    (txx, err) => {
+                this.query("DELETE FROM tbl_errors WHERE local_id = ? and extra_id = ? and tablename = ?", [err_local_id, err_extra_id, tablename]).then(
+                    d => {}, 
+                    err => {
                     console.log("SQL : errors while removing errors from table", err);
                 });
 
@@ -695,6 +644,8 @@ export class Sql {
                     console.log(err);
                 });
             }
+        },err => {
+            console.log(err);
         });
     }
 
@@ -758,6 +709,8 @@ export class Sql {
                     console.log(err);
                 });
             }
+        },err => {
+            console.log(err);
         });
     }
 
@@ -765,9 +718,9 @@ export class Sql {
         this.query('DELETE FROM '+ tablename +' WHERE fm_id = ?', [local_id]).then(
             data => {
                 //clear all existing errors for this device
-                data.tx.executeSql("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [local_id, tablename], (txr, d) => {
+                this.query("DELETE FROM tbl_errors WHERE local_id = ? and tablename = ?", [local_id, tablename]).then( d => {
                     console.log('Deleted from errors', d);
-                }, (txx, err) => {
+                }, err => {
                     console.log("SQL : errors while removing errors from table", err);
                 });
             },
@@ -800,20 +753,20 @@ export class Sql {
                 tx.executeSql(query_str, [local_id], (txx, d) => {
                     if(d.rows.length > 0){
                         // this.items[len].update = true;
-                        tx.executeSql('UPDATE tbl_farmers SET insert_type = 0 WHERE local_id = ?', [local_id], () => {}, () => {});
+                        tx.executeSql('UPDATE tbl_farmers SET insert_type = 0 WHERE local_id = ?', [local_id], (txx, dd) => {}, (txx, ee) => {console.log(ee);});
 
                         //add it to queue if not already
                         this.query('SELECT * FROM tbl_queue WHERE local_id = ? AND tablename = ?', [local_id, 'tbl_farmers']).then(data => {
                             if(data.res.rows.length < 1){
-                                data.tx.executeSql('INSERT INTO tbl_queue(local_id, extra_id, tablename) VALUES(?, ?, ?)', [local_id, '', 'tbl_farmers'], (txx, d) => {
+                                this.query('INSERT INTO tbl_queue(local_id, extra_id, tablename) VALUES(?, ?, ?)', [local_id, '', 'tbl_farmers']).then(d => {
                                     console.log('++++++++++++++added to queue+++++++++++++');
                                     // this.events.publish('table:updated', 'tbl_farmers', local_id);
                                     this.events.publish('farmer:updateToServer');
-                                }, (txx, err) => {
+                                }, err => {
                                     console.log(err);
                                 });
                             }
-                        });
+                        }, err => console.log(err));
 
                     }
                 }, (txx, err) => {

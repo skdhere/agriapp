@@ -153,7 +153,7 @@ export class PreloadPage {
                     if(d.rows.length < 1){
 
                         //Creating tbl_queue
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (id INTEGER PRIMARY KEY, local_id INTEGER, extra_id INTEGER, tablename text )');
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (local_id INTEGER, extra_id INTEGER, tablename text )');
                         
                         //Creating tbl_fpo
                         tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_fpos (id INTEGER, fpo_name text, fpo_state text, fpo_district text, fpo_taluka text, fpo_village text )');
