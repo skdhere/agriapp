@@ -126,12 +126,14 @@ export class Forms {
 	            }
 
 	            //check if its updated in local database
-				for (var i = 0; i < this.forms.length; i++) {
-					if(this.forms[i].tableName){
-						// console.log(this.forms[i].tableName);
-						this.updateStatus(i);
+	            this.zone.run(() => {
+					for (var i = 0; i < this.forms.length; i++) {
+						if(this.forms[i].tableName){
+							// console.log(this.forms[i].tableName);
+							this.updateStatus(i);
+						}
 					}
-				}
+				});
 
 	        }, err => {
 	            console.log(err);
@@ -149,12 +151,14 @@ export class Forms {
 					that.forms.push({ title: 'Loan Details',isUpdated:false, tableName: 'tbl_loan_details', pageName: 'LoanDetailsPage', point: '0', icon : 'cash'});
 
 					//check if its updated in local database
-					for (var i = 0; i < this.forms.length; i++) {
-						if(this.forms[i].tableName){
-							// console.log(this.forms[i].tableName);
-							this.updateStatus(i);
+					this.zone.run(() => {
+						for (var i = 0; i < this.forms.length; i++) {
+							if(this.forms[i].tableName){
+								// console.log(this.forms[i].tableName);
+								this.updateStatus(i);
+							}
 						}
-					}
+					});
 					
 	            }
 	        }, err => {

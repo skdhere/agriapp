@@ -11,7 +11,6 @@ import { UserProvider } from '../user/user';
 @Injectable()
 export class AuthService {
     // currentUser: UserProvider;
-
     constructor(private api: Api, private storage: Storage, public currentUser: UserProvider) {}
 
     public login(credentials) {
@@ -54,7 +53,7 @@ export class AuthService {
 
     public isAuthenticated(){
         
-        return Observable.create(observer => {
+        return new Observable(observer => {
             //check if token is not expired
             this.storage.get('user_data').then(val => {
                 if(val){

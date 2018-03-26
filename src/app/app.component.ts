@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, NgZone } from '@angular/core';
 import { Nav, Platform, LoadingController, MenuController, AlertController, IonicApp, Events } from 'ionic-angular';
 import { StatusBar } from '@ionic-native/status-bar';
 import { SplashScreen } from '@ionic-native/splash-screen';
@@ -40,6 +40,7 @@ export class MyApp {
                 public events: Events,
                 public alertCtrl: AlertController,
                 public loadingCtrl: LoadingController,
+                public zone: NgZone,
                 public currentUser: UserProvider) {
 
         platform.ready().then(() => {
@@ -82,7 +83,8 @@ export class MyApp {
                 }, err => {console.log(err)});
             }
 
-            this.auth.isAuthenticated().subscribe(success => {
+            this.auth.isAuthenticated()
+            .subscribe(success => {
                 if(success){
                     //network connection status
                     if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
@@ -98,9 +100,11 @@ export class MyApp {
 
 
             this.network.onConnect().subscribe(() => { 
-                this.auth.isAuthenticated().subscribe(success => {
+                this.auth.isAuthenticated()
+                .subscribe(success => {
                     if(success){
-                        this.online = true;
+                        this.zone.run(() => {this.online = true; });
+
                         setTimeout(() => {
                             console.log("syncing server....");
                             this.loadFpos();
@@ -112,8 +116,9 @@ export class MyApp {
                 });
             });
             
-            this.network.onDisconnect().subscribe(() => { 
-                this.online = false;
+            this.network.onDisconnect().subscribe(() => {
+
+                this.zone.run(() => { this.online = false; });
                 for (let i = 0; i < this.httpSubscriptions.length; i++) {
                     // console.log('offline mode : deleting inprogress http subscriptions', i);
                     if(this.httpSubscriptions[i] != undefined){
@@ -128,7 +133,7 @@ export class MyApp {
             this.events.subscribe('auth:onLogin', () => {
                 //network connection status
                 if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
-                    this.online = true;
+                    this.zone.run(() => { this.online = true; });
                     setTimeout(() => {
                         console.log("syncing server....");
                         this.deleteServer();
