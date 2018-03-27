@@ -192,7 +192,6 @@ export class MyApp {
                                 this.alert.dismiss();
                                 this.alert = null;
                             }
-
                         }
                         else{
 
@@ -284,12 +283,97 @@ export class MyApp {
     }
 
     logout(){
-        let loading = this.presentLoading('Please wait...');
+
+        //check if online
+        if(this.online){
+
+            let alrt = this.alertCtrl.create({
+                title: "Logout",
+                message: "This action will remove all of your downloaded data from this device!",
+                cssClass: 'customAlertCss',
+                buttons:[
+                    { text: "Cancel" ,  role: "cancel" },
+                    { 
+                        text: "Logout Anyway!",
+                        cssClass: "btn-danger",
+                        handler: () => {
+                            //check if queue table is empty
+                            this.sql.query("Select * from tbl_queue", []).then(data => {
+                                if(data.res.rows.length > 0){
+                                    //Queue is not empty
+                                    //alert that queue is not empty
+                                    let alt = this.alertCtrl.create({ 
+                                        subTitle: "Logout failed",
+                                        message : "Syncing is in progress please try after some time!",
+                                        buttons : [{ text : 'OK' }]
+                                    });
+                                    alt.present();
+
+                                }else{
+                                    //Queue is empty
+                                    this.wipeData();
+                                }
+                            },err => {
+                                console.log(err);
+                            });
+                        }
+                    }
+                ]
+            });
+
+            alrt.present();
+        }else{
+            let alt = this.alertCtrl.create({ 
+                subTitle: "Logout failed",
+                message : "No Internet/Data connection available!",
+                buttons : [{ text : 'OK' }]
+            });
+            alt.present();
+        }
+    }
+
+    wipeData(){
+        let loading = this.presentLoading('Logging out...');
         loading.present();
 
-        this.auth.logout().subscribe();
-        this.nav.setRoot('UserLogin');
-        loading.dismiss();
+        let tableIn = [
+            "tbl_queue",
+            "tbl_errors",
+            "tbl_delete",
+            "tbl_fpos",
+            "tbl_farmers",
+            "tbl_personal_detail",
+            "tbl_residence_details",
+            "tbl_applicant_knowledge",
+            "tbl_spouse_knowledge",
+            "tbl_applicant_phone",
+            "tbl_family_details",
+            "tbl_appliances_details",
+            "tbl_spouse_details",
+            "tbl_land_details",
+            "tbl_asset_details",
+            "tbl_livestock_details",
+            "tbl_cultivation_data",
+            "tbl_yield_details",
+            "tbl_financial_details",
+            "tbl_loan_details",
+        ];
+
+        let db = this.sql.getDb();
+        db.transaction((tx:any) => {
+            for (let i = 0; i < tableIn.length; i++) {
+                tx.executeSql('DELETE FROM ' + tableIn[i]);
+            }
+
+            setTimeout(() => {
+                this.auth.logout().subscribe();
+                this.nav.setRoot('UserLogin');
+                loading.dismiss();
+            }, 1000);
+        },(txx, e) => {
+            console.log( "error while wiping data", e);
+            loading.dismiss();
+        });
     }
 
     presentLoading(text: string) {

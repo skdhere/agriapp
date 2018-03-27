@@ -92,7 +92,7 @@ export class AuthService {
     }
 
     public logout() {
-        return Observable.create(observer => {
+        return new Observable(observer => {
             // this.currentUser = null;
             this.storage.remove('user_data');
             observer.next(true);
