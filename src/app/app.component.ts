@@ -83,41 +83,34 @@ export class MyApp {
                 }, err => {console.log(err)});
             }
 
+            //on load syncing if authenticated
             this.auth.isAuthenticated()
             .subscribe(success => {
                 if(success){
                     //network connection status
                     if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
                         this.online = true;
-                        setTimeout(() => {
-                            console.log("syncing server....");
-                            this.deleteServer();
-                            this.sendAllData();
-                        }, 5000);
+                        this.sync();
                     }
                 }
             });
 
-
+            //on internet/data connect
             this.network.onConnect().subscribe(() => { 
-                this.auth.isAuthenticated()
-                .subscribe(success => {
+                //syncing if authenticated
+                let subs = this.auth.isAuthenticated().subscribe(success => {
                     if(success){
                         this.zone.run(() => {this.online = true; });
-
-                        setTimeout(() => {
-                            console.log("syncing server....");
-                            this.loadFpos();
-                            
-                            this.deleteServer();
-                            this.sendAllData();
-                        }, 5000);
+                        this.sync();
                     }
                 });
+
+                this.httpSubscriptions.push(subs);
             });
             
+            //on internet/data disconnect
             this.network.onDisconnect().subscribe(() => {
-
+                //unsubscribing api requests
                 this.zone.run(() => { this.online = false; });
                 for (let i = 0; i < this.httpSubscriptions.length; i++) {
                     // console.log('offline mode : deleting inprogress http subscriptions', i);
@@ -128,65 +121,72 @@ export class MyApp {
                 }
             });
             
-            
-            //subscribe for global events
+            //custom event on login
             this.events.subscribe('auth:onLogin', () => {
-                //network connection status
+                //syncing if internet available
                 if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
                     this.zone.run(() => { this.online = true; });
-                    setTimeout(() => {
-                        console.log("syncing server....");
-                        this.deleteServer();
-                        this.sendAllData();
-                    }, 5000);
+                    this.sync();
                 }
             });
-            this.events.subscribe('table:updated', (tablename, fm_id, local_id = '') => { 
+
+            //custom event on updating or adding any form
+            this.events.subscribe('table:updated', (tablename, fm_id, local_id = '') => {
+                // syncing only updated/added farmer specific form
+                // eventExtraTableUpdated() for tbl_land_details, tbl_cultivation_data, tbl_yield_details, tbl_loan_details
+                // eventTableUpdated() for all tables except above
                 if(tablename == 'tbl_land_details' || tablename == 'tbl_cultivation_data' || tablename == 'tbl_yield_details' || tablename == 'tbl_loan_details'){
                     this.eventExtraTableUpdated(tablename, fm_id, local_id, true);
                 }else{
                     this.eventTableUpdated(tablename, fm_id);
                 }
             });
+
+            //custom event on new farmer addition
             this.events.subscribe('table:farmerAdded', (local_fm_id) => { this.serverAddFarmer(local_fm_id); });
-            //subscribe for global events
+
+            //custom event on deleting farmer or tbl_land_details, tbl_cultivation_data, tbl_yield_details, tbl_loan_details row
             this.events.subscribe('farmer:deletedLocal', () => { this.deleteServer(); });
 
             //Register hardware back button
             platform.registerBackButtonAction(() => {
 
+                //get current active view for example HomePage
                 let currentView = this.nav.getActive();
+
+                //check if alert already preset
                 if(this.MyAlert == null){
+                    //if menu is already open close it
                     if(menu.isOpen()){
                         menu.close();
                     }
                     else{
 
+                        //if active page is HomePage or UserLogin page then prompt confirmation alert
                         if(currentView.component.name == 'HomePage' || currentView.component.name == 'UserLogin' ){
                             if(this.alert == null){
                                 this.alert = this.alertCtrl.create({
                                     title: 'Agribridge',
                                     message: 'Press Exit to exit.',
                                     buttons: [
-                                    {
-                                        text: 'Cancel',
-                                        role: 'cancel',
-                                        handler: () => {
-                                            console.log('Cancel clicked');
-                                            this.alert = null;
+                                        {
+                                            text: 'Cancel',
+                                            role: 'cancel',
+                                            handler: () => {
+                                                console.log('Cancel clicked');
+                                                this.alert = null;
+                                            }
+                                        },
+                                        {
+                                            text: 'Exit',
+                                            handler: () => {
+                                                platform.exitApp();
+                                            }
                                         }
-                                    },
-                                    {
-                                        text: 'Exit',
-                                        handler: () => {
-                                            platform.exitApp();
-                                        }
-                                    }
                                     ]
                                 });
 
                                 this.alert.present();
-                                // console.log(1212122);
                             }
                             else{
                                 this.alert.dismiss();
@@ -194,17 +194,21 @@ export class MyApp {
                             }
                         }
                         else{
-
+                            //if active page is not HomePage or UserLogin page
                             let activePopover = this.ionicApp._modalPortal.getActive() ||
                                                 this.ionicApp._toastPortal.getActive() ||
                                                 this.ionicApp._overlayPortal.getActive();
+
+                            //if any popover is active (i.e. modal, toast and overlay) dismiss them first
                             if(activePopover){
                                 activePopover.dismiss();
                             }
                             else{
+                                //if active page is FarmersPage then do manual back behavior
                                 if(currentView.component.name == 'FarmersPage'){
                                     this.nav.setRoot('HomePage');
                                 }else{
+                                    //otherwise normal back behavior
                                     this.nav.pop();
                                 }
                             }
@@ -220,11 +224,77 @@ export class MyApp {
             { title: 'My Farmers', component: 'FarmersPage',   icon: 'people'},
             // { title: 'Help',       component: 'SlidesPage',    icon: 'help-buoy'},
         ];
-            // { title: 'Account',    component: 'HomePage',      icon: 'analytics'},
-        // if(this.currentUser.userType == 'Admin'){
-        //     console.log(this.currentUser, "....");
-        //     this.pages.push({ title: 'FPO', component: 'FpoPage',    icon: 'person-add'});
-        // }
+    }
+
+    sync(){
+        setTimeout(() => {
+            console.log("syncing server....");
+            this.sql.query("select fm_id from tbl_farmers", []).then((farmers) => {
+                let arr_fm_ids = [];
+                for(let i=0; i < farmers.res.rows.length; i++){
+                    arr_fm_ids.push(farmers.res.rows.item(i)["fm_id"]);
+                }
+                this.api.post("getDeleted", {fm_ids : arr_fm_ids.toString()})
+                .map((res) => res.json())
+                .subscribe(data => {
+                    if(data.success){
+                        let fm_ids = data.data.length > 0 ? data.data.toString() : null;
+                        this.deleteSync(fm_ids).then((succ) => {
+                            if(succ){
+                                this.loadFpos();
+                                this.deleteServer();
+                                this.sendAllData();
+                            }
+                        });
+                    }
+                }, error => {
+                    console.log(error);
+                });
+            }, err => { console.log(err) });
+        }, 5000);
+    }
+
+    deleteSync(fm_ids: string): Promise<any> {
+        return new Promise((resolve, reject) => {
+            // delete by local_id from all table except tbl_farmers
+            // because all table's fm_id is equal to local_id of tbl_farmers table
+            if(fm_ids != null){
+                let tableIn = [
+                    "tbl_personal_detail",
+                    "tbl_residence_details",
+                    "tbl_applicant_knowledge",
+                    "tbl_spouse_knowledge",
+                    "tbl_applicant_phone",
+                    "tbl_family_details",
+                    "tbl_appliances_details",
+                    "tbl_spouse_details",
+                    "tbl_land_details",
+                    "tbl_asset_details",
+                    "tbl_livestock_details",
+                    "tbl_cultivation_data",
+                    "tbl_yield_details",
+                    "tbl_financial_details",
+                    "tbl_loan_details",
+                ];
+
+                let db = this.sql.getDb();
+                db.transaction((tx:any) => {
+                    for (let i = 0; i < tableIn.length; i++) {
+                        tx.executeSql("DELETE FROM "+ tableIn[i] +" WHERE fm_id IN (SELECT tbl_farmers.local_id FROM tbl_farmers WHERE fm_id IN ("+ fm_ids +"));");
+                    }
+                    tx.executeSql("DELETE FROM tbl_farmers WHERE fm_id IN ("+ fm_ids +");");
+                    tx.executeSql("DELETE FROM tbl_errors WHERE local_id IN (SELECT tbl_farmers.local_id FROM tbl_farmers WHERE fm_id IN ("+ fm_ids +"));");
+
+                    resolve({success : true});
+                },(txx, e) => {
+                    console.log( "error while wiping data", e);
+                    reject({success : false});
+                });
+            }
+            else{
+                resolve({success : true});
+            }
+        });
     }
 
     loadFpos(){
@@ -283,7 +353,6 @@ export class MyApp {
     }
 
     logout(){
-
         //check if online
         if(this.online){
 
@@ -384,7 +453,7 @@ export class MyApp {
         return loading;
     }
 
-    //fired when any form udated
+    //fired when any form is getting udated
     async eventTableUpdated(tablename, lfm_id){
         // console.log(tablename,'event called', this.online);
         //look for internet

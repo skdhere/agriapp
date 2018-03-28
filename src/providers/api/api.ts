@@ -116,7 +116,7 @@ export class Api {
     private httpCallReady(): void {
         this.activeCalls--;
         if (this.activeCalls === 0) {
-            // console.log('Http Done!');
+            // console.log('Http idle...');
             this.events.publish('API:RequestIdle');
             this.storage.set('httpStatus', 'false');
         }
@@ -124,7 +124,7 @@ export class Api {
 
     private httpCallRequested(): void {
         if (this.activeCalls === 0) {
-            // console.log('Http start!');
+            // console.log('Http busy...');
             this.events.publish('API:RequestBusy');
             this.storage.set('httpStatus', 'true');    
         }

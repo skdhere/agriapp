@@ -46,7 +46,6 @@ export class AuthService {
                 }, error => {
                     observer.next('error');
                 });
-
             });
         }
     }

@@ -52,11 +52,6 @@ import 'rxjs/add/operator/map';
  			}
  		});
 
- 		this.api.getHttpStatus().then( (data) => {
- 			console.log('storage', data);
- 			this.sync = data;
- 		});
-
  		console.log(this.sync);
  		this.events.subscribe('API:RequestBusy', () => {
  			console.log('busy......');
@@ -78,6 +73,11 @@ import 'rxjs/add/operator/map';
  		},
  		err => {
  			console.log(err);
+ 		});
+
+ 		this.api.getHttpStatus().then( (data) => {
+ 			console.log('storage', data);
+ 			this.sync = data;
  		});
  	}
 
