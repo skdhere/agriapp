@@ -139,6 +139,7 @@ export class PreloadPage {
 
         //update database
         console.warn('Prepare to db version 1.0.1');
+        
         this.sql.query(`CREATE TABLE IF NOT EXISTS db_versions(
             id INTEGER PRIMARY KEY,
             version text

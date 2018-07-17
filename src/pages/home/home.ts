@@ -28,6 +28,7 @@ import 'rxjs/add/operator/map';
  	totalUploaded: any = 0;
  	isApp: boolean = false;
  	sync: any = false; 
+ 	dataUploaded: any = false;
  	constructor(private menu: MenuController, 
  				public navCtrl: NavController,
                 public  platform: Platform, 
@@ -60,6 +61,14 @@ import 'rxjs/add/operator/map';
 
  		this.events.subscribe('API:RequestIdle', () => {
  			console.log('Idle......');
+ 			// this.showMessage('Data uploaded to server','success');
+ 			this.sync = 'false';
+ 		});
+
+ 		this.events.subscribe('API:sendAllData', () => {
+ 			console.log('Idle......');
+ 			console.log('test......');
+			this.showMessage('Data uploaded to server','success');
  			this.sync = 'false';
  		});
  	}
@@ -97,7 +106,7 @@ import 'rxjs/add/operator/map';
 	      duration: dur || 5000,
 	      closeButtonText: 'Ok',
 	      cssClass: style,
-	      dismissOnPageChange: true
+	      dismissOnPageChange: true,
 	    });
 
 	    toast.present();
@@ -164,4 +173,6 @@ import 'rxjs/add/operator/map';
  		this.events.unsubscribe('API:RequestBusy');
  		this.events.unsubscribe('API:RequestIdle');
  	}
+
+
 }

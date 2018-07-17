@@ -19,7 +19,7 @@ import 'rxjs/add/operator/map';
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    version: string = "1.1.2";
+    version: string = "1.1.4";
     rootPage: any = 'PreloadPage';
     // rootPage: any = 'LoginPage';
     alert: any;
@@ -789,11 +789,19 @@ export class MyApp {
             if(queue.res.rows.length > 0) {
                 //Go through all queue
                 for (var j = 0; j < queue.res.rows.length; j++) {
-                    let que = queue.res.rows.item(j);
-                    if(que['tablename'] === 'tbl_farmers'){
-                        //get farmer row from tbl_farmers
-                        queue.tx.executeSql('SELECT * FROM tbl_farmers WHERE local_id = ?', [que['local_id']], (txx, data) => {
 
+                    let que = queue.res.rows.item(j);
+
+                    if(que['tablename'] === 'tbl_farmers'){
+
+                        console.log(que['tablename']);
+                        //get farmer row from tbl_farmers
+
+                        this.sql.query("SELECT * FROM tbl_farmers WHERE local_id = ?",[que['local_id']]).then((queue1) => {
+                            let que1 = queue1.res.rows.item(0);
+
+                            let data  =  queue1.res;
+                             
                             if(data.rows.length > 0){
                                 let single = data.rows.item(0);
 
@@ -817,11 +825,44 @@ export class MyApp {
                                     }, error => {
                                         console.log(error);
                                     });
+
                                     this.httpSubscriptions.push(req);
                                 }
                             }
+                            console.log(" new data",que1);
+                        });
 
-                        }, (txx, err) => {console.log(err);});
+
+                        // queue.tx.executeSql('SELECT * FROM tbl_farmers WHERE local_id = ?', [que['local_id']], (txx, data) => {
+
+                        //     if(data.rows.length > 0){
+                        //         let single = data.rows.item(0);
+
+                        //         //update to server if required
+                        //         if(single.fm_id !== 'false' && single.fm_id != '' && single.fm_id != null){
+                        //             single['tablename'] = 'tbl_farmers';
+
+                        //             let req = this.api.put("add_farmer", single)
+                        //             .map((res) => res.json())
+                        //             .subscribe(success => {
+                        //                 //on success change upload status to 1
+                        //                 if(success.success){
+                        //                     this.sql.updateUploadStatus(single.tablename, single['local_id'], '1');
+                        //                 }
+                        //                 else{
+                        //                     //add error messages to error table
+                        //                     for(let j = 0; j < success.data.length; j++){
+                        //                         this.sql.addError(single.tablename, single['local_id'], success.data[j].error_code, success.data[j].error_message);
+                        //                     }
+                        //                 }
+                        //             }, error => {
+                        //                 console.log(error);
+                        //             });
+                        //             this.httpSubscriptions.push(req);
+                        //         }
+                        //     }
+
+                        // }, (txx, err) => {console.log(err);});
                     }
                     else{
                         if( que['tablename'] == 'tbl_land_details' || 
@@ -833,6 +874,11 @@ export class MyApp {
                         }else{
                             this.eventTableUpdated(que['tablename'], que['local_id']);
                         }
+                    }
+
+                    if(j==(queue.res.rows.length-1))
+                    {
+                        this.events.publish('API:sendAllData');
                     }
                 }
             }
