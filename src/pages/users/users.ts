@@ -8,10 +8,10 @@ import { UserProvider } from '../../providers/user/user';
 
 @IonicPage()
 @Component({
-  selector: 'page-fpo',
-  templateUrl: 'fpo.html',
+  selector: 'page-users',
+  templateUrl: 'users.html',
 })
-export class FpoPage {
+export class UsersPage {
 	items: Array<any>         = [];
 	limit: number             = 15;
 	offset: number            = 0;
@@ -78,10 +78,10 @@ export class FpoPage {
 
 	doInfinite(infiniteScroll?) {
 		
-		this.api.post("get_fpo", {offset: this.offset, limit: this.limit})
+		this.api.post("get_Users", {offset: this.offset, limit: this.limit})
         .map((res) => res.json())
         .subscribe(success =>{
-
+        	console.log(success.data);
             if(success.success){
             	for (var i = 0; i < success.data.length; i++) {
             		this.items.push(success.data[i]);
