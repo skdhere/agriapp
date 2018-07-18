@@ -1,0 +1,106 @@
+<!--
+  Generated template for the AddFarmerPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+	<ion-navbar color="app">
+		<ion-title>Add Farmer</ion-title>
+	</ion-navbar>
+</ion-header>
+<ion-content>
+	<form [formGroup]="personal">
+		<ion-list>
+			<!-- <ion-item-divider color="light">Personal Information</ion-item-divider> -->
+
+
+			<div padding>
+
+				<ion-item padding>
+				    <select-searchable
+				        title="Select FPO"
+				        formControlName="fm_fpo"
+				        [items]="fpos"
+				        itemValueField="id"
+				        itemTextField="fpo_name"
+				        [canSearch]="true"
+				        searchColor="mdpurple">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_fpo.invalid  && (personal.controls.fm_fpo.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fm_fpo.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+					<ion-label floating>First Name <span>*</span></ion-label>
+					<ion-input formControlName="fm_fname" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_fname.valid  && (personal.controls.fm_fname.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fm_fname.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fm_fname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fm_fname.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Middle Name</ion-label>
+					<ion-input formControlName="fm_mname" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_mname.valid  && (personal.controls.fm_mname.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fm_mname.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fm_mname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fm_mname.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Last Name <span>*</span></ion-label>
+					<ion-input formControlName="fm_lname" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fm_lname.valid  && (personal.controls.fm_lname.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fm_lname.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fm_lname.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fm_lname.errors.maxlength.requiredLength}}</p>
+				</div>
+
+
+				<!-- <ion-item>
+					<ion-label floating>Mobile no.</ion-label>
+					<ion-input formControlName="fm_mobileno" type="tel" mask='9999-999-999'></ion-input>
+				</ion-item> -->
+				<ion-item>
+					<ion-label floating>Mobile no. <span>*</span></ion-label>
+					<ion-input formControlName="fm_mobileno" type="tel"></ion-input>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_mobileno.pending">
+	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fm_mobileno.pending && !personal.controls.fm_mobileno.valid  && (personal.controls.fm_mobileno.dirty || submitAttempt)">
+					<p *ngIf="!personal.controls.fm_mobileno.errors.taken">Please enter a 10 digit valid mobile no. </p>
+					<p *ngIf="personal.controls.fm_mobileno.errors.taken">The Mobile no. is already assigned to another user.</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>Aadhaar no. <span>*</span></ion-label>
+					<ion-input formControlName="fm_aadhar" type="number" ></ion-input>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_aadhar.pending">
+	                <p>Checking aadhar... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fm_aadhar.pending && !personal.controls.fm_aadhar.valid  && (personal.controls.fm_aadhar.dirty || submitAttempt)">
+					<p *ngIf="!personal.controls.fm_aadhar.errors.taken">Please enter a 12 digit valid Aadhar no.</p>
+					<p *ngIf="personal.controls.fm_aadhar.errors.taken">The Aadhar no. is already assigned to another user.</p>
+				</div>
+				
+			</div>
+		</ion-list>
+	</form>
+	<div class="list-retry" padding *ngIf="retryButton">
+		<div padding class="img-error"></div>
+		<h6>Oops! something went wrong.</h6>
+		<div>
+			<button ion-button color="light" (click)="ionViewDidLoad()">Retry</button>
+		</div>
+	</div>
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab>
+			<ion-icon name="checkmark"></ion-icon>
+		</button>
+	</ion-fab>
+</ion-content>

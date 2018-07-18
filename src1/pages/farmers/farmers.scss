@@ -1,0 +1,41 @@
+farmers-page{
+	ion-item{
+		h2{
+			font-weight: bold !important;
+			text-transform: capitalize;
+		}
+	}
+
+	.active_cls{
+		-webkit-animation: target-fade 4s 1;
+	}
+
+
+	@-webkit-keyframes target-fade {
+	  0% { background-color: rgba(1, 1, 1, .1); }
+	  100% { background-color: rgba(1, 1, 1, 0); }
+	}
+
+	@-moz-keyframes target-fade {
+	  0% { background-color: rgba(1, 1, 1, .1); }
+	  100% { background-color: rgba(1, 1, 1, 0); }
+	}
+
+	.no-farmers{
+		text-align: center;
+		img{
+			width: 35%; 
+			opacity: 0.2;
+		}
+		h6{
+			color: #b7b7b7;
+		}
+	}
+
+	.no-more-item{
+		text-align: center;
+		opacity: 0.3;
+		margin-top: 50px;
+		margin-bottom: 50px;
+	}
+}

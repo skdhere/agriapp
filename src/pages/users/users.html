@@ -12,14 +12,14 @@
 <ion-content class="list-avatar-page">
     <ion-list>
         <ion-list-header>Users</ion-list-header>
-        <ion-item-sliding *ngFor="let fpo of items; let i = index;">
+        <ion-item-sliding *ngFor="let user of items; let i = index;">
             <ion-item (click)="itemTapped($event, i)">
                 
                 <ion-avatar item-start>
                     <img src="assets/images/user.png" onerror="this.onerror=null; this.src='assets/images/user.png';">
                 </ion-avatar>
-                <h2 color="app">{{fpo.fname}} ({{fpo.userType}})</h2>
-                <p>{{fpo.emailId}}</p>
+                <h2 color="app">{{user.fname}} ({{user.userType}})</h2>
+                <p>{{user.emailId}}</p>
 
 
             </ion-item>
@@ -41,8 +41,7 @@
     <div *ngIf="infinit_complete && items.length > 0" class="no-more-item">
         <h6>No more Users available.</h6>
         <div>
-	}
-            <button ion-button outline small color="app" (click)="goto('AddUserPage')">Add User</button>
+	        <button ion-button outline small color="app" (click)="goto('AddUserPage')">Add User</button>
         </div>
     </div>
     <!-- ionic infinite loading -->

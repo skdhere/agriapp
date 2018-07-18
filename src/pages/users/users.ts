@@ -138,7 +138,7 @@ export class UsersPage {
 
 	itemTapped(event, row_num) {
 		this.last_selected = row_num;
-		let fpo = this.items[row_num];
+		let user = this.items[row_num];
 
 		let _that = this;
 		let myCallbackFunction = function(_params) {
@@ -154,9 +154,9 @@ export class UsersPage {
 			});
 		}
 
-		console.log(fpo);
-		this.navCtrl.push('AddFpoPage', {
-			fpo: fpo,
+		console.log('user');
+		this.navCtrl.push('AddUserPage', {
+			user: user,
 			callback: myCallbackFunction
 		});
 	}
@@ -183,7 +183,7 @@ export class UsersPage {
                 handler: () => {
                 	this.loading = this.loadingCtrl.create({ dismissOnPageChange : true });
                 	this.loading.present().then(() => {
-	                	this.api.post("delete_fpo", {id: fpo['id']})
+	                	this.api.post("delete_user", {id: fpo['id']})
 				        .map((res) => res.json())
 				        .subscribe(success =>{
 

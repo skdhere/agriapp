@@ -1,0 +1,46 @@
+<ion-split-pane>
+    <ion-menu [content]="content">
+        <ion-header>
+            <ion-toolbar color="app">
+                <ion-title>Agribridge <small class="_version">(Beta v{{version}})</small></ion-title>
+            </ion-toolbar>
+            <ion-toolbar class="custom-subheader" color="app">
+                <ion-title>{{currentUser.emailId}}
+                    <ion-icon *ngIf="online" name="radio-button-on" color="secondary"> </ion-icon>
+                    <ion-icon *ngIf="!online" name="radio-button-on" color="danger"> </ion-icon>
+                </ion-title>
+            </ion-toolbar>
+        </ion-header>
+        <ion-content>
+            <ion-list no-lines class="side-menu">
+                <button menuClose ion-item *ngFor="let p of pages" (click)="openPage(p)">
+                    <ion-icon name="{{p.icon}}" item-start></ion-icon>
+                    {{p.title}}
+                </button>
+                <hr>
+                <div *ngIf="currentUser.userType == 'Admin'">
+                    <button menuClose ion-item (click)="openPage({component: 'FpoPage'})">
+                        <ion-icon name="person-add" item-start></ion-icon>
+                        Fpo
+                    </button>
+
+                    <button menuClose ion-item (click)="openPage({component: 'UsersPage'})">
+                        <ion-icon name="person-add" item-start></ion-icon>
+                        Users
+                    </button>
+
+                    <button menuClose ion-item (click)="openPage({component: 'ReportsPage'})">
+                        <ion-icon name="pulse" item-start></ion-icon>
+                        Reports
+                    </button>
+                </div>
+                <button menuClose ion-item (click)="logout()">
+                    <ion-icon name="power" item-start></ion-icon>
+                    Logout
+                </button>
+            </ion-list>
+        </ion-content>
+    </ion-menu>
+    <!-- Disable swipe-to-go-back because it's poor UX to combine STGB with side menus -->
+    <ion-nav [root]="rootPage" #content swipeBackEnabled="false" main></ion-nav>
+</ion-split-pane>

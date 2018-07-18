@@ -1,0 +1,49 @@
+<ion-header>
+
+  <ion-navbar color="app">
+    <ion-title>Reports</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+	<ion-list>
+
+		<!-- <ion-item *ngFor="let cg of items">
+			{{cg.name}}
+			<ion-badge item-end color="app">{{cg.total}}</ion-badge>
+		</ion-item> -->
+		<ion-row>
+			<ion-col>
+				<ion-item>
+					<ion-label floating>Start Date</ion-label>
+					<ion-datetime displayFormat="DD/MM/YYYY" min="2017" max="2020" pickerFormat="DD MMM YYYY" [(ngModel)]="sdate" (ionChange)="onDateChange()"></ion-datetime>
+				</ion-item>
+			</ion-col>
+			<ion-col>
+				<ion-item>
+					<ion-label floating>End Date</ion-label>
+					<ion-datetime displayFormat="DD/MM/YYYY" min="2017" max="2020" pickerFormat="DD MMM YYYY" [(ngModel)]="edate" (ionChange)="onDateChange()"></ion-datetime>
+				</ion-item>
+			</ion-col>
+		</ion-row>
+
+		<ion-grid padding>
+			<ion-row>
+				<ion-col class="col-bold" col-4>Name</ion-col>
+				<ion-col class="col-center col-bold" col-2>Total</ion-col>
+				<ion-col class="col-center col-bold" col-3>Complete</ion-col>
+				<ion-col class="col-center col-bold" col-3>Incomplete</ion-col>
+			</ion-row>
+			<ion-row class="my-col" *ngFor="let cg of items">
+				<ion-col col-4>{{cg.name}}</ion-col>
+				<ion-col class="col-center" col-2>{{cg.total}}</ion-col>
+				<ion-col class="col-center" col-3>{{cg.complete}}</ion-col>
+				<ion-col class="col-center" col-3>{{cg.incomplete}}</ion-col>
+			</ion-row>
+		</ion-grid>
+
+
+	</ion-list>
+</ion-content>

@@ -1,0 +1,63 @@
+<ion-header>
+    <ion-navbar color="app">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>FPO</ion-title>
+    </ion-navbar><!-- 
+    <ion-toolbar color="app">
+        <ion-searchbar (ionInput)="getItems($event)"></ion-searchbar>
+    </ion-toolbar> -->
+</ion-header>
+<ion-content class="list-avatar-page">
+    <ion-list>
+        <ion-list-header>FPOs</ion-list-header>
+        <ion-item-sliding *ngFor="let fpo of items; let i = index;">
+            <ion-item (click)="itemTapped($event, i)">
+                
+                <ion-avatar item-start>
+                    <img src="assets/images/user.png" onerror="this.onerror=null; this.src='assets/images/user.png';">
+                </ion-avatar>
+                <h2 color="app">{{fpo.fpo_name}}</h2>
+                <p>{{fpo.fpo_email}}</p>
+
+
+            </ion-item>
+            <ion-item-options>
+                <button ion-button color="danger" icon-start (click)="deleteItem(i)">
+                    <ion-icon name="trash"></ion-icon>
+                    Delete
+                </button>
+            </ion-item-options>
+        </ion-item-sliding>
+    </ion-list>
+
+    <ion-fab right bottom>
+        <button ion-fab color="app" (click)="goto('AddFpoPage')">
+            <ion-icon name="add"></ion-icon>
+        </button>
+    </ion-fab>
+
+    <div *ngIf="infinit_complete && items.length > 0" class="no-more-item">
+        <h6>No more FPO available.</h6>
+        <div>
+            <button ion-button outline small color="app" (click)="goto('AddFpoPage')">Add Fpo</button>
+        </div>
+    </div>
+    <!-- ionic infinite loading -->
+    <ion-infinite-scroll *ngIf="!infinit_complete" threshold="1%" (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content>
+        </ion-infinite-scroll-content>
+    </ion-infinite-scroll>
+
+
+    <!-- message on empty list -->
+    <div *ngIf="items.length < 1" class="no-farmers">
+        <img src="assets/images/farmer_list_placeholder.png">
+        <h6>No FPO's found!</h6>
+        <div>
+            <button ion-button color="app" (click)="goto('AddFpoPage')">Add FPO</button>
+        </div>
+    </div>
+    
+</ion-content>

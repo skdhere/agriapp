@@ -1,0 +1,126 @@
+<!--
+  Generated template for the LoanDetailsAddPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar color="app">
+    <ion-title>Loan Detail</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="loan">
+		<ion-list>
+			<ion-item>
+				<ion-label floating>When Did You Borrow The Loan? <span>*</span></ion-label>
+				<ion-datetime displayFormat="DD/MM/YYYY" pickerFormat="DD MMM YYYY" formControlName="loan_sanctioned"></ion-datetime>
+			</ion-item>
+			<div *ngIf="!loan.controls.loan_sanctioned.valid  && (loan.controls.loan_sanctioned.dirty || submitAttempt)">
+				<p *ngIf="loan.controls.loan_sanctioned.errors.required">Please enter a valid Date.</p>
+			</div>
+
+	        <ion-item>
+			    <ion-label floating>Mention The Loan Type <span>*</span></ion-label>
+			    <ion-select formControlName="loan_type" interface="popover">
+			      <ion-option value="Education">Education</ion-option>
+			      <ion-option value="Land">Land</ion-option>
+			      <ion-option value="Agriculture">Agriculture</ion-option>
+			      <ion-option value="Two Wheeler">Two Wheeler</ion-option>
+			      <ion-option value="Equipment">Equipment</ion-option>
+			      <ion-option value="Irrigation">Irrigation</ion-option>
+			      <ion-option value="Fencing">Fencing</ion-option>
+			      <ion-option value="Housing">Housing</ion-option>
+			      <ion-option value="Construction/Renovation">Construction/Renovation</ion-option>
+			      <ion-option value="Four Wheeler">Four Wheeler</ion-option>
+			      <ion-option value="Electronics">Electronics</ion-option>
+			      <ion-option value="NA">NA</ion-option>
+			      <ion-option value="Others">Others</ion-option>
+			    </ion-select>
+			</ion-item>
+			<div *ngIf="loan.controls.loan_type.invalid  && (loan.controls.loan_type.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.loan_type.errors.required">This field is required.</p>
+	        </div>
+
+	        <ion-item>
+	            <ion-label floating>Provider <span>*</span></ion-label>
+	            <ion-input formControlName="loan_provider" type="text"></ion-input>
+	        </ion-item>
+	        <div *ngIf="loan.controls.loan_provider.invalid  && (loan.controls.loan_provider.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.loan_provider.errors.required">This field is required.</p>
+	            <p *ngIf="loan.controls.loan_provider.errors.maxlength">Lenght should be smaller than or equal to 100.</p>
+	        </div>
+
+			<ion-item>
+	            <ion-label floating>Mention The Borrowed Amount <span>*</span></ion-label>
+	            <ion-input formControlName="f15_borrowed_amount" type="number"></ion-input>
+	        </ion-item>
+	        <div *ngIf="loan.controls.f15_borrowed_amount.invalid  && (loan.controls.f15_borrowed_amount.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.f15_borrowed_amount.errors.required">This field is required.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_amount.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_amount.errors.pattern">Please enter a valid number.</p>
+	        </div>
+
+	        <ion-item>
+	            <ion-label floating>Rate Of Interest <span>*</span></ion-label>
+	            <ion-input formControlName="f15_borrowed_loan_per" type="number"></ion-input>
+	        </ion-item>
+	        <div *ngIf="loan.controls.f15_borrowed_loan_per.invalid  && (loan.controls.f15_borrowed_loan_per.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.f15_borrowed_loan_per.errors.required">This field is required.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_loan_per.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_loan_per.errors.pattern">Please enter a valid number.</p>
+	        </div>
+
+	        <ion-item>
+	            <ion-label floating>Loan Tenure In Months <span>*</span></ion-label>
+	            <ion-input formControlName="f15_borrowed_loan_month" type="number"></ion-input>
+	        </ion-item>
+	        <div *ngIf="loan.controls.f15_borrowed_loan_month.invalid  && (loan.controls.f15_borrowed_loan_month.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.f15_borrowed_loan_month.errors.required">This field is required.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_loan_month.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_loan_month.errors.pattern">Please enter a valid number.</p>
+	        </div>
+
+	        <ion-item>
+				Total Loan Amount : {{loan.controls.f15_borrowed_total_amount.value}}
+			</ion-item>
+			<ion-item>
+				Total Loan Interest : {{loan.controls.f15_borrowed_total_int.value}}
+			</ion-item>
+			<ion-item>
+				EMI Per Month : {{loan.controls.f15_borrowed_amount_emi.value}}
+			</ion-item>
+
+			<ion-item>
+	            <ion-label floating>How Much Emi Paid? (In Months) <span>*</span></ion-label>
+	            <ion-input formControlName="f15_borrowed_emi_paid" type="number"></ion-input>
+	        </ion-item>
+	        <div *ngIf="loan.controls.f15_borrowed_emi_paid.invalid  && (loan.controls.f15_borrowed_emi_paid.dirty || submitAttempt)">
+	            <p *ngIf="loan.controls.f15_borrowed_emi_paid.errors.required">This field is required.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_emi_paid.errors.maxlength">Lenght should be smaller than or equal to 10.</p>
+	            <p *ngIf="loan.controls.f15_borrowed_emi_paid.errors.pattern">Please enter a valid number.</p>
+	        </div>
+
+	        <ion-item>
+				Outstanding Loan Amount (With Interest) : {{loan.controls.f15_borrowed_outstanding_amount.value}}
+			</ion-item>
+			<ion-item>
+				Outstanding Loan Amount (Principal) : {{loan.controls.f15_borrowed_outstanding_principal.value}}
+			</ion-item>
+			<ion-item>
+				Therefore, No. Of Months To Clear Outstanding : {{loan.controls.f15_borrowed_amount_emi_rem.value}}
+			</ion-item>
+
+		</ion-list>
+	</form>
+
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab>
+			<ion-icon name="checkmark"></ion-icon>
+		</button>
+	</ion-fab>
+</ion-content>

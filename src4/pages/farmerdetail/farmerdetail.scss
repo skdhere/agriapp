@@ -1,0 +1,21 @@
+page-farmerdetail {
+	ion-toolbar.toolbar{
+		.tab-buttons-container{
+			.tab-buttons{
+				super-tab-button{
+					flex: none;
+				}
+			} 
+		} 
+	}
+
+	super-tabs div.toolbar-background {
+		transition: background-color linear .2s;
+	}
+
+	ion-navbar {
+		.toolbar-background{
+			transition: background-color linear .2s;
+		}
+	}
+}

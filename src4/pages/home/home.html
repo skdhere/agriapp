@@ -1,0 +1,48 @@
+<ion-header>
+    <ion-navbar color="transparent">
+        <button ion-button menuToggle>
+            <ion-icon name="menu"></ion-icon>
+        </button>
+        <ion-title>
+            
+        </ion-title>
+    </ion-navbar>
+</ion-header>
+<ion-content>
+    <div class="background-image"></div>
+    <!-- <div class="logo"></div> -->
+    <div class="logo-text">
+        Agribridge
+        <div style="height: 15px;" *ngIf="sync == 'true'">
+            <ion-spinner></ion-spinner><small> Syncing server...</small>
+        </div>
+       <!--  <div style="height: 15px;" *ngIf="dataUploaded == 'true'">
+            <ion-spinner></ion-spinner><small> Data Uploadec to server...</small>
+        </div> -->
+    </div>
+    <ion-grid>
+        <ion-row>
+            <ion-col ion-button color="secondary" (click)="goto('AddFarmerPage')">
+                <ion-icon name="add"></ion-icon>
+                <h6>ADD FARMER</h6>
+            </ion-col>
+            <ion-col ion-button color="app" (click)="goto('FarmersPage')">
+                <ion-icon name="list-box"></ion-icon>
+                <h6>LIST FARMERS</h6>
+            </ion-col>
+        </ion-row>
+
+        <ion-row>
+            
+            <ion-col ion-button color="dark" (click)="goto('FarmersPage')">
+                <ion-icon name="">{{totalFarmers || 0}}</ion-icon>
+                <h6>TOTAL FARMERS</h6>
+            </ion-col><!-- 
+            <ion-col ion-button color="dark">
+                <ion-icon name="cloud-upload"></ion-icon>
+                <h6>UPLOAD TO <br>SERVER</h6>
+            </ion-col> -->
+        </ion-row>
+
+    </ion-grid>
+</ion-content>

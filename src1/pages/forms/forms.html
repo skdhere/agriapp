@@ -1,0 +1,46 @@
+<ion-content scroll="false">
+    <div class="splash-bg"></div>
+    <!-- <div class="splash-info">
+        <div class="splash-logo" style="background: url('../assets/img/images.jpg') repeat transparent;"></div>
+    </div> -->
+    <ion-card *ngIf="errors.length > 0">
+        <ion-card-header> Please correct the following issues. </ion-card-header>
+        <ion-card-content>
+            <div *ngFor="let err of errors">
+                <ion-icon name="information-circle" color="danger">
+                    {{err.error_message}}
+                </ion-icon>
+            </div>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-grid>
+        <ion-row>
+            <ion-col col-12>
+                <div padding>
+                    <ion-list>
+                        <button ion-item *ngFor="let form of forms" (click)="onTap(form.pageName)" no-lines>
+                            <ion-icon name="{{form.icon}}" item-start></ion-icon>
+                            {{form.title}}
+                            <!-- <ion-badge item-end color="{{ form.point <= 10 ? 'danger' : (form.point >= 50 ? 'secondary' : 'primary') }}">{{form.point}}</ion-badge> -->
+                            <ion-icon name="checkmark-circle" color="{{ form.isUpdated ? 'secondary' : 'light'}}" item-end></ion-icon>
+                        </button>
+                    </ion-list>
+
+                    <ion-grid *ngIf="form_name=='Documents'">
+                        <ion-row>
+                            <ion-col *ngFor="let image of images" col-6>
+                                <div class="image-wrapper">
+                                    <input type="file" (change)="readFile($event, image)">
+                                    <img ion-button [src]="image.uri" imageViewer>
+                                    <div class="image-title">{{image.title}}</div>
+                                </div>
+                            </ion-col>
+                        </ion-row>
+                    </ion-grid>
+
+                </div>
+            </ion-col>
+        </ion-row>
+    </ion-grid>
+</ion-content>

@@ -1,0 +1,162 @@
+<ion-header>
+	<ion-navbar color="app">
+		<ion-title>User</ion-title>
+	</ion-navbar>
+</ion-header>
+<ion-content>
+	<form [formGroup]="personal">
+		<ion-list>
+			<div padding>
+				
+				<ion-item padding>
+				    <select-searchable
+				        title="Select User"
+				        formControlName="fm_fpo"
+				        [items]="fpos"
+				        itemValueField="id"
+				        itemTextField="fpo_name"
+				        [canSearch]="true"
+				        searchColor="mdpurple">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_fpo.invalid  && (personal.controls.fm_fpo.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fm_fpo.errors.required">This field is required.</p>
+		        </div>
+
+		        
+
+				<ion-item>
+					<ion-label floating>User Name<span>*</span></ion-label>
+					<ion-input formControlName="fpo_name" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fpo_name.valid  && (personal.controls.fpo_name.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_name.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_name.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fpo_name.errors.maxlength.requiredLength}}</p>
+				</div>
+
+
+				<ion-item padding>
+				    <select-searchable
+				        title="Select Userff"
+				        formControlName="user_type"
+				        [items]="userType"
+				        itemValueField="name"
+				        itemTextField="name"
+				        [canSearch]="true"
+				        searchColor="mdpurple">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_fpo.invalid  && (personal.controls.fm_fpo.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fm_fpo.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+					<ion-label floating>User Email <span>*</span></ion-label>
+					<ion-input formControlName="fpo_email" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_email.pending">
+	                <p>Checking ... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fpo_email.pending && !personal.controls.fpo_email.valid  && (personal.controls.fpo_email.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_email.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_email.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fpo_email.errors.maxlength.requiredLength}}</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>User Mobile <span>*</span></ion-label>
+					<ion-input formControlName="fpo_mobile" type="number"></ion-input>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_mobile.pending">
+	                <p>Checking mobile... <ion-spinner style="width: 8px; height: 10px"></ion-spinner></p>
+	            </div>
+				<div *ngIf="!personal.controls.fpo_mobile.pending && !personal.controls.fpo_mobile.valid  && (personal.controls.fpo_mobile.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_mobile.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_mobile.errors.taken">The Mobile no. is already assigned to another user.</p>
+					<p *ngIf="personal.controls.fpo_mobile.errors.maxlength || personal.controls.fpo_mobile.errors.minlength">Length shoud be 10</p>
+				</div>
+
+				<ion-item>
+					<ion-label floating>User Password <span>*</span></ion-label>
+					<ion-input formControlName="fpo_password" type="text"></ion-input>
+				</ion-item>
+				<div *ngIf="!personal.controls.fpo_password.valid  && (personal.controls.fpo_password.dirty || submitAttempt)">
+					<p *ngIf="personal.controls.fpo_password.errors.required">Please enter a valid name.</p>
+					<p *ngIf="personal.controls.fpo_password.errors.maxlength">Length shoud be equal to or smaller than {{personal.controls.fpo_password.errors.maxlength.requiredLength}}</p>
+				</div>
+
+
+				<!-- <ion-item>
+				    <select-searchable
+				        title="State"
+				        formControlName="fpo_state"
+				        [items]="states"
+				        itemValueField="name"
+				        itemTextField="name"
+				        [canSearch]="true"
+				        (onChange)="stateChange('p', $event)">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_state.invalid  && (personal.controls.fpo_state.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fpo_state.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+				    <select-searchable
+		                title="District"
+		                formControlName="fpo_district"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="districts"
+				        [canSearch]="true"
+		                (onChange)="districtChange('p', $event)">
+		            </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_district.invalid  && (personal.controls.fpo_district.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fpo_district.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+				    <select-searchable
+		                title="Taluka"
+		                formControlName="fpo_taluka"
+		                itemValueField="name"
+		                itemTextField="name"
+		                [items]="talukas"
+				        [canSearch]="true"
+		                (onChange)="talukaChange('p', $event)">
+		            </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_taluka.invalid  && (personal.controls.fpo_taluka.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fpo_taluka.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+				    <select-searchable
+		                title="Village"
+		                formControlName="fpo_village"
+		                itemValueField="name"
+		                itemTextField="name"
+				        [canSearch]="true"
+		                [items]="villages">
+		            </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fpo_village.invalid  && (personal.controls.fpo_village.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fpo_village.errors.required">This field is required.</p>
+		        </div> -->
+				
+			</div>
+		</ion-list>
+	</form>
+	<div class="list-retry" padding *ngIf="retryButton">
+		<div padding class="img-error"></div>
+		<h6>Oops! something went wrong.</h6>
+		<div>
+			<button ion-button color="light" (click)="ionViewDidLoad()">Retry</button>
+		</div>
+	</div>
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab>
+			<ion-icon name="checkmark"></ion-icon>
+		</button>
+	</ion-fab>
+</ion-content>

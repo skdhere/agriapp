@@ -1,0 +1,80 @@
+.ios, .md, .wp {
+    page-user-login {
+
+        .logo-row {
+            padding-top: 50px;
+            padding-bottom: 20px;
+        }
+
+        .logo {
+            border-radius: 50%;
+            background: #fff;
+        }
+
+        .login-box {
+            background: rgba(0, 0, 0, 0.28);
+            padding: 20px 20px 0px 20px;
+            margin-top: 30px;
+        }
+
+        ion-row {
+            align-items: center;
+            text-align: center;
+        }
+
+        ion-item {
+            border-radius: 30px !important;
+            padding-left: 30px !important;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            border: 1px solid #ffffff;
+            border-bottom: 0px !important;
+            box-shadow: none !important;
+        }
+
+        .signup-col {
+            margin: 0px 16px 0px 16px;
+            padding-bottom: 20px;
+        }
+
+        .logo-text {
+            position: relative;
+            color: #fff;
+            margin: auto;
+            text-align: center;
+            font-size: 40px;
+            font-family: cursive;
+            small {
+                font-family: normal;
+                font-size: 13px;
+            }
+        }
+
+        .toolbar::after,
+        .header-md::after {
+            background-image: none;
+        }
+
+        ion-content {
+            background-color: color($colors, primary);
+            background-image: url('../assets/images/farm-vector.jpg');
+            background-size: 40% auto;
+
+            .fixed-content {
+                background-color: rgba(color($colors, app), 0.93);
+            }
+        }
+
+        //.scroll-content { display: table; width: 100%; height: 100%; }
+        .centerAlign {
+            display: table-cell;
+            vertical-align: middle;
+            border: #ff0000 1px solid;
+        }
+
+        .item {
+            border: $border-color 1px solid !important;
+            margin-bottom: 10px;
+        }
+    }
+}

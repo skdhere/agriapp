@@ -1,0 +1,76 @@
+<ion-header>
+
+  	<ion-navbar color="app">
+    	<ion-title>Applicant's Phone Details</ion-title>
+  	</ion-navbar>
+  	
+</ion-header>
+
+
+<ion-content padding>
+	<form [formGroup]="phone">
+		<ion-list>
+			<div>
+				<ion-item>
+				    <ion-label floating>Type Of Phone Ownership <span>*</span></ion-label>
+				    <ion-select formControlName="f5_phonetype" interface="popover">
+						<ion-option *ngFor="let opt of list_f5_phonetype" value="{{opt.id}}" >{{opt.name}}</ion-option>
+				    </ion-select>
+				</ion-item>
+				<div *ngIf="phone.controls.f5_phonetype.invalid  && (phone.controls.f5_phonetype.dirty || submitAttempt)">
+		            <p *ngIf="phone.controls.f5_phonetype.errors.required">This field is required.</p>
+		        </div>
+
+				<ion-item>
+				    <ion-label floating>Who Is The Service Provider?</ion-label>
+				    <ion-select formControlName="f5_servpro" interface="popover">
+						<ion-option *ngFor="let opt of list_f5_servpro" value="{{opt.id}}" >{{opt.name}}</ion-option>
+				    </ion-select>
+				</ion-item>
+
+				<ion-item>
+				    <ion-label floating>Do You Receive Sufficeint Network Coverage?</ion-label>
+				    <ion-select formControlName="f5_network" interface="popover">
+						<ion-option *ngFor="let opt of list_f5_network" value="{{opt.id}}" >{{opt.name}}</ion-option>
+				    </ion-select>
+				</ion-item>
+			</div>
+
+			<div *ngIf="phone.controls.f5_phonetype.value === 'smartphone'">
+				<ion-item>
+				    <ion-label floating>Do You Have Data Pack On Your Phone ? </ion-label>
+				    <ion-select formControlName="f5_datapack" interface="popover">
+						<ion-option *ngFor="let opt of list_f5_datapack" value="{{opt.id}}" >{{opt.name}}</ion-option>
+				    </ion-select>
+				</ion-item>
+
+				<div *ngIf="phone.controls.f5_datapack.value === 'yes'">
+					<ion-item>
+					    <ion-label floating>Specify Data Pack </ion-label>
+					    <ion-select formControlName="f5_datapackname" interface="popover">
+							<ion-option *ngFor="let opt of list_f5_datapackname" value="{{opt.id}}" >{{opt.name}}</ion-option>
+					    </ion-select>
+					</ion-item>
+
+					<ion-item>
+					    <ion-label floating>Do You Use Apps Regularly</ion-label>
+					    <ion-select formControlName="f5_appuse" interface="popover">
+							<ion-option *ngFor="let opt of list_f5_appuse" value="{{opt.id}}" >{{opt.name}}</ion-option>
+					    </ion-select>
+					</ion-item>
+				</div>
+
+				<ion-item>
+				    <ion-label floating>Subscriptions To Farming Advisory Apps?</ion-label>
+				    <ion-select formControlName="f5_farmapp" interface="popover">
+						<ion-option *ngFor="let opt of list_f5_farmapp" value="{{opt.id}}" >{{opt.name}}</ion-option>
+				    </ion-select>
+				</ion-item>
+			</div>
+		</ion-list>
+	</form>
+
+	<ion-fab top right edge>
+		<button (click)="save()" ion-fab><ion-icon name="checkmark"></ion-icon></button>
+	</ion-fab>
+</ion-content>

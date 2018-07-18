@@ -1,0 +1,175 @@
+// http://ionicframework.com/docs/theming/
+
+
+// App Global Sass
+// --------------------------------------------------
+// Put style rules here that you want to apply globally. These
+// styles are for the entire app and not just one component.
+// Additionally, this file can be also used as an entry point
+// to import other Sass files to be included in the output CSS.
+//
+// Shared Sass variables, which can be used to adjust Ionic's
+// default Sass variables, belong in "theme/variables.scss".
+//
+// To declare rules for a specific mode, create a child rule
+// for the .md, .ios, or .wp mode classes. The mode class is
+// automatically applied to the <body> element in the app.
+
+small._version{
+	font-size: 12px;
+	font-style: italic;
+    color: #ccc;
+}
+
+.list-md{
+	.item-input:last-child{
+		border-bottom: none;
+	}
+} 
+
+.customAlertCss{
+
+	.btn-danger{
+		color: #F44336;
+	}
+}
+
+ion-toolbar.custom-subheader{
+	.toolbar-title{
+	    text-align: right;
+	    font-size: 13px;
+	    color: #ccc;
+	}
+}
+
+.logo-background{
+    background: url(../assets/img/capa.png);
+    width: 100%;
+    height: 112px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    .logo{
+    	background: url(../assets/img/dlogo.png);
+	    background-repeat: no-repeat;
+	    background-size: cover;
+	    background-color: #ffffff;
+	    width: 85px;
+	    height: 85px;
+	    border-radius: 50%;
+	    position: absolute;
+	    left: 10px;
+	    top: 10px;
+	    box-shadow: -5px 0px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    p{
+	    color: #3a3a3a;
+	    position: absolute;
+	    left: 110px;
+	    top: 19px;
+	    font-size: 23px;
+	    text-transform: uppercase;
+	    font-weight: bold;
+    }
+
+}
+
+ion-list.side-menu{
+    button{
+    	color: #5d5d5d;
+    }
+}
+
+
+.list-retry{
+	text-align: center;
+	h6{
+		color: #c2c2c2; 
+		font-weight: normal;
+	}
+	.img-error{
+		background-image: url(../assets/img/oops.png);	
+		width: 100%;
+		height: 200px;
+		background-size: 150px;
+		background-position: center;
+		background-repeat: no-repeat;
+		opacity: 0.3;
+	}
+}
+
+
+
+ion-label{
+	overflow: auto;
+	text-overflow: unset;
+	white-space: unset;
+	span{
+		color: red;
+	}
+}
+
+div	{
+	p {
+        font-size: 0.8em;
+	    color: #f76d6d;
+	    margin-top: 5px;
+	    margin-left: 16px;
+    }
+}
+
+div.tooltip-icon{
+	text-align: center;
+	color: #d3dce8;
+	div{
+		text-align: center;
+		ion-icon{
+			font-size: 130px;
+		}
+	}
+	small{
+		font-size: 100%;
+	}
+}
+
+.toast-danger{
+    background-color: rgba(255, 255, 255, 0.89);
+    background-image: url(../assets/img/oops.png);
+    background-size: 150px;
+    pointer-events: auto;
+    background-repeat: no-repeat;
+    background-position: center;
+	.toast-wrapper{
+		background-color: #F44336;
+	}
+}
+
+.toast-success{
+	.toast-wrapper{
+		background-color: #4caf50;
+	}
+}
+
+.danger{
+	.toast-wrapper{
+		background-color: #F44336;
+	}	
+}
+
+.success{
+	.toast-wrapper{
+		background-color: #4caf50;
+	}	
+}
+
+
+.item-md.item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner, .item-md.item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus) .item-inner{
+	border-bottom-color : #dedede;
+	box-shadow: none;
+}
+
+.list-md .item-input.ng-valid.item-input-has-value:not(.input-has-focus):not(.item-input-has-focus):last-child, .list-md .item-input.ng-valid.input-has-value:not(.input-has-focus):not(.item-input-has-focus):last-child{
+	border : none;
+	box-shadow: none;
+}
