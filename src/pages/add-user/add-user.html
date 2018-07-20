@@ -1,6 +1,6 @@
 <ion-header>
 	<ion-navbar color="app">
-		<ion-title>User</ion-title>
+		<ion-title>{{user_name}}</ion-title>
 	</ion-navbar>
 </ion-header>
 <ion-content>
@@ -10,7 +10,7 @@
 				
 				<ion-item padding>
 				    <select-searchable
-				        title="Select User"
+				        title="Select FPO"
 				        formControlName="organisation"
 				        [items]="fpos"
 				        itemValueField="id"
@@ -23,7 +23,20 @@
 		            <p *ngIf="personal.controls.organisation.errors.required">This field is required.</p>
 		        </div>
 
-		        
+		        <ion-item padding>
+				    <select-searchable
+				        title="Value Chain"
+				        formControlName="value_chain"
+				        [items]="value_chain"
+				        itemValueField="id"
+				        itemTextField="display_name"
+				        [canSearch]="true"
+				        searchColor="mdpurple">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.value_chain.invalid  && (personal.controls.value_chain.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.value_chain.errors.required">This field is required.</p>
+		        </div>
 
 				<ion-item>
 					<ion-label floating>User Name<span>*</span></ion-label>

@@ -25,6 +25,7 @@ export class AddFarmerPage {
     retryButton: boolean = false;
     ca_id: any = "";
     fpos: any = [];
+    genders:any;
 
     private storage: Storage;
 
@@ -37,9 +38,11 @@ export class AddFarmerPage {
 
         //get ca_id
         this.ca_id = this.user.id;
+        this.genders = [{'gender':'Male'},{'gender':'Female'},{'gender':'Other'}];
         
         this.personal = formBuilder.group({
             fm_fpo: ['', Validators.required],
+            fm_gender: ['', Validators.required],
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             fm_mname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*')])],
             fm_lname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
@@ -77,7 +80,7 @@ export class AddFarmerPage {
             let date = new Date();
             let dateNow = date.getTime() / 1000 | 0;
 
-            this.sql.query("INSERT INTO tbl_farmers (fm_fpo, fm_caid, fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            this.sql.query("INSERT INTO tbl_farmers (fm_fpo, fm_caid, fm_fname, fm_mname, fm_lname, fm_mobileno, fm_aadhar,fm_gender, fm_createddt, fm_modifieddt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?)",
                 [
                     this.personal.value.fm_fpo.id,
                     this.ca_id,
@@ -86,6 +89,7 @@ export class AddFarmerPage {
                     this.personal.value.fm_lname,
                     this.personal.value.fm_mobileno,
                     this.personal.value.fm_aadhar,
+                    this.personal.value.fm_gender.gender,
                     dateNow,
                     dateNow
                 ])

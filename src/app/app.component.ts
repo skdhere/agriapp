@@ -19,7 +19,7 @@ import 'rxjs/add/operator/map';
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    version: string = "1.1.4";
+    version: string = "1.1.5";
     rootPage: any = 'PreloadPage';
     // rootPage: any = 'LoginPage';
     alert: any;
@@ -343,7 +343,7 @@ export class MyApp {
             let currentView = this.nav.getActive();
 
             if(currentView.component.name != page.component){
-                if (page.component == "SlidesPage" || page.component == "ReportsPage" || page.component == "FpoPage") {
+                if (page.component == "SlidesPage" || page.component == "ReportsPage" || page.component == "FpoPage" || page.component == "UsersPage") {
                     this.nav.push(page.component);
                 }else{
                     this.nav.setRoot(page.component);

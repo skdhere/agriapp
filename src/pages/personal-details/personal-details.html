@@ -86,6 +86,21 @@
 				</div>
 				<!-- End of Registration Details -->
 
+				<ion-item padding>
+				    <select-searchable
+				        title="Select Gender"
+				        formControlName="fm_gender"
+				        [items]="genders"
+				        itemValueField="gender"
+				        itemTextField="gender"
+				        [canSearch]="true"
+				        searchColor="mdpurple">
+				    </select-searchable>
+				</ion-item>
+				<div *ngIf="personal.controls.fm_gender.invalid  && (personal.controls.fm_gender.dirty || submitAttempt)">
+		            <p *ngIf="personal.controls.fm_gender.errors.required">This field is required.</p>
+		        </div>
+		        
 
 				<ion-item>
 					<ion-label floating>Father's / Spouse's Name <span>*</span></ion-label>

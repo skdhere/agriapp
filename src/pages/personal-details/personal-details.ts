@@ -24,11 +24,13 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
     fm_id: any = null;
     exist: boolean = false;    
     fpos: any = [];
+    genders:any;
  	constructor(public navCtrl: NavController, 
                 public navParams: NavParams, 
                 public sql: Sql,
                 public formBuilder: FormBuilder) {
 
+        this.genders = [{'gender':'Male'},{'gender':'Female'},{'gender':'Other'}];
  		this.personal = formBuilder.group({
 
             fm_fname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
@@ -37,7 +39,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
             fm_mobileno: ['', Validators.compose([Validators.pattern('^[0-9\-]{10}$'), Validators.required]), (control) => this.checkMobilePersonal(control, this.fm_id)],
             fm_aadhar: ['', Validators.compose([Validators.pattern('^[0-9]{12}$'), Validators.required]), (control) => this.checkAadharPersonal(control, this.fm_id)],
             fm_fpo: ['', Validators.required],
-            
+            fm_gender: ['', Validators.required],
             f1_mfname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             f1_mmname: ['', Validators.compose([Validators.maxLength(50), Validators.pattern('[a-zA-Z0-9 ]*'), Validators.required])],
             f1_dob: ['', Validators.required],
@@ -99,9 +101,9 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                 formData['fm_fname']         = sqlData.fm_fname;
                 formData['fm_mname']         = sqlData.fm_mname;
                 formData['fm_lname']         = sqlData.fm_lname;
-                formData['fm_mobileno']      = sqlData.fm_mobileno;
-                formData['fm_aadhar']        = sqlData.fm_aadhar;
-
+                formData['fm_mobileno']      = parseInt(sqlData.fm_mobileno);
+                formData['fm_aadhar']        = parseInt(sqlData.fm_aadhar);
+                formData['fm_gender']        = {gender:sqlData.fm_gender};
                 formData['f1_mfname']        = sqlData.f1_mfname;
                 formData['f1_mmname']        = sqlData.f1_mmname;
                 formData['f1_dob']           = sqlData.f1_dob;
@@ -137,7 +139,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
 
             let date = new Date();
             let dateNow = date.getTime()/1000|0;
-            this.sql.query('UPDATE tbl_farmers SET fm_fpo = ?, fm_fname = ?, fm_mname = ?, fm_lname = ?, fm_mobileno = ?, fm_aadhar  = ?, fm_modifieddt = ? WHERE local_id = ?', [
+            this.sql.query('UPDATE tbl_farmers SET fm_fpo = ?, fm_fname = ?, fm_mname = ?, fm_lname = ?, fm_mobileno = ?, fm_aadhar  = ?,fm_gender  = ?, fm_modifieddt = ? WHERE local_id = ?', [
 
                 this.personal.value.fm_fpo.id,
                 this.personal.value.fm_fname,
@@ -145,6 +147,7 @@ import { ExtraValidator } from '../../validators/ExtraValidator';
                 this.personal.value.fm_lname,
                 this.personal.value.fm_mobileno,
                 this.personal.value.fm_aadhar,
+                this.personal.value.fm_gender.gender,
                 dateNow,
                 this.fm_id
             ]).then(data => {

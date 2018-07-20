@@ -168,6 +168,9 @@ export class PreloadPage {
                         //Alter tbl_farmers table add column insert_type
                         tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN fm_fpo INTEGER');
 
+                        //All done now update version 1.1.5
+                        tx.executeSql("ALTER TABLE tbl_farmers ADD COLUMN fm_gender TEXT");
+
                         //Alter tbl_land_details table add column f9_land_unit
                         tx.executeSql("ALTER TABLE tbl_land_details ADD COLUMN f9_land_unit INTEGER DEFAULT 0");
 
@@ -176,8 +179,11 @@ export class PreloadPage {
 
                         //All done now update version 1.0.1
                         tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
+
                         console.log('Database version 1.0.1 created successfully!');
 
+                        //Creating tbl_value_chain
+                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_value_chain(id INTEGER, value_chain text, display_name text, status INTEGER)');
                         //now make any query that is regarding to sqlite
                         this.updateNewDatabase();
                     }
@@ -249,6 +255,59 @@ export class PreloadPage {
             console.log(err);
             this.goHome();
         });
+
+
+        //load value_chain
+        this.sql.query('select id from tbl_value_chain').then(local_data => {
+            let value_ids = [];
+
+            if(local_data.res.rows.length > 0){
+                for (let i = 0; i < local_data.res.rows.length; i++) {
+                    let item = local_data.res.rows.item(i);
+                    if(item.id != ''){
+                        value_ids.push(item.id);
+                    }
+                }
+            }
+            let data = { value_ids : value_ids.toString()};
+
+            this.api.post("get_value_chain", data)
+            .map((res) => res.json())
+            .subscribe(success =>{
+
+                if(success.success){
+                    let db = this.sql.getDb();
+                    db.transaction((tx: any) => {
+                        if(success.data.length > 0){
+                            let stateStr = "";
+                            for (let row of success.data) {
+                                stateStr += "("+row.id+",'"+row.value_chain+"','"+row.display_name+"','"+row.status+"'),";
+                            }
+                            stateStr = stateStr.substring(0,stateStr.length-1);
+                            this.sql.query('INSERT into tbl_value_chain(id, value_chain, display_name, status) values '+ stateStr).then(d => {
+                                this.goHome();
+                            }, e => {
+                                console.log(e);
+                                this.goHome();
+                            });
+                        }else{
+                            this.goHome();
+                        }
+                    }, err => {
+                        console.log(err)
+                        this.goHome();
+                    });
+                }
+
+            }, err => {
+                console.log(err);
+                this.goHome();
+            });
+        }, err => { 
+            console.log(err);
+            this.goHome();
+        });
+
     }
 
 	goHome(){

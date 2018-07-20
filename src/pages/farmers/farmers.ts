@@ -519,6 +519,7 @@ export class FarmersPage {
 			    let query = 'Insert into ' + tablename;
 
 			    if(tablename == 'tbl_farmers'){
+			    	columns.pop(); //remove fm_gender
 			    	columns.pop(); //remove fm_fpo
 			    	columns.pop(); //remove insert_type
 			    	columns.pop(); //remove local_upload
