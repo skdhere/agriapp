@@ -19,7 +19,7 @@ import 'rxjs/add/operator/map';
 export class MyApp {
     @ViewChild(Nav) nav: Nav;
 
-    version: string = "1.1.5";
+    version: string = "1.1.6";
     rootPage: any = 'PreloadPage';
     // rootPage: any = 'LoginPage';
     alert: any;
@@ -761,6 +761,8 @@ export class MyApp {
                         // console.log(success);
                         if(success.success){
                             //set tbl_farmers fm_id as comming from api server
+                            this.sql.query('UPDATE tbl_farmers SET fm_password = ? WHERE local_id = ?',[success.data.password,lfm_id]);
+                            console.log('password update');
                             this.sql.set_fm_id(success.data.fm_id, lfm_id);
                             this.sql.updateUploadStatus('tbl_farmers', lfm_id, '1');
                         }

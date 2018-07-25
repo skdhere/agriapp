@@ -28,20 +28,66 @@ export class PreloadPage {
 	ionViewDidLoad() {
 
 		// load states
-		this.sql.query('SELECT * FROM tbl_state LIMIT 1', []).then( (data) => {
-            if (data.res.rows.length < 1) {
-            	this.http.get("assets/json/state.json").map((res:Response) => res.json()).subscribe((data) => {
-        			let stateStr = "";
-        			for (let row of data) {
-        				stateStr += "("+row.id+",'"+row.name+"'),";
-        			}
-        			stateStr = stateStr.substring(0,stateStr.length-1);
-    				this.sql.query('INSERT into tbl_state(id, name) values '+ stateStr).then();
-        		});
+        this.sql.query('select id from tbl_state').then(local_data => {
+            let existing_ids = [];
+
+            if(local_data.res.rows.length > 0){
+                for (let i = 0; i < local_data.res.rows.length; i++) {
+                    let item = local_data.res.rows.item(i);
+                    if(item.id != ''){
+                        existing_ids.push(item.id);
+                    }
+                }
+
+                console.log(existing_ids);
+                let existing_id = { existing_ids : existing_ids.toString()};
+                console.log(existing_id);
+               
+                this.api.post("get_state",existing_id)
+                    .map((res) => res.json())
+                    .subscribe(success =>{
+                       
+                        if(success.success){
+                            let db      = this.sql.getDb();
+                            let distStr ='';
+                            for(let srow of success.data)
+                            {
+                                distStr += "("+srow.id+",'"+srow.st_name+"'),";
+                            }
+
+                            if(distStr=='')
+                            {
+                                distStr = distStr.substring(0,distStr.length-1);
+                                this.sql.query('INSERT into tbl_state(id,name) values '+ distStr).then();
+                                console.log(success,'success','success');
+                            }
+                            
+                        }
+
+                    }, err => {
+                        console.log(err);
+                        this.goHome();
+                });
             }
-        }, (error) =>{
-        	console.log(error);
+            
         });
+
+        
+
+		// this.sql.query('SELECT * FROM tbl_state LIMIT 1', []).then( (data) => {
+  //           if (data.res.rows.length < 1) {
+  //           	this.http.get("assets/json/state.json").map((res:Response) => res.json()).subscribe((data) => {
+  //       			let stateStr = "";
+  //       			for (let row of data) {
+  //       				stateStr += "("+row.id+",'"+row.name+"'),";
+  //       			}
+  //       			stateStr = stateStr.substring(0,stateStr.length-1);
+  //   				this.sql.query('INSERT into tbl_state(id, name) values '+ stateStr).then();
+  //       		});
+  //           }
+  //       }, (error) =>{
+  //       	console.log(error);
+  //       });
 
 		// load Districts
 		this.sql.query('SELECT * FROM tbl_district LIMIT 1', []).then((data) => {
@@ -146,44 +192,52 @@ export class PreloadPage {
         )`).then(data => {
             // let tx = data.tx;
             console.warn('Inside db_versions');
-
+            
             //Database version 1.0.1
             let db = this.sql.getDb();
             db.transaction((tx:any) => {
                 tx.executeSql('SELECT * FROM db_versions WHERE version = ?', ['1.0.1'], (txx, d) => {
-                    if(d.rows.length < 1){
 
-                        //Creating tbl_queue
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_queue (local_id INTEGER, extra_id INTEGER, tablename text )');
+                    console.log(d.rows.length,'d.rows.length');
+
+                    if(d.rows.length < 1){
+                        // alert();
+                           console.warn(d.rows.length,'d.rows.length');
+                         //Creating tbl_queue
+                        this.sql.query('CREATE TABLE IF NOT EXISTS tbl_queue (local_id INTEGER, extra_id INTEGER, tablename text )');
                         
                         //Creating tbl_fpo
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_fpos (id INTEGER, fpo_name text, fpo_state text, fpo_district text, fpo_taluka text, fpo_village text )');
+                        this.sql.query('CREATE TABLE IF NOT EXISTS tbl_fpos (id INTEGER, fpo_name text, fpo_state text, fpo_district text, fpo_taluka text, fpo_village text )');
 
                         //Alter tbl_errors table add column extra_id
-                        tx.executeSql('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
+                        this.sql.query('ALTER TABLE tbl_errors ADD COLUMN extra_id INTEGER');
 
                         //Alter tbl_farmers table add column insert_type
-                        tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN insert_type INTEGER DEFAULT 0');
+                        this.sql.query('ALTER TABLE tbl_farmers ADD COLUMN insert_type INTEGER DEFAULT 0');
 
+                        this.sql.query('ALTER TABLE tbl_farmers ADD COLUMN fm_password INTEGER');
+                       
                         //Alter tbl_farmers table add column insert_type
-                        tx.executeSql('ALTER TABLE tbl_farmers ADD COLUMN fm_fpo INTEGER');
+                        this.sql.query('ALTER TABLE tbl_farmers ADD COLUMN fm_fpo INTEGER');
 
                         //All done now update version 1.1.5
-                        tx.executeSql("ALTER TABLE tbl_farmers ADD COLUMN fm_gender TEXT");
+                        this.sql.query("ALTER TABLE tbl_farmers ADD COLUMN fm_gender TEXT");
+
+                         //Alter tbl_farmers table add column password
+                         
+                        //Alter tbl_land_details table add column f9_land_unit
+                        this.sql.query("ALTER TABLE tbl_land_details ADD COLUMN f9_land_unit INTEGER DEFAULT 0");
 
                         //Alter tbl_land_details table add column f9_land_unit
-                        tx.executeSql("ALTER TABLE tbl_land_details ADD COLUMN f9_land_unit INTEGER DEFAULT 0");
-
-                        //Alter tbl_land_details table add column f9_land_unit
-                        tx.executeSql("ALTER TABLE tbl_cultivation_data ADD COLUMN f10_land_size TEXT");
+                        this.sql.query("ALTER TABLE tbl_cultivation_data ADD COLUMN f10_land_size TEXT");
 
                         //All done now update version 1.0.1
-                        tx.executeSql(`INSERT INTO db_versions(version) values('1.0.1')`);
+                        this.sql.query(`INSERT INTO db_versions(version) values('1.0.1')`);
 
                         console.log('Database version 1.0.1 created successfully!');
 
                         //Creating tbl_value_chain
-                        tx.executeSql('CREATE TABLE IF NOT EXISTS tbl_value_chain(id INTEGER, value_chain text, display_name text, status INTEGER)');
+                        this.sql.query('CREATE TABLE IF NOT EXISTS tbl_value_chain(id INTEGER, value_chain text, display_name text, status INTEGER)');
                         //now make any query that is regarding to sqlite
                         this.updateNewDatabase();
                     }
@@ -233,27 +287,27 @@ export class PreloadPage {
                             }
                             stateStr = stateStr.substring(0,stateStr.length-1);
                             this.sql.query('INSERT into tbl_fpos(id, fpo_name, fpo_state, fpo_district, fpo_taluka, fpo_village) values '+ stateStr).then(d => {
-                                this.goHome();
+                                // this.goHome();
                             }, e => {
                                 console.log(e);
-                                this.goHome();
+                                // this.goHome();
                             });
                         }else{
-                            this.goHome();
+                            // this.goHome();
                         }
                     }, err => {
                         console.log(err)
-                        this.goHome();
+                        // this.goHome();
                     });
                 }
 
             }, err => {
                 console.log(err);
-                this.goHome();
+                // this.goHome();
             });
         }, err => { 
             console.log(err);
-            this.goHome();
+            // this.goHome();
         });
 
 

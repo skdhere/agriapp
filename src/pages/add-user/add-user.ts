@@ -152,7 +152,8 @@ export class AddUserPage {
                 password      : this.personal.value.password,
                 fm_gender     : this.personal.value.fm_gender,
                 organisation  : this.personal.value.organisation.id,
-                userType      : this.personal.value.userType.name
+                userType      : this.personal.value.userType.name,
+                value_chain   : this.personal.value.value_chain.id,
                 // fpo_state : this.personal.value.fpo_state.name,
                 // fpo_district : this.personal.value.fpo_district.name,
                 // fpo_taluka : this.personal.value.fpo_taluka.name,
@@ -220,6 +221,7 @@ export class AddUserPage {
     ionViewDidEnter()
     {
         // load value_chain
+        this.value_chain =[];
         this.sql.query('SELECT * FROM tbl_value_chain', []).then( (data) => {
             if (data.res.rows.length > 0) {
                 let val = [];

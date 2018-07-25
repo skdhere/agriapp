@@ -99,6 +99,8 @@ export class FarmersPage {
                 	let item = data.res.rows.item(i);
                 	item.update = false;
                 	item.local_upload = false;
+                	item.fm_mobileno  = parseInt(item.fm_mobileno);
+
                 	idd.push(this.items.push(item) - 1);
 		            this.content.resize();
 				}
@@ -517,8 +519,9 @@ export class FarmersPage {
 
 				let columns = this.getColArray(data.rows.item(0).sql);
 			    let query = 'Insert into ' + tablename;
-
+			    // console.log(columns);
 			    if(tablename == 'tbl_farmers'){
+			    	columns.pop(); //remove password
 			    	columns.pop(); //remove fm_gender
 			    	columns.pop(); //remove fm_fpo
 			    	columns.pop(); //remove insert_type
@@ -527,6 +530,8 @@ export class FarmersPage {
 
 			    	columns.push('fm_fpo');
 			    	columns.push('insert_type');
+			    	columns.push('fm_password');
+			    	columns.push('fm_gender');
 			    }
 			    else if(tablename === 'tbl_loan_details' || tablename === 'tbl_yield_details'){
 

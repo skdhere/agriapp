@@ -26,7 +26,9 @@
                     <!-- <ion-icon name="information-circle" color="danger" style="font-size: 38px;"></ion-icon> -->
                 </ion-avatar>
                 <h2 color="app">{{farmer.fm_name}}</h2>
-                <p>{{farmer.fm_mobileno}}</p>
+                <p>{{farmer.fm_mobileno || number}}</p>
+                <p>AGB ID: {{farmer.fm_id}}</p>
+                <p>Password: {{farmer.fm_password}}</p>
 
                 <ion-icon *ngIf="!farmer.hasErrors" name="checkmark-circle" color="{{ farmer.update ? 'secondary' : 'light'}}" item-end></ion-icon>
                 <ion-icon *ngIf="!farmer.hasErrors" name="cloud-done" color="{{ farmer.local_upload === true ? 'secondary' : 'light'}}" item-end></ion-icon>

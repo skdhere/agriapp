@@ -110,6 +110,8 @@ export class Sql {
             console.error('Storage: Unable to create tbl_farmers tables', err.tx, err.err);
         });
 
+
+
         this.query(`CREATE TABLE IF NOT EXISTS tbl_personal_detail (
             fm_caid INTEGER,
             fm_id INTEGER,
@@ -485,6 +487,8 @@ export class Sql {
         )`).catch(err => {
             console.error('Storage: Unable to create tbl_loan_details tables', err.tx, err.err);
         });
+
+        // this.query('ALTER TABLE tbl_farmers ADD COLUMN fm_password text');
     }
 
     /**
