@@ -9,7 +9,7 @@ export class Sql {
     private _db: any;
 
     constructor(public events?: Events) {
-        if (win.sqlitePlugin) {
+        if (win.sqlitePlugin) { // to check browser or mobile
             this._db = win.sqlitePlugin.openDatabase({
                 name: DB_NAME,
                 location: 2,

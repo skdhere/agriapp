@@ -54,6 +54,7 @@ export class MyApp {
             // statusBar.styleBlackOpaque();
             splashScreen.hide();
 
+            //Checks Internet available or not
             if (this.network.type !== 'none' && this.network.type !== 'undefined' && this.network.type !== '') {
                 console.log('Alert');
                 this.api.post("app_version", {version: this.version})
@@ -309,6 +310,8 @@ export class MyApp {
                     }
                 }
             }
+
+
             let data = { fpo_ids : fpo_ids.toString()};
 
             this.api.post("get_all_fpo", data)
